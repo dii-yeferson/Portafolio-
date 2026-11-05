@@ -20,7 +20,8 @@ import { studioTheme } from './src/sanity/studio/theme'
 function siteUrlFor(document: { _type: string; slug?: { current?: string } }) {
   if (typeof window === 'undefined') return undefined
   const origin = window.location.origin
-  if (document._type === 'project' && document.slug?.current) return `${origin}/proyectos/${document.slug.current}`
+  if (document._type === 'project' && document.slug?.current)
+    return `${origin}/proyectos/${document.slug.current}`
   if (document._type === 'certification') return `${origin}/certificaciones`
   return `${origin}/`
 }
