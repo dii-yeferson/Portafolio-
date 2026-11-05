@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    groups:
+      sanity:
+        patterns: ['sanity', '@sanity/*', 'next-sanity', 'groq', '@portabletext/*']
+      next-react:
+        patterns:
+          ['next', 'react', 'react-dom', 'eslint-config-next', '@types/react', '@types/react-dom']
+      tooling:
+        dependency-type: development
+    ignore:
+      # eslint-config-next (eslint-plugin-react) aún no admite ESLint 10.
+      - dependency-name: eslint
+        update-types: ['version-update:semver-major']
+      # Los tipos de Node deben coincidir con la versión de .nvmrc.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

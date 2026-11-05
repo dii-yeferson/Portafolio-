@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+
+/* Dark Luxury Tech — tokens semánticos del sistema de diseño (PRD §5). */
+@theme {
+  --color-background: #080e0b;
+  --color-surface: #0d1713;
+  --color-surface-raised: #11201a;
+  --color-border: #174b39;
+  --color-accent: #3b9470;
+  --color-accent-strong: #4fae86;
+  --color-champagne: #9c896c;
+  --color-foreground: #e7efe9;
+  --color-muted: #9db3a7;
+
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --animate-fade-in: fade-in 600ms ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-strong);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility card {
+  border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+  background: linear-gradient(160deg, var(--color-surface-raised), var(--color-surface));
+  border-radius: 1rem;
+}
