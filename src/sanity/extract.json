@@ -266,6 +266,43 @@
     }
   },
   {
+    "name": "sectionCopy",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sectionCopy"
+          }
+        },
+        "label": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "title": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "description": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "seo",
     "type": "type",
     "value": {
@@ -1574,6 +1611,38 @@
               }
             }
           }
+        },
+        "optional": true
+      },
+      "aboutCopy": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "sectionCopy"
+        },
+        "optional": true
+      },
+      "projectsCopy": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "sectionCopy"
+        },
+        "optional": true
+      },
+      "certificationsCopy": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "sectionCopy"
+        },
+        "optional": true
+      },
+      "contactCopy": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "sectionCopy"
         },
         "optional": true
       },

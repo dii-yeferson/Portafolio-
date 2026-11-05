@@ -9,7 +9,11 @@ vi.mock('sanity', () => ({
   defineField: <T>(value: T) => value,
   defineArrayMember: <T>(value: T) => value,
   defineConfig: <T>(value: T) => value,
+  buildLegacyTheme: () => ({}),
+  useCurrentUser: () => null,
 }))
+vi.mock('sanity/router', () => ({ IntentLink: () => null }))
+vi.mock('@sanity/locale-es-es', () => ({ esESLocale: () => ({ name: 'es-ES' }) }))
 vi.mock('sanity/structure', () => ({ structureTool: () => ({ name: 'structure' }) }))
 vi.mock('@sanity/vision', () => ({ visionTool: () => ({ name: 'vision' }) }))
 

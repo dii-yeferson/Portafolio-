@@ -1,10 +1,22 @@
 import { CertificationsGrid } from '@/components/certifications/certifications-grid'
 import { SectionHeading } from '@/components/ui/section-heading'
 import { toCertificationViews } from '@/lib/certifications'
-import type { CertificationItem } from '@/sanity/lib/data'
+import { resolveCopy } from '@/lib/copy'
+import type { CertificationItem, SiteSettings } from '@/sanity/lib/data'
 
-export function CertificationsSection({ certifications }: { certifications: CertificationItem[] }) {
+export function CertificationsSection({
+  certifications,
+  settings,
+}: {
+  certifications: CertificationItem[]
+  settings: SiteSettings
+}) {
   const items = toCertificationViews(certifications).slice(0, 6)
+  const copy = resolveCopy(settings?.certificationsCopy, {
+    label: 'Aprendizaje continuo',
+    title: 'Certificaciones',
+    description: 'Credenciales con fecha real de emisión y enlace a la verificación oficial.',
+  })
 
   return (
     <section
@@ -15,9 +27,9 @@ export function CertificationsSection({ certifications }: { certifications: Cert
       <div className="container-page">
         <SectionHeading
           id="certificaciones-title"
-          label="Aprendizaje continuo"
-          title="Certificaciones"
-          description="Credenciales con fecha real de emisión y enlace a la verificación oficial."
+          label={copy.label}
+          title={copy.title}
+          description={copy.description}
           action={{ href: '/certificaciones', label: 'Ver todas' }}
         />
         {items.length > 0 ? (

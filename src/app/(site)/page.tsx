@@ -35,8 +35,8 @@ export default async function HomePage() {
       <JsonLd data={buildPersonJsonLd(settings, socialLinks)} />
       <HeroSection settings={settings} stats={stats} />
       <AboutSection settings={settings} />
-      <ProjectsSection projects={projects} />
-      <CertificationsSection certifications={certifications} />
+      <ProjectsSection projects={projects} settings={settings} />
+      <CertificationsSection certifications={certifications} settings={settings} />
       <ContactSection settings={settings} socialLinks={socialLinks} />
     </>
   )

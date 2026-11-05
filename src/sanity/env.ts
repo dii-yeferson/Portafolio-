@@ -21,3 +21,10 @@ export const studioBasePath = '/studio'
  * compilar y probar el proyecto (CI) sin credenciales.
  */
 export const isSanityConfigured = /^[a-z0-9-]+$/i.test(projectId)
+
+/**
+ * Correos autorizados para entrar al panel (`/studio`), separados por comas.
+ * Es una segunda barrera: el control real lo dan los miembros del proyecto en
+ * sanity.io/manage. Vacío = cualquier miembro del proyecto puede entrar.
+ */
+export const studioAdminEmails = process.env.NEXT_PUBLIC_STUDIO_ADMIN_EMAILS || ''

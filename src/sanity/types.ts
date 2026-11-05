@@ -53,6 +53,13 @@ export type BlockContent = Array<
     }
 >
 
+export type SectionCopy = {
+  _type: 'sectionCopy'
+  label?: string
+  title?: string
+  description?: string
+}
+
 export type Seo = {
   _type: 'seo'
   metaTitle?: string
@@ -255,6 +262,10 @@ export type SiteSettings = {
     _type: 'principle'
     _key: string
   }>
+  aboutCopy?: SectionCopy
+  projectsCopy?: SectionCopy
+  certificationsCopy?: SectionCopy
+  contactCopy?: SectionCopy
   seoMeta?: Seo
 }
 
@@ -358,6 +369,7 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | BlockContent
+  | SectionCopy
   | Seo
   | SocialLink
   | Certification
@@ -378,7 +390,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    displayName,    tagline,    availability,    summary,    heroPhrases,    heroBadges,    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },    contactEmail,    education[]{      _key,      institution,      program,      startYear,      endYear,      description,      image{ asset, crop, hotspot, alt }    },    skillGroups[]{ _key, title, skills },    principles[]{ _key, title, description },    seoMeta{      metaTitle,      metaDescription,      keywords,      twitterHandle,      ogImage{ asset, crop, hotspot, alt }    }  }
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    displayName,    tagline,    availability,    summary,    heroPhrases,    heroBadges,    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },    contactEmail,    education[]{      _key,      institution,      program,      startYear,      endYear,      description,      image{ asset, crop, hotspot, alt }    },    skillGroups[]{ _key, title, skills },    principles[]{ _key, title, description },    aboutCopy{ label, title, description },    projectsCopy{ label, title, description },    certificationsCopy{ label, title, description },    contactCopy{ label, title, description },    seoMeta{      metaTitle,      metaDescription,      keywords,      twitterHandle,      ogImage{ asset, crop, hotspot, alt }    }  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   displayName: string
   tagline: string
@@ -424,6 +436,26 @@ export type SITE_SETTINGS_QUERY_RESULT = {
     title: string
     description: string | null
   }> | null
+  aboutCopy: {
+    label: string | null
+    title: string | null
+    description: string | null
+  } | null
+  projectsCopy: {
+    label: string | null
+    title: string | null
+    description: string | null
+  } | null
+  certificationsCopy: {
+    label: string | null
+    title: string | null
+    description: string | null
+  } | null
+  contactCopy: {
+    label: string | null
+    title: string | null
+    description: string | null
+  } | null
   seoMeta: {
     metaTitle: string | null
     metaDescription: string | null
@@ -595,7 +627,7 @@ export type SEARCH_QUERY_RESULT = Array<
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    displayName,\n    tagline,\n    availability,\n    summary,\n    heroPhrases,\n    heroBadges,\n    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },\n    contactEmail,\n    education[]{\n      _key,\n      institution,\n      program,\n      startYear,\n      endYear,\n      description,\n      image{ asset, crop, hotspot, alt }\n    },\n    skillGroups[]{ _key, title, skills },\n    principles[]{ _key, title, description },\n    seoMeta{\n      metaTitle,\n      metaDescription,\n      keywords,\n      twitterHandle,\n      ogImage{ asset, crop, hotspot, alt }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT
+    '\n  *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    displayName,\n    tagline,\n    availability,\n    summary,\n    heroPhrases,\n    heroBadges,\n    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },\n    contactEmail,\n    education[]{\n      _key,\n      institution,\n      program,\n      startYear,\n      endYear,\n      description,\n      image{ asset, crop, hotspot, alt }\n    },\n    skillGroups[]{ _key, title, skills },\n    principles[]{ _key, title, description },\n    aboutCopy{ label, title, description },\n    projectsCopy{ label, title, description },\n    certificationsCopy{ label, title, description },\n    contactCopy{ label, title, description },\n    seoMeta{\n      metaTitle,\n      metaDescription,\n      keywords,\n      twitterHandle,\n      ogImage{ asset, crop, hotspot, alt }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT
     '\n  *[_type == "project" && status == "published" && defined(slug.current)]\n    | order(sortOrder asc, _createdAt desc){\n      _id,\n      title,\n      "slug": slug.current,\n      category,\n      shortDescription,\n      technologies,\n      featured,\n      demoUrl,\n      codeUrl,\n      coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }\n    }\n': PROJECTS_QUERY_RESULT
     '\n  *[_type == "project" && status == "published" && slug.current == $slug][0]{\n    _id,\n    _updatedAt,\n    title,\n    "slug": slug.current,\n    category,\n    shortDescription,\n    problem,\n    approach,\n    solution,\n    results,\n    metrics[]{ _key, label, value, context },\n    technologies,\n    featured,\n    demoUrl,\n    codeUrl,\n    coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    gallery[]{ _key, asset, crop, hotspot, alt, caption, "lqip": asset->metadata.lqip }\n  }\n': PROJECT_BY_SLUG_QUERY_RESULT
     '\n  *[_type == "project" && status == "published" && defined(slug.current)]{\n    "slug": slug.current,\n    _updatedAt\n  }\n': PROJECT_SLUGS_QUERY_RESULT

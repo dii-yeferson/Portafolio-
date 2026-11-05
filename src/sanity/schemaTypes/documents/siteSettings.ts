@@ -15,6 +15,7 @@ export const siteSettings = defineType({
     { name: 'hero', title: 'Hero' },
     { name: 'about', title: 'Sobre mí' },
     { name: 'contact', title: 'Contacto y CV' },
+    { name: 'texts', title: 'Textos del sitio' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
@@ -226,6 +227,32 @@ export const siteSettings = defineType({
         }),
       ],
       validation: (rule) => rule.max(6),
+    }),
+    defineField({
+      name: 'aboutCopy',
+      title: 'Sección «Sobre mí»',
+      description: 'Deja vacío cualquier campo para usar el texto por defecto.',
+      type: 'sectionCopy',
+      group: 'texts',
+    }),
+    defineField({
+      name: 'projectsCopy',
+      title: 'Sección «Proyectos»',
+      type: 'sectionCopy',
+      group: 'texts',
+    }),
+    defineField({
+      name: 'certificationsCopy',
+      title: 'Sección «Certificaciones»',
+      type: 'sectionCopy',
+      group: 'texts',
+    }),
+    defineField({
+      name: 'contactCopy',
+      title: 'Sección «Contacto»',
+      description: 'La última palabra del título se resalta con el degradado.',
+      type: 'sectionCopy',
+      group: 'texts',
     }),
     defineField({
       name: 'seoMeta',

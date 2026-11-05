@@ -1,11 +1,13 @@
 import { CheckmarkCircleIcon } from '@sanity/icons/CheckmarkCircle'
 import { CogIcon } from '@sanity/icons/Cog'
+import { HomeIcon } from '@sanity/icons/Home'
 import { LinkIcon } from '@sanity/icons/Link'
 import { ProjectsIcon } from '@sanity/icons/Projects'
 import type { StructureResolver } from 'sanity/structure'
 
 import { PROJECT_STATUSES } from '../lib/taxonomy'
 import { apiVersion } from './env'
+import { StudioHome } from './studio/studio-home'
 
 const bySortOrder = [{ field: 'sortOrder', direction: 'asc' as const }]
 
@@ -15,14 +17,20 @@ export const structure: StructureResolver = (S) =>
     .title('Contenido')
     .items([
       S.listItem()
-        .title('Configuración del sitio')
+        .title('Inicio')
+        .id('inicio')
+        .icon(HomeIcon)
+        .child(S.component(StudioHome).id('inicio-panel').title('Inicio')),
+      S.divider(),
+      S.listItem()
+        .title('Mi perfil y textos')
         .id('siteSettings')
         .icon(CogIcon)
         .child(
           S.document()
             .schemaType('siteSettings')
             .documentId('siteSettings')
-            .title('Configuración del sitio'),
+            .title('Mi perfil y textos'),
         ),
       S.divider(),
       S.listItem()

@@ -94,6 +94,10 @@ export const DEMO_SITE_SETTINGS: NonNullable<SITE_SETTINGS_QUERY_RESULT> = {
       description: 'Medir resultados y mejorar procesos con evidencia.',
     },
   ],
+  aboutCopy: null,
+  projectsCopy: null,
+  certificationsCopy: null,
+  contactCopy: null,
   seoMeta: null,
 }
 

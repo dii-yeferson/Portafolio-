@@ -1,6 +1,7 @@
 import { ArrowRight, GraduationCap, Layers, Target } from 'lucide-react'
 import Link from 'next/link'
 
+import { resolveCopy } from '@/lib/copy'
 import type { SiteSettings } from '@/sanity/lib/data'
 
 function CardIcon({ icon: Icon }: { icon: typeof Target }) {
@@ -19,6 +20,11 @@ export function AboutSection({ settings }: { settings: SiteSettings }) {
     12,
   )
   const principles = (settings?.principles ?? []).slice(0, 5)
+  const copy = resolveCopy(settings?.aboutCopy, {
+    label: 'Perfil',
+    title: 'Sobre mí',
+    description: '',
+  })
 
   return (
     <section
@@ -27,12 +33,12 @@ export function AboutSection({ settings }: { settings: SiteSettings }) {
       className="pt-14 pb-20 lg:pt-16 lg:pb-28"
     >
       <div className="container-page">
-        <p className="label reveal">Perfil</p>
+        <p className="label reveal">{copy.label}</p>
         <h2
           id="sobre-mi-title"
           className="reveal mt-3 text-[clamp(2.2rem,4.2vw,3.25rem)] leading-[1.02] font-black tracking-[-0.04em]"
         >
-          Sobre mí
+          {copy.title}
         </h2>
         <p className="reveal mt-8 max-w-4xl text-[clamp(1.35rem,2.5vw,2.05rem)] leading-[1.38] font-bold tracking-[-0.02em] text-foreground/90">
           {settings?.summary || 'El perfil profesional se publicará muy pronto.'}

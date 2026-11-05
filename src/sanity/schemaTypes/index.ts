@@ -5,6 +5,7 @@ import { project } from './documents/project'
 import { siteSettings } from './documents/siteSettings'
 import { socialLink } from './documents/socialLink'
 import { blockContent } from './objects/blockContent'
+import { sectionCopy } from './objects/sectionCopy'
 import { seo } from './objects/seo'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
@@ -13,6 +14,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   certification,
   socialLink,
   seo,
+  sectionCopy,
   blockContent,
 ]
 

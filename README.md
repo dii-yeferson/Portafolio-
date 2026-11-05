@@ -162,19 +162,38 @@ npm ci
 
 ## Variables de entorno
 
-| Variable                         | Obligatoria | Uso                                                                    |
-| -------------------------------- | ----------- | ---------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`           | Producción  | URL canónica (SEO, Open Graph, sitemap). Respaldo: dominio de Vercel   |
-| `NEXT_PUBLIC_SANITY_PROJECT_ID`  | Sí          | Proyecto de Sanity                                                     |
-| `NEXT_PUBLIC_SANITY_DATASET`     | Sí          | Dataset (por defecto `production`)                                     |
-| `NEXT_PUBLIC_SANITY_API_VERSION` | No          | Versión fija de la API (por defecto `2026-10-01`)                      |
-| `SANITY_REVALIDATE_SECRET`       | Producción  | Secreto compartido con el webhook (`openssl rand -hex 32`)             |
-| `RESEND_API_KEY`                 | No          | Envío del formulario de contacto mediante [Resend](https://resend.com) |
-| `CONTACT_FROM_EMAIL`             | No          | Remitente verificado en Resend                                         |
-| `CONTACT_TO_EMAIL`               | No          | Destinatario; si falta se usa el correo de _Configuración del sitio_   |
+| Variable                          | Obligatoria | Uso                                                                    |
+| --------------------------------- | ----------- | ---------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`            | Producción  | URL canónica (SEO, Open Graph, sitemap). Respaldo: dominio de Vercel   |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID`   | Sí          | Proyecto de Sanity                                                     |
+| `NEXT_PUBLIC_SANITY_DATASET`      | Sí          | Dataset (por defecto `production`)                                     |
+| `NEXT_PUBLIC_STUDIO_ADMIN_EMAILS` | Recomendado | Correos que pueden entrar al panel (separados por comas)               |
+| `NEXT_PUBLIC_SANITY_API_VERSION`  | No          | Versión fija de la API (por defecto `2026-10-01`)                      |
+| `SANITY_REVALIDATE_SECRET`        | Producción  | Secreto compartido con el webhook (`openssl rand -hex 32`)             |
+| `RESEND_API_KEY`                  | No          | Envío del formulario de contacto mediante [Resend](https://resend.com) |
+| `CONTACT_FROM_EMAIL`              | No          | Remitente verificado en Resend                                         |
+| `CONTACT_TO_EMAIL`                | No          | Destinatario; si falta se usa el correo de _Configuración del sitio_   |
 
 Sin `RESEND_API_KEY`, el formulario responde `503` y la interfaz ofrece el enlace
 `mailto:` como alternativa.
+
+## Panel de administración (`/studio`)
+
+Tu panel privado para editar todo el sitio desde el celular o la computadora, en español y con
+la identidad del portafolio.
+
+- **Entrar:** abre `https://TU-DOMINIO/studio` e inicia sesión con tu cuenta de Sanity (Google,
+  GitHub o correo).
+- **Solo tú:** en _sanity.io/manage → Members_ deja únicamente tu cuenta y define
+  `NEXT_PUBLIC_STUDIO_ADMIN_EMAILS` con tu correo. Cualquier otra cuenta ve «Acceso restringido».
+  El sitio público nunca enlaza al panel y `/studio` no se indexa.
+- **Inicio del panel:** accesos rápidos a _Editar mi perfil_, _Nuevo proyecto_, _Nueva
+  certificación_, _Nueva red social_ y _Ver el sitio_.
+- **Qué puedes editar:** nombre, rol, frase, disponibilidad, foto, insignias del globo, CV en PDF,
+  resumen, formación, habilidades, principios, **todos los textos de las secciones**, proyectos
+  (portada, galería, estudio de caso, métricas, demo y código), certificaciones y redes.
+- **Publicar:** pulsa _Publicar_ y el sitio se actualiza en segundos (webhook de revalidación).
+  Cada proyecto tiene _Abrir vista previa_ para verlo en el sitio.
 
 ## Modelo de contenido (CMS)
 

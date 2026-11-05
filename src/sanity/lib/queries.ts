@@ -30,6 +30,10 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     },
     skillGroups[]{ _key, title, skills },
     principles[]{ _key, title, description },
+    aboutCopy{ label, title, description },
+    projectsCopy{ label, title, description },
+    certificationsCopy{ label, title, description },
+    contactCopy{ label, title, description },
     seoMeta{
       metaTitle,
       metaDescription,

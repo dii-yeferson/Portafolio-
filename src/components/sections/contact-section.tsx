@@ -2,6 +2,7 @@ import { ArrowUpRight, Download } from 'lucide-react'
 
 import { ContactDialog } from '@/components/contact/contact-dialog'
 import { BrandIcon } from '@/components/icons/brand-icons'
+import { resolveCopy, splitHighlight } from '@/lib/copy'
 import { EXTERNAL_LINK_PROPS, isSafeExternalUrl } from '@/lib/url'
 import type { SiteSettings, SocialLinkItem } from '@/sanity/lib/data'
 
@@ -14,6 +15,13 @@ export function ContactSection({
   socialLinks: SocialLinkItem[]
 }) {
   const links = socialLinks.filter((link) => isSafeExternalUrl(link.url))
+  const copy = resolveCopy(settings?.contactCopy, {
+    label: 'Contacto',
+    title: '¿Trabajamos juntos?',
+    description:
+      'Estoy abierto a nuevas oportunidades, proyectos y conversaciones sobre datos, tecnología e innovación.',
+  })
+  const [titleStart, titleHighlight, titleEnd] = splitHighlight(copy.title)
 
   return (
     <section
@@ -29,16 +37,17 @@ export function ContactSection({
           />
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center">
             <div>
-              <p className="label">Contacto</p>
+              <p className="label">{copy.label}</p>
               <h2
                 id="contacto-title"
                 className="mt-4 text-[clamp(2.5rem,5.2vw,4.2rem)] leading-[0.98] font-black tracking-[-0.045em]"
               >
-                ¿Trabajamos <span className="text-aurora">juntos</span>?
+                {titleStart}
+                <span className="text-aurora">{titleHighlight}</span>
+                {titleEnd}
               </h2>
               <p className="mt-5 max-w-lg text-[1.08rem] leading-relaxed text-muted">
-                Estoy abierto a nuevas oportunidades, proyectos y conversaciones sobre datos,
-                tecnología e innovación.
+                {copy.description}
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <ContactDialog contactEmail={settings?.contactEmail || null} />
