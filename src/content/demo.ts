@@ -31,12 +31,11 @@ function paragraphs(...texts: string[]): BlockContent {
 export const DEMO_SITE_SETTINGS: NonNullable<SITE_SETTINGS_QUERY_RESULT> = {
   displayName: 'Di Yeferson',
   tagline: 'Big Data · Ciencia de Datos · IA Aplicada',
-  heroEyebrow: 'Datos · Tecnología · Impacto real',
-  heroQuote: 'Los datos también cuentan historias.',
+  availability: 'Disponible para nuevos proyectos',
   summary:
     'Apasionado por los datos, la tecnología y la creación de soluciones que generen un impacto real. Me enfoco en el análisis, modelado y visualización de datos para resolver problemas del mundo real.',
   heroPhrases: ['Transformando datos en soluciones reales.'],
-  heroBadges: ['Análisis', 'Modelado', 'Visualización', 'Soluciones'],
+  heroBadges: ['Análisis', 'Modelado', 'IA aplicada'],
   heroPortrait: null,
   resume: null,
   contactEmail: '',
@@ -241,7 +240,7 @@ export const DEMO_PROJECTS: DemoProject[] = [
     slug: 'centinela-minero',
     category: ['machine-learning', 'big-data', 'thesis'],
     shortDescription: 'Sistema de monitoreo y predicción para entornos mineros.',
-    technologies: ['Python', 'IA Aplicada', 'Tesis'],
+    technologies: ['Python', 'IA Aplicada', 'Machine Learning'],
     featured: true,
     demoUrl: null,
     codeUrl: 'https://github.com/dii-yeferson',

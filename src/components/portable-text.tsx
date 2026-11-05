@@ -7,11 +7,13 @@ import { SanityImage } from './sanity-image'
 
 const components: PortableTextComponents = {
   block: {
-    normal: ({ children }) => <p className="leading-relaxed text-foreground/90">{children}</p>,
+    normal: ({ children }) => (
+      <p className="text-[1.02rem] leading-[1.75] text-foreground/85">{children}</p>
+    ),
     h3: ({ children }) => <h3 className="mt-6 font-display text-xl font-bold">{children}</h3>,
     h4: ({ children }) => <h4 className="mt-4 font-display text-lg font-bold">{children}</h4>,
     blockquote: ({ children }) => (
-      <blockquote className="border-l-2 border-accent pl-4 text-muted italic">
+      <blockquote className="border-l-2 border-aqua/60 pl-4 text-muted italic">
         {children}
       </blockquote>
     ),
@@ -22,7 +24,7 @@ const components: PortableTextComponents = {
   },
   marks: {
     code: ({ children }) => (
-      <code className="rounded bg-surface-raised px-1.5 py-0.5 font-mono text-sm">{children}</code>
+      <code className="rounded-md bg-surface-3 px-1.5 py-0.5 font-mono text-sm">{children}</code>
     ),
     link: ({ value, children }) => {
       const href: unknown = value?.href
@@ -31,7 +33,7 @@ const components: PortableTextComponents = {
         <a
           href={href}
           {...EXTERNAL_LINK_PROPS}
-          className="text-accent-strong underline underline-offset-4"
+          className="text-aqua underline decoration-aqua/40 underline-offset-4 hover:decoration-aqua"
         >
           {children}
         </a>

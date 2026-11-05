@@ -15,10 +15,10 @@ export type CertificationView = CERTIFICATIONS_QUERY_RESULT[number] & {
   issuedLabel: string
 }
 
-/** Tarjetas de certificaciones con visor del certificado (FR-07). */
+/** Lista elegante de certificaciones con visor del certificado (FR-07). */
 export function CertificationsGrid({
   certifications,
-  className = 'sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5',
+  className = 'lg:grid-cols-2',
 }: {
   certifications: CertificationView[]
   className?: string
@@ -33,58 +33,65 @@ export function CertificationsGrid({
 
   return (
     <>
-      <ul className={`grid gap-4 ${className}`}>
-        {certifications.map((item) => (
-          <li key={item._id} className="reveal">
-            <article className="panel panel-interactive flex h-full flex-col p-5 hover:border-champagne/55">
-              <div className="flex items-start justify-between gap-3">
-                <span className="grid size-12 place-items-center rounded-xl border border-white/[0.07] bg-white/[0.03]">
+      <ul className={`grid grid-cols-1 gap-3 ${className}`}>
+        {certifications.map((item) => {
+          const verifyUrl = isSafeExternalUrl(item.verificationUrl) ? item.verificationUrl : null
+          const hasImage = hasImageAsset(item.certificateImage)
+          return (
+            <li key={item._id} className="reveal">
+              <article className="surface-card card-hover spotlight group flex h-full items-center gap-4 rounded-[1.25rem] p-4 pr-5">
+                <span className="grid size-14 shrink-0 place-items-center rounded-2xl border border-line bg-surface-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
                   <TechIcon icon={item.iconKey} className="size-7" />
                 </span>
-                <Medal className="h-10 w-8 drop-shadow-[0_6px_14px_rgba(156,137,108,0.35)]" />
-              </div>
-              <h3 className="mt-5 text-[1rem] leading-snug font-extrabold">{item.title}</h3>
-              <p className="mt-1.5 text-xs font-semibold text-muted">{item.issuer}</p>
-              <p className="sr-only">Categoría: {getCertificationCategoryLabel(item.category)}</p>
-              <div className="mt-auto flex items-end justify-between gap-3 pt-5">
-                <p className="text-xs font-bold text-foreground/80">
-                  <time dateTime={item.issueDate} title={item.issuedLabel}>
-                    {item.issueDate.slice(0, 4)}
-                  </time>
-                  {item.expired ? (
-                    <span className="ml-2 text-champagne-light">· Vencida</span>
-                  ) : null}
-                </p>
-                {isSafeExternalUrl(item.verificationUrl) ? (
+                <div className="min-w-0 flex-1">
+                  <h3 className="line-clamp-2 text-[1.02rem] leading-snug font-extrabold tracking-[-0.01em] sm:truncate">
+                    {item.title}
+                  </h3>
+                  <p className="mt-0.5 text-[0.86rem] font-semibold text-muted sm:truncate">
+                    {item.issuer}
+                    <span aria-hidden="true" className="mx-1.5 text-subtle">
+                      ·
+                    </span>
+                    <time dateTime={item.issueDate} title={item.issuedLabel}>
+                      {item.issueDate.slice(0, 4)}
+                    </time>
+                    {item.expired ? <span className="ml-1.5 text-champagne">· Vencida</span> : null}
+                  </p>
+                  <p className="sr-only">
+                    Categoría: {getCertificationCategoryLabel(item.category)}
+                  </p>
+                </div>
+                <Medal className="hidden h-9 w-7 shrink-0 opacity-90 sm:block transition-transform duration-500 ease-[cubic-bezier(.22,1.12,.36,1)] group-hover:-rotate-6" />
+                {verifyUrl ? (
                   <a
-                    href={item.verificationUrl}
+                    href={verifyUrl}
                     {...EXTERNAL_LINK_PROPS}
                     aria-label={`Verificar ${item.title}`}
-                    className="btn btn-outline size-9 rounded-lg p-0"
+                    className="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-muted transition-colors hover:bg-white/[0.08] hover:text-foreground"
                   >
                     <ArrowUpRight className="size-4" aria-hidden="true" />
                   </a>
-                ) : hasImageAsset(item.certificateImage) ? (
+                ) : hasImage ? (
                   <button
                     type="button"
                     onClick={() => open(item)}
                     aria-label={`Ver certificado ${item.title}`}
-                    className="btn btn-outline size-9 rounded-lg p-0"
+                    className="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-muted transition-colors hover:bg-white/[0.08] hover:text-foreground"
                   >
                     <Eye className="size-4" aria-hidden="true" />
                   </button>
                 ) : null}
-              </div>
-            </article>
-          </li>
-        ))}
+              </article>
+            </li>
+          )
+        })}
       </ul>
 
       <dialog
         ref={dialogRef}
         onClose={() => setSelected(null)}
         aria-label={selected ? `Certificado: ${selected.title}` : 'Certificado'}
-        className="glass m-auto w-[min(60rem,calc(100vw-2rem))] rounded-2xl p-4 text-foreground backdrop:bg-background/85 backdrop:backdrop-blur-sm"
+        className="glass m-auto w-[min(60rem,calc(100vw-2rem))] rounded-[1.75rem] p-4 text-foreground backdrop:bg-black/70 backdrop:backdrop-blur-sm"
       >
         {selected ? (
           <figure>
@@ -93,9 +100,9 @@ export function CertificationsGrid({
               width={1600}
               height={1131}
               sizes="(min-width: 1000px) 60rem, 100vw"
-              className="h-auto w-full rounded-xl"
+              className="h-auto w-full rounded-2xl"
             />
-            <figcaption className="mt-3 flex items-center justify-between gap-4 text-sm font-semibold text-muted">
+            <figcaption className="mt-3 flex items-center justify-between gap-4 px-1 text-sm font-semibold text-muted">
               <span>
                 {selected.title} · {selected.issuer} · {selected.issuedLabel}
               </span>

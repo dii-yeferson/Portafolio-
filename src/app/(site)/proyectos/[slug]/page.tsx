@@ -20,7 +20,13 @@ import { buildProjectMetadata } from '@/lib/seo'
 import { getProjectCategoryLabel } from '@/lib/taxonomy'
 import { EXTERNAL_LINK_PROPS, isSafeExternalUrl } from '@/lib/url'
 import { hasImageAsset } from '@/sanity/lib/image'
-import { getProjectBySlug, getProjects, getProjectSlugs, getSiteSettings } from '@/sanity/lib/data'
+import {
+  getProjectBySlug,
+  getProjects,
+  getProjectSlugs,
+  getSiteSettings,
+  getSocialLinks,
+} from '@/sanity/lib/data'
 
 type ProjectPageProps = { params: Promise<{ slug: string }> }
 
@@ -47,10 +53,11 @@ const SECTION_ICONS = {
 /** Ficha de estudio de caso (FR-06). */
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params
-  const [project, allProjects, settings] = await Promise.all([
+  const [project, allProjects, settings, socialLinks] = await Promise.all([
     getProjectBySlug(slug),
     getProjects(),
     getSiteSettings(),
+    getSocialLinks(),
   ])
   if (!project) notFound()
 
@@ -73,7 +80,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <>
       <PageHero
-        eyebrow={project.category.map((value) => getProjectCategoryLabel(value)).join(' · ')}
+        label={project.category.map((value) => getProjectCategoryLabel(value)).join(' · ')}
         title={project.title}
         description={project.shortDescription}
         crumbs={[{ href: '/proyectos', label: 'Proyectos' }]}
@@ -95,7 +102,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <a
                 href={project.codeUrl}
                 {...EXTERNAL_LINK_PROPS}
-                className="btn btn-outline h-12 px-6"
+                className="btn btn-glass h-12 px-6"
               >
                 <Code className="size-4" aria-hidden="true" />
                 Ver código
@@ -105,38 +112,58 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
       </PageHero>
 
-      <article className="border-b border-white/[0.06]">
-        <div className="container-page py-14 lg:py-16">
-          <div className="panel overflow-hidden p-2">
+      <article className="pb-24 lg:pb-28">
+        <div className="container-page">
+          <div className="surface-card overflow-hidden rounded-[1.75rem] p-2">
             {hasImageAsset(project.coverImage) ? (
               <SanityImage
                 image={project.coverImage}
                 width={1600}
                 height={900}
                 preload
-                sizes="(min-width: 1320px) 1240px, 100vw"
-                className="h-auto w-full rounded-xl"
+                sizes="(min-width: 1240px) 1160px, 100vw"
+                className="h-auto w-full rounded-[1.4rem]"
               />
             ) : (
               <ProjectCover
                 seed={project.slug}
                 categories={project.category}
                 title={project.title}
-                className="aspect-[16/8] w-full rounded-xl"
+                className="aspect-[16/8] w-full rounded-[1.4rem]"
               />
             )}
           </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-2">
+          {metrics.length > 0 ? (
+            <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {metrics.map((metric) => (
+                <div key={metric._key} className="surface-card spotlight reveal p-6">
+                  <dt className="label">{metric.label}</dt>
+                  <dd className="text-aurora mt-3 text-[2.6rem] leading-none font-black tracking-[-0.045em]">
+                    {metric.value}
+                  </dd>
+                  {metric.context ? (
+                    <dd className="mt-3 text-sm text-muted">{metric.context}</dd>
+                  ) : null}
+                </div>
+              ))}
+            </dl>
+          ) : null}
+
+          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             {sections.map((section) => {
               const Icon = SECTION_ICONS[section.id]
               return (
-                <section key={section.id} aria-labelledby={section.id} className="panel reveal p-7">
+                <section
+                  key={section.id}
+                  aria-labelledby={section.id}
+                  className="surface-card spotlight reveal p-8"
+                >
                   <h2
                     id={section.id}
-                    className="mb-5 flex items-center gap-3 text-xl font-extrabold"
+                    className="mb-5 flex items-center gap-3 text-[1.3rem] font-black tracking-[-0.025em]"
                   >
-                    <span className="grid size-10 place-items-center rounded-xl border border-accent/40 bg-accent/10 text-accent-bright">
+                    <span className="grid size-10 place-items-center rounded-2xl border border-line bg-surface-2 text-aqua">
                       <Icon className="size-5" aria-hidden="true" />
                     </span>
                     {section.title}
@@ -147,42 +174,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             })}
           </div>
 
-          {metrics.length > 0 ? (
-            <section aria-labelledby="metricas" className="mt-12">
-              <h2 id="metricas" className="text-2xl font-extrabold tracking-[-0.02em]">
-                Resultados cuantitativos
-              </h2>
-              <dl className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {metrics.map((metric) => (
-                  <div key={metric._key} className="panel reveal p-6">
-                    <dt className="text-sm font-bold text-muted">{metric.label}</dt>
-                    <dd className="mt-2 text-4xl font-black tracking-[-0.03em] text-gradient-accent">
-                      {metric.value}
-                    </dd>
-                    {metric.context ? (
-                      <dd className="mt-2 text-xs text-subtle">{metric.context}</dd>
-                    ) : null}
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ) : null}
-
           {gallery.length > 0 ? (
-            <section aria-labelledby="galeria" className="mt-12">
-              <h2 id="galeria" className="text-2xl font-extrabold tracking-[-0.02em]">
+            <section aria-labelledby="galeria" className="mt-16">
+              <h2 id="galeria" className="text-[1.6rem] font-black tracking-[-0.03em]">
                 Galería
               </h2>
-              <ul className="mt-6 grid gap-5 sm:grid-cols-2">
+              <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {gallery.map((image) => (
-                  <li key={image._key} className="panel reveal overflow-hidden p-2">
+                  <li key={image._key} className="surface-card reveal overflow-hidden p-2">
                     <figure>
                       <SanityImage
                         image={image}
                         width={1200}
                         height={750}
                         sizes="(min-width: 640px) 50vw, 100vw"
-                        className="h-auto w-full rounded-xl"
+                        className="h-auto w-full rounded-[1.1rem]"
                       />
                       {image.caption ? (
                         <figcaption className="px-3 pt-3 pb-2 text-sm text-muted">
@@ -199,12 +205,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </article>
 
       {related.length > 0 ? (
-        <section aria-labelledby="relacionados" className="border-b border-white/[0.06]">
-          <div className="container-page py-14 lg:py-16">
-            <h2 id="relacionados" className="text-2xl font-extrabold tracking-[-0.02em]">
+        <section aria-labelledby="relacionados" className="border-t border-line py-24">
+          <div className="container-page">
+            <p className="label">Sigue explorando</p>
+            <h2
+              id="relacionados"
+              className="mt-3 text-[clamp(1.9rem,3.4vw,2.6rem)] font-black tracking-[-0.04em]"
+            >
               Proyectos relacionados
             </h2>
-            <ul className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <ul className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((item) => (
                 <li key={item._id}>
                   <ProjectCard project={item} />
@@ -215,7 +225,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </section>
       ) : null}
 
-      <ContactSection settings={settings} />
+      <ContactSection settings={settings} socialLinks={socialLinks} />
     </>
   )
 }

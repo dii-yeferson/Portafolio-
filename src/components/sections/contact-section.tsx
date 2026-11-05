@@ -1,43 +1,84 @@
-import { Download } from 'lucide-react'
+import { ArrowUpRight, Download } from 'lucide-react'
 
 import { ContactDialog } from '@/components/contact/contact-dialog'
-import type { SiteSettings } from '@/sanity/lib/data'
+import { BrandIcon } from '@/components/icons/brand-icons'
+import { EXTERNAL_LINK_PROPS, isSafeExternalUrl } from '@/lib/url'
+import type { SiteSettings, SocialLinkItem } from '@/sanity/lib/data'
 
-/** Llamado a la acción final (FR-08). */
-export function ContactSection({ settings }: { settings: SiteSettings }) {
+/** Cierre (FR-04 + FR-08): invitación, formulario, CV y redes en un solo lugar. */
+export function ContactSection({
+  settings,
+  socialLinks,
+}: {
+  settings: SiteSettings
+  socialLinks: SocialLinkItem[]
+}) {
+  const links = socialLinks.filter((link) => isSafeExternalUrl(link.url))
+
   return (
     <section
       id="contacto"
       aria-labelledby="contacto-title"
-      className="relative isolate overflow-hidden border-b border-white/[0.06]"
+      className="border-t border-line py-20 lg:py-28"
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(50%_120%_at_70%_50%,rgba(42,120,90,0.2),transparent_70%)]"
-      />
-      <div className="container-page flex flex-col gap-8 py-14 lg:flex-row lg:items-center lg:justify-between lg:py-16">
-        <div className="reveal max-w-xl">
-          <h2
-            id="contacto-title"
-            className="text-[2.1rem] leading-tight font-extrabold tracking-[-0.025em] sm:text-[2.4rem]"
-          >
-            ¿Trabajamos juntos?
-          </h2>
-          <p className="mt-3 text-[1.02rem] leading-relaxed text-muted">
-            Estoy siempre abierto a nuevas oportunidades, proyectos interesantes y conversaciones
-            sobre datos, tecnología e innovación.
-          </p>
-        </div>
-        <div className="reveal flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
-          <ContactDialog contactEmail={settings?.contactEmail || null} />
-          <a
-            href="/cv"
-            rel="nofollow"
-            className="btn btn-outline h-14 w-full px-8 text-[1.02rem] sm:w-auto sm:min-w-[11rem]"
-          >
-            <Download className="size-[1.1rem]" aria-hidden="true" />
-            Descargar CV
-          </a>
+      <div className="container-page">
+        <div className="border-aurora reveal relative isolate overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 sm:py-16 lg:px-16">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(45%_70%_at_0%_0%,rgba(149,251,223,0.12),transparent_70%),radial-gradient(45%_70%_at_100%_100%,rgba(139,156,255,0.14),transparent_70%)]"
+          />
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+            <div>
+              <p className="label">Contacto</p>
+              <h2
+                id="contacto-title"
+                className="mt-4 text-[clamp(2.5rem,5.2vw,4.2rem)] leading-[0.98] font-black tracking-[-0.045em]"
+              >
+                ¿Trabajamos <span className="text-aurora">juntos</span>?
+              </h2>
+              <p className="mt-5 max-w-lg text-[1.08rem] leading-relaxed text-muted">
+                Estoy abierto a nuevas oportunidades, proyectos y conversaciones sobre datos,
+                tecnología e innovación.
+              </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <ContactDialog contactEmail={settings?.contactEmail || null} />
+                <a href="/cv" rel="nofollow" className="btn btn-glass h-14 px-7 text-[1rem]">
+                  <Download className="size-[1.1rem]" aria-hidden="true" />
+                  Descargar CV
+                </a>
+              </div>
+            </div>
+
+            {links.length > 0 ? (
+              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2" aria-label="Redes sociales">
+                {links.map((link) => (
+                  <li key={link._id}>
+                    <a
+                      href={link.url}
+                      {...(link.iconKey === 'email' ? {} : EXTERNAL_LINK_PROPS)}
+                      className="group flex items-center gap-3 rounded-2xl border border-line bg-white/[0.025] p-3 pr-4 transition-[background-color,border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:bg-white/[0.05]"
+                    >
+                      <BrandIcon platform={link.iconKey} className="size-9 shrink-0" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[0.92rem] font-extrabold">
+                          {link.platformName}
+                        </span>
+                        {link.label ? (
+                          <span className="block truncate text-[0.78rem] font-semibold text-subtle">
+                            {link.label}
+                          </span>
+                        ) : null}
+                      </span>
+                      <ArrowUpRight
+                        className="size-4 shrink-0 text-subtle transition-[color,transform] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+                        aria-hidden="true"
+                      />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>

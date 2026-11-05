@@ -94,7 +94,7 @@ export function TechIcon({
     default:
       return (
         <span aria-hidden="true" className={`grid place-items-center ${className ?? ''}`}>
-          <ChartLine className="size-full text-accent-bright" strokeWidth={1.8} />
+          <ChartLine className="size-full text-aqua" strokeWidth={1.8} />
         </span>
       )
   }

@@ -4,13 +4,14 @@ export function LogoMark({ className }: { className?: string }) {
     <svg viewBox="0 0 44 30" fill="none" aria-hidden="true" className={className}>
       <defs>
         <linearGradient id="logo-y" x1="18" y1="3" x2="40" y2="27" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#8cf3c3" />
-          <stop offset="1" stopColor="#2f9d70" />
+          <stop stopColor="#95fbdf" />
+          <stop offset="0.5" stopColor="#62d2f8" />
+          <stop offset="1" stopColor="#8b9cff" />
         </linearGradient>
       </defs>
       <path
         d="M4 4.5h7.5a10.5 10.5 0 0 1 0 21H4z"
-        stroke="#eef4f0"
+        stroke="#f4f4f2"
         strokeWidth="3.4"
         strokeLinejoin="round"
       />

@@ -7,16 +7,16 @@
 Sitio público de alto rendimiento y CMS headless sin código: el propietario publica
 proyectos, certificaciones, redes y CV desde `/studio` sin tocar el código.
 
-| Capa            | Tecnología                                                          |
-| --------------- | ------------------------------------------------------------------- |
-| Framework       | Next.js 16 (App Router, React 19, TypeScript estricto, Turbopack)   |
-| CMS             | Sanity 6 (Studio embebido en `/studio`), GROQ y Sanity TypeGen      |
-| Integración     | `@sanity/client` + `next-sanity` (Studio, webhooks e imágenes)      |
-| Diseño          | Tailwind CSS 4, Nunito y vidrio de Qurri/Mikuy (_Dark Luxury Tech_) |
-| Movimiento      | Motion, animaciones CSS por scroll y globo de datos en Canvas 2D    |
-| Validación      | Zod 4 (API) y reglas de Sanity con mensajes en español              |
-| Calidad         | ESLint 9 (`eslint-config-next`), Prettier, Vitest 5, Playwright     |
-| Hosting y CI/CD | Vercel + GitHub Actions + Dependabot                                |
+| Capa            | Tecnología                                                        |
+| --------------- | ----------------------------------------------------------------- |
+| Framework       | Next.js 16 (App Router, React 19, TypeScript estricto, Turbopack) |
+| CMS             | Sanity 6 (Studio embebido en `/studio`), GROQ y Sanity TypeGen    |
+| Integración     | `@sanity/client` + `next-sanity` (Studio, webhooks e imágenes)    |
+| Diseño          | Tailwind CSS 4 · sistema Aurora Graphite (ADN de Qurri y Mikuy)   |
+| Movimiento      | Motion, animaciones CSS por scroll y globo de datos en Canvas 2D  |
+| Validación      | Zod 4 (API) y reglas de Sanity con mensajes en español            |
+| Calidad         | ESLint 9 (`eslint-config-next`), Prettier, Vitest 5, Playwright   |
+| Hosting y CI/CD | Vercel + GitHub Actions + Dependabot                              |
 
 ---
 
@@ -56,27 +56,41 @@ sale exclusivamente de Sanity.
 
 ## Interfaz
 
-| Sección / página    | Qué muestra                                                                                       |
-| ------------------- | ------------------------------------------------------------------------------------------------- |
-| Barra superior      | Vidrio con blur, se compacta al hacer scroll, sección activa animada, buscador (Ctrl/⌘ + K) y CV. |
-| Hero                | Nombre, especialidad, lema y CTA; **tu retrato con el globo de datos girando detrás**.            |
-| Sobre mí            | Resumen, formación (Tecsup), habilidades y enfoque de trabajo.                                    |
-| Redes               | Tarjetas con íconos de marca y vista previa.                                                      |
-| Proyectos           | Filtros sin recarga, tarjeta insignia (_Centinela Minero_) y portadas ilustradas si falta imagen. |
-| Certificaciones     | Ícono tecnológico, sello champán, año y verificación oficial.                                     |
-| `/proyectos`        | Catálogo completo con filtros.                                                                    |
-| `/proyectos/[slug]` | Estudio de caso: problema, metodología, solución, resultados, métricas y galería.                 |
-| `/certificaciones`  | Catálogo filtrable por categoría y entidad emisora.                                               |
-| `/sobre-mi`         | Perfil extendido, formación, habilidades, principios y todas las redes.                           |
+**Sistema «Aurora Graphite»**, con el mismo ADN de Qurri y Mikuy:
 
-- **Adaptable** a teléfono, tablet, laptop y monitores grandes (probado de 390 px a 1440 px).
+- **Grafito neutro** (`#09090b`, superficies `#121215` → `#212126`) en lugar de fondos teñidos.
+- **Una sola firma luminosa**: degradado aurora menta → aqua → cielo → iris, reservado para lo
+  importante (rol, botón principal, globo, cifras). **Champán** solo para distinciones.
+- **Nunito** con pesos firmes (800–900) y tracking negativo en titulares; etiquetas pequeñas en
+  mayúsculas.
+- **Vidrio** `blur(22px) saturate(180%)` con brillo superior, radios de 22 px y píldoras.
+- **Microinteracciones**: resorte suave, botones que ceden al presionar, luz que sigue al puntero
+  en las tarjetas, barrido satinado en los titulares, cifras que cuentan al aparecer, control
+  segmentado con indicador deslizante y hojas que suben desde abajo.
+
+| Sección / página    | Contenido                                                                                          |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| Barra superior      | Píldora flotante de vidrio: monograma, navegación con sección activa, buscador (Ctrl/⌘ + K), CV.   |
+| Hero                | Disponibilidad, nombre, rol, lema, CTA, cifras clave y **tu retrato con el globo girando detrás**. |
+| Sobre mí            | Declaración principal y tres tarjetas: formación, stack técnico y forma de trabajo.                |
+| Proyectos           | Filtro segmentado, proyecto insignia a todo lo ancho y grilla de casos.                            |
+| Certificaciones     | Lista con ícono tecnológico, emisor, año, sello champán y verificación oficial.                    |
+| Contacto            | Invitación, formulario en hoja de vidrio, CV y todas las redes en un solo lugar.                   |
+| `/proyectos`        | Catálogo completo con filtros.                                                                     |
+| `/proyectos/[slug]` | Estudio de caso: problema, metodología, solución, resultados, métricas, galería y relacionados.    |
+| `/certificaciones`  | Catálogo filtrable por categoría y entidad emisora.                                                |
+| `/sobre-mi`         | Perfil extendido: formación, habilidades y principios.                                             |
+
+- **Sin repeticiones**: el nombre vive en el hero, las redes en contacto y el pie es mínimo.
+- **Adaptable** a teléfono, tablet, laptop y monitores grandes (verificado de 390 a 1440 px y sin
+  desbordamiento horizontal en ninguna página).
 - **Globo de datos** (`src/components/hero/data-globe.tsx`): continentes como puntos a partir de
-  una máscara de 4 KB (`npm run globe:generate`), arcos con pulsos desde Lima, se puede
-  arrastrar, se pausa fuera de pantalla y respeta `prefers-reduced-motion`.
-- **Tu foto:** súbela en _Configuración del sitio → Hero → Retrato_. Lo ideal es un PNG
-  vertical con fondo transparente (mín. 1200 × 1500 px) para que el globo gire detrás de ti.
-- **Sin imágenes todavía:** proyectos y formación muestran ilustraciones de marca hasta que
-  subas portadas reales desde el Studio.
+  una máscara de 4 KB (`npm run globe:generate`), arcos aurora desde Lima, se puede arrastrar, se
+  pausa fuera de pantalla y respeta `prefers-reduced-motion`.
+- **Tu foto:** súbela en _Configuración del sitio → Hero → Retrato_. Lo ideal es un PNG vertical
+  con fondo transparente (mín. 1200 × 1500 px) para que el globo gire detrás de ti.
+- **Sin imágenes todavía:** los proyectos muestran ilustraciones de marca hasta que subas
+  portadas reales desde el Studio.
 
 ## Estructura
 

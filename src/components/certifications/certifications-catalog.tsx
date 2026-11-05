@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 
+import { SegmentedControl } from '@/components/ui/segmented-control'
 import { CERTIFICATION_CATEGORIES } from '@/lib/taxonomy'
 
 import { CertificationsGrid, type CertificationView } from './certifications-grid'
@@ -20,9 +21,12 @@ export function CertificationsCatalog({ certifications }: { certifications: Cert
       ),
     [certifications],
   )
-  const categories = CERTIFICATION_CATEGORIES.filter(({ value }) =>
-    certifications.some((item) => item.category === value),
-  )
+  const options = [
+    { value: ALL, label: 'Todas' },
+    ...CERTIFICATION_CATEGORIES.filter(({ value }) =>
+      certifications.some((item) => item.category === value),
+    ).map(({ value, title }) => ({ value: value as string, label: title })),
+  ]
   const visible = certifications.filter(
     (item) =>
       (category === ALL || item.category === category) &&
@@ -32,32 +36,18 @@ export function CertificationsCatalog({ certifications }: { certifications: Cert
   return (
     <div>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div role="group" aria-label="Filtrar por categoría" className="flex flex-wrap gap-2.5">
-          {[{ value: ALL, title: 'Todas' }, ...categories].map((item) => {
-            const active = category === item.value
-            return (
-              <button
-                key={item.value}
-                type="button"
-                aria-pressed={active}
-                onClick={() => setCategory(item.value)}
-                className={`btn h-9 rounded-full border px-4 text-[0.85rem] ${
-                  active
-                    ? 'border-mint bg-mint font-extrabold text-[#062a1d]'
-                    : 'border-white/12 bg-white/[0.025] text-muted hover:border-white/30 hover:text-foreground'
-                }`}
-              >
-                {item.title}
-              </button>
-            )
-          })}
-        </div>
+        <SegmentedControl
+          label="Filtrar por categoría"
+          options={options}
+          value={category}
+          onChange={setCategory}
+        />
         <label className="flex items-center gap-3 text-sm font-bold text-muted">
           Entidad emisora
           <select
             value={issuer}
             onChange={(event) => setIssuer(event.target.value)}
-            className="h-10 rounded-xl border border-white/12 bg-surface px-3 font-semibold text-foreground outline-none focus:border-accent-bright/70"
+            className="h-11 rounded-full border border-line bg-surface px-4 font-bold text-foreground outline-none focus:border-aqua/60"
           >
             <option value={ALL}>Todas</option>
             {issuers.map((value) => (
@@ -68,14 +58,11 @@ export function CertificationsCatalog({ certifications }: { certifications: Cert
           </select>
         </label>
       </div>
-      <p className="mt-6 mb-5 text-sm font-semibold text-subtle" aria-live="polite">
+      <p className="mt-7 mb-5 text-sm font-bold text-subtle" aria-live="polite">
         {visible.length} {visible.length === 1 ? 'certificación' : 'certificaciones'}
       </p>
       {visible.length > 0 ? (
-        <CertificationsGrid
-          certifications={visible}
-          className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        />
+        <CertificationsGrid certifications={visible} />
       ) : (
         <p className="text-muted">No hay certificaciones con estos filtros.</p>
       )}

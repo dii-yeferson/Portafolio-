@@ -3,21 +3,23 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 
+import { SegmentedControl } from '@/components/ui/segmented-control'
 import { PROJECT_CATEGORIES, type ProjectCategory } from '@/lib/taxonomy'
 
-import { ProjectCard, type ProjectCardData } from './project-card'
+import { FeaturedProject, ProjectCard, type ProjectCardData } from './project-card'
 
 type Filter = 'all' | ProjectCategory
 
-/** En la portada el proyecto insignia ocupa la última posición (como en el diseño). */
-function arrange(projects: ProjectCardData[], limit?: number) {
-  if (!limit) return projects
-  const featured = projects.find((project) => project.featured)
-  if (!featured) return projects.slice(0, limit)
-  return [...projects.filter((project) => project !== featured).slice(0, limit - 1), featured]
-}
+const FILTERS: { value: Filter; label: string }[] = [
+  { value: 'all', label: 'Todos' },
+  ...PROJECT_CATEGORIES.map(({ value, title }) => ({ value, label: title })),
+]
 
-/** Catálogo con filtrado instantáneo y transición de layout, sin recargar (FR-05). */
+/**
+ * Catálogo de proyectos (FR-05): en «Todos» el proyecto insignia ocupa el
+ * ancho completo y el resto forma la grilla; los filtros reordenan con
+ * transición de layout y sin recargar la página.
+ */
 export function ProjectsShowcase({
   projects,
   limit,
@@ -26,53 +28,41 @@ export function ProjectsShowcase({
   limit?: number
 }) {
   const [filter, setFilter] = useState<Filter>('all')
-  const filtered =
-    filter === 'all' ? projects : projects.filter((project) => project.category.includes(filter))
-  const visible = arrange(filtered, limit)
-  const filters: { value: Filter; label: string }[] = [
-    { value: 'all', label: 'Todos' },
-    ...PROJECT_CATEGORIES.map(({ value, title }) => ({ value, label: title })),
-  ]
+  const featured = filter === 'all' ? projects.find((project) => project.featured) : undefined
+  const filtered = projects.filter(
+    (project) => project !== featured && (filter === 'all' || project.category.includes(filter)),
+  )
+  const grid = limit ? filtered.slice(0, limit) : filtered
 
   return (
     <div>
-      <div
-        role="group"
-        aria-label="Filtrar proyectos por categoría"
-        className="reveal flex flex-wrap gap-2.5"
-      >
-        {filters.map((item) => {
-          const active = filter === item.value
-          return (
-            <button
-              key={item.value}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setFilter(item.value)}
-              className={`btn h-9 rounded-full border px-4 text-[0.85rem] ${
-                active
-                  ? 'border-mint bg-mint font-extrabold text-[#062a1d] shadow-[0_8px_24px_-10px_rgba(169,236,203,0.7)]'
-                  : 'border-white/12 bg-white/[0.025] text-muted hover:border-white/30 hover:text-foreground'
-              }`}
-            >
-              {item.label}
-            </button>
-          )
-        })}
+      <div className="reveal">
+        <SegmentedControl
+          label="Filtrar proyectos por categoría"
+          options={FILTERS}
+          value={filter}
+          onChange={setFilter}
+        />
       </div>
 
-      {visible.length === 0 ? (
+      {featured ? (
+        <div className="reveal mt-8">
+          <FeaturedProject project={featured} />
+        </div>
+      ) : null}
+
+      {grid.length === 0 && !featured ? (
         <p className="mt-10 text-muted">Aún no hay proyectos publicados en esta categoría.</p>
       ) : (
-        <motion.ul layout className="mt-7 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <motion.ul layout className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout" initial={false}>
-            {visible.map((project) => (
+            {grid.map((project) => (
               <motion.li
                 key={project._id}
                 layout
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
+                initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 32 }}
               >
                 <ProjectCard project={project} />

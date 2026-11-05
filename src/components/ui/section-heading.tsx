@@ -3,35 +3,37 @@ import Link from 'next/link'
 
 type SectionHeadingProps = {
   id: string
-  eyebrow: string
+  label: string
   title: string
   description?: string
   action?: { href: string; label: string }
 }
 
-/** Encabezado de sección: antetítulo con barra, título, bajada y acción opcional. */
-export function SectionHeading({ id, eyebrow, title, description, action }: SectionHeadingProps) {
+/** Encabezado de sección: etiqueta discreta, título firme y acción opcional. */
+export function SectionHeading({ id, label, title, description, action }: SectionHeadingProps) {
   return (
-    <div className="reveal mb-9 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-      <div className="max-w-3xl">
-        <p className="eyebrow relative pl-4 before:absolute before:top-1/2 before:left-0 before:h-4 before:w-[2px] before:-translate-y-1/2 before:rounded-full before:bg-accent-bright">
-          {eyebrow}
-        </p>
+    <div className="reveal mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div className="max-w-2xl">
+        <p className="label">{label}</p>
         <h2
           id={id}
-          className="mt-3 pl-4 text-[2rem] leading-tight font-extrabold tracking-[-0.025em] sm:text-[2.35rem]"
+          className="mt-3 text-[clamp(2.2rem,4.2vw,3.25rem)] leading-[1.02] font-black tracking-[-0.04em]"
         >
           {title}
         </h2>
-        {description ? <p className="mt-2 pl-4 text-[0.98rem] text-muted">{description}</p> : null}
+        {description ? (
+          <p className="mt-4 text-[1.05rem] leading-relaxed text-muted">{description}</p>
+        ) : null}
       </div>
       {action ? (
         <Link
           href={action.href}
-          className="btn btn-ghost-accent h-10 shrink-0 self-start rounded-full px-5 text-sm sm:self-auto"
+          className="group inline-flex shrink-0 items-center gap-2 text-[0.95rem] font-extrabold text-foreground"
         >
           {action.label}
-          <ArrowRight className="size-4" aria-hidden="true" />
+          <span className="grid size-8 place-items-center rounded-full border border-line-strong transition-[transform,background-color] duration-300 group-hover:translate-x-0.5 group-hover:bg-white/[0.07]">
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </span>
         </Link>
       ) : null}
     </div>

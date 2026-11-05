@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { ProjectsShowcase } from '@/components/projects/projects-showcase'
 import { ContactSection } from '@/components/sections/contact-section'
 import { PageHero } from '@/components/ui/page-hero'
-import { getProjects, getSiteSettings } from '@/sanity/lib/data'
+import { getProjects, getSiteSettings, getSocialLinks } from '@/sanity/lib/data'
 
 export const metadata: Metadata = {
   title: 'Proyectos',
@@ -13,21 +13,25 @@ export const metadata: Metadata = {
 }
 
 export default async function ProjectsPage() {
-  const [projects, settings] = await Promise.all([getProjects(), getSiteSettings()])
+  const [projects, settings, socialLinks] = await Promise.all([
+    getProjects(),
+    getSiteSettings(),
+    getSocialLinks(),
+  ])
 
   return (
     <>
       <PageHero
-        eyebrow="Portafolio"
+        label="Portafolio"
         title="Proyectos"
         description="Cada proyecto es un caso real: el problema, la metodología, la solución implementada y sus resultados."
       />
-      <section aria-label="Catálogo de proyectos" className="border-b border-white/[0.06]">
-        <div className="container-page py-14 lg:py-16">
+      <section aria-label="Catálogo de proyectos" className="pb-24 lg:pb-32">
+        <div className="container-page">
           <ProjectsShowcase projects={projects} />
         </div>
       </section>
-      <ContactSection settings={settings} />
+      <ContactSection settings={settings} socialLinks={socialLinks} />
     </>
   )
 }

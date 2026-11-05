@@ -39,13 +39,22 @@ const CITIES: [number, number][] = [
   [51.5, -0.12], // Londres
 ]
 
+/** Paleta aurora: menta → aqua → iris sobre grafito. */
 const COLORS = {
-  dot: '#58c99a',
-  dotBack: '#2f7a5d',
-  graticule: 'rgba(88, 201, 154, 0.09)',
-  arc: '95, 214, 160',
-  node: '#9ff2cc',
-  ring: '88, 201, 154',
+  dot: '#7fe6f0',
+  dotBack: '#3d5a86',
+  graticule: 'rgba(139, 156, 255, 0.085)',
+  arcFrom: [149, 251, 223] as const,
+  arcTo: [139, 156, 255] as const,
+  node: '#e9fffa',
+  ring: '139, 156, 255',
+}
+
+function arcColor(t: number, alpha: number) {
+  const [r0, g0, b0] = COLORS.arcFrom
+  const [r1, g1, b1] = COLORS.arcTo
+  const mix = (a: number, b: number) => Math.round(a + (b - a) * t)
+  return `rgba(${mix(r0, r1)}, ${mix(g0, g1)}, ${mix(b0, b1)}, ${alpha})`
 }
 
 /** Punto i de la espiral de Fibonacci (misma fórmula que scripts/generate-globe-mask.mjs). */
@@ -231,8 +240,9 @@ export function DataGlobe({ className }: { className?: string }) {
 
       // Atmósfera.
       const atmosphere = ctx!.createRadialGradient(cx, cy, radius * 0.9, cx, cy, radius * 1.42)
-      atmosphere.addColorStop(0, 'rgba(59, 148, 112, 0.26)')
-      atmosphere.addColorStop(1, 'rgba(59, 148, 112, 0)')
+      atmosphere.addColorStop(0, 'rgba(98, 210, 248, 0.22)')
+      atmosphere.addColorStop(0.55, 'rgba(139, 156, 255, 0.08)')
+      atmosphere.addColorStop(1, 'rgba(139, 156, 255, 0)')
       ctx!.fillStyle = atmosphere
       ctx!.beginPath()
       ctx!.arc(cx, cy, radius * 1.42, 0, TAU)
@@ -259,9 +269,9 @@ export function DataGlobe({ className }: { className?: string }) {
         cy,
         radius,
       )
-      body.addColorStop(0, 'rgba(28, 72, 55, 0.55)')
-      body.addColorStop(0.65, 'rgba(9, 24, 18, 0.82)')
-      body.addColorStop(1, 'rgba(5, 13, 10, 0.92)')
+      body.addColorStop(0, 'rgba(34, 52, 78, 0.6)')
+      body.addColorStop(0.65, 'rgba(12, 16, 26, 0.86)')
+      body.addColorStop(1, 'rgba(7, 8, 12, 0.94)')
       ctx!.fillStyle = body
       ctx!.beginPath()
       ctx!.arc(cx, cy, radius, 0, TAU)
@@ -286,13 +296,13 @@ export function DataGlobe({ className }: { className?: string }) {
         ctx!.stroke()
       }
 
-      // Continentes.
-      ctx!.fillStyle = COLORS.dot
+      // Continentes: aqua al frente, iris hacia el borde.
       for (let i = 0; i < land.length; i += 3) {
         const [sx, sy, z] = project(land[i]!, land[i + 1]!, land[i + 2]!)
         if (z <= 0) continue
         const size = (0.9 + 1.1 * z) * dpr
-        ctx!.globalAlpha = 0.18 + 0.82 * z
+        ctx!.fillStyle = z > 0.45 ? COLORS.dot : '#8b9cff'
+        ctx!.globalAlpha = 0.16 + 0.84 * z
         ctx!.fillRect(sx - size / 2, sy - size / 2, size, size)
       }
       ctx!.globalAlpha = 1
@@ -309,7 +319,7 @@ export function DataGlobe({ className }: { className?: string }) {
             continue
           }
           if (previous) {
-            ctx!.strokeStyle = `rgba(${COLORS.arc}, ${0.16 + 0.42 * Math.max(0, z)})`
+            ctx!.strokeStyle = arcColor(i / (count - 1), 0.16 + 0.46 * Math.max(0, z))
             ctx!.beginPath()
             ctx!.moveTo(previous[0], previous[1])
             ctx!.lineTo(sx, sy)
@@ -322,8 +332,9 @@ export function DataGlobe({ className }: { className?: string }) {
         const [px, py, pz] = project(arc[p]!, arc[p + 1]!, arc[p + 2]!)
         if (isVisible(px, py, pz)) {
           const glow = ctx!.createRadialGradient(px, py, 0, px, py, 7 * dpr)
-          glow.addColorStop(0, 'rgba(190, 255, 225, 0.95)')
-          glow.addColorStop(1, 'rgba(95, 214, 160, 0)')
+          glow.addColorStop(0, 'rgba(236, 255, 250, 0.95)')
+          glow.addColorStop(0.4, arcColor(progress, 0.55))
+          glow.addColorStop(1, arcColor(progress, 0))
           ctx!.fillStyle = glow
           ctx!.beginPath()
           ctx!.arc(px, py, 7 * dpr, 0, TAU)
@@ -336,7 +347,7 @@ export function DataGlobe({ className }: { className?: string }) {
         const [sx, sy, depth] = project(x, y, z)
         if (depth <= 0.02) return
         const pulse = (time * 0.55 + index * 0.37) % 1
-        ctx!.strokeStyle = `rgba(${COLORS.arc}, ${(1 - pulse) * 0.55 * depth})`
+        ctx!.strokeStyle = `rgba(107, 222, 238, ${(1 - pulse) * 0.6 * depth})`
         ctx!.lineWidth = dpr
         ctx!.beginPath()
         ctx!.arc(sx, sy, (2 + pulse * (index === 0 ? 16 : 10)) * dpr, 0, TAU)
@@ -351,9 +362,9 @@ export function DataGlobe({ className }: { className?: string }) {
 
       // Borde iluminado.
       const rim = ctx!.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius)
-      rim.addColorStop(0, 'rgba(159, 242, 204, 0.38)')
-      rim.addColorStop(0.5, 'rgba(88, 201, 154, 0.08)')
-      rim.addColorStop(1, 'rgba(88, 201, 154, 0.22)')
+      rim.addColorStop(0, 'rgba(149, 251, 223, 0.42)')
+      rim.addColorStop(0.5, 'rgba(98, 210, 248, 0.08)')
+      rim.addColorStop(1, 'rgba(139, 156, 255, 0.32)')
       ctx!.strokeStyle = rim
       ctx!.lineWidth = 1.2 * dpr
       ctx!.beginPath()

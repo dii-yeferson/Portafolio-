@@ -7,17 +7,17 @@ export function ProjectsSection({ projects }: { projects: ProjectSummary[] }) {
     <section
       id="proyectos"
       aria-labelledby="proyectos-title"
-      className="border-b border-white/[0.06]"
+      className="border-t border-line py-20 lg:py-28"
     >
-      <div className="container-page py-14 lg:py-16">
+      <div className="container-page">
         <SectionHeading
           id="proyectos-title"
-          eyebrow="Trabajos destacados"
+          label="Trabajo seleccionado"
           title="Proyectos"
-          description="Explora algunos de mis proyectos. Cada uno representa un aprendizaje y una solución a un problema real."
-          action={{ href: '/proyectos', label: 'Ver todos los proyectos' }}
+          description="Casos reales contados de principio a fin: el problema, la metodología, la solución y sus resultados."
+          action={{ href: '/proyectos', label: 'Ver todos' }}
         />
-        <ProjectsShowcase projects={projects} limit={4} />
+        <ProjectsShowcase projects={projects} limit={3} />
       </div>
     </section>
   )

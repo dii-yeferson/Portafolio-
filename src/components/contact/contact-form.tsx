@@ -63,7 +63,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
     'aria-invalid': fieldErrors?.[name] ? true : undefined,
     'aria-describedby': fieldErrors?.[name] ? `${id}-${name}-error` : undefined,
     className:
-      'w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 font-semibold outline-none transition-colors placeholder:text-subtle focus:border-accent-bright/70 focus:bg-white/[0.05] aria-invalid:border-red-400',
+      'w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 font-semibold outline-none transition-[border-color,background-color,box-shadow] placeholder:text-subtle focus:border-aqua/60 focus:bg-surface-3 focus:shadow-[0_0_0_4px_rgba(107,222,238,0.12)] aria-invalid:border-danger',
   })
 
   const error = (name: FieldName) =>
@@ -74,8 +74,12 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
     ) : null
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4" aria-describedby={`${id}-status`}>
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form
+      onSubmit={handleSubmit}
+      className="grid grid-cols-1 gap-4"
+      aria-describedby={`${id}-status`}
+    >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor={`${id}-name`} className="mb-1.5 block text-sm font-bold text-muted">
             Nombre
@@ -151,7 +155,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
 
       <div id={`${id}-status`} role="status" aria-live="polite" className="text-sm">
         {status.state === 'success' ? (
-          <p className="text-accent-strong">
+          <p className="font-bold text-success">
             ¡Gracias! Tu mensaje fue enviado. Te responderé pronto.
           </p>
         ) : null}
@@ -160,7 +164,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
           <p className="text-muted">
             El formulario no está disponible ahora.{' '}
             {status.fallback ? (
-              <a href={status.fallback} className="text-accent-strong underline">
+              <a href={status.fallback} className="font-bold text-aqua underline">
                 Escríbeme por correo
               </a>
             ) : null}

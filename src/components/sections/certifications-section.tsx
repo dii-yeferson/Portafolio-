@@ -4,21 +4,21 @@ import { toCertificationViews } from '@/lib/certifications'
 import type { CertificationItem } from '@/sanity/lib/data'
 
 export function CertificationsSection({ certifications }: { certifications: CertificationItem[] }) {
-  const items = toCertificationViews(certifications).slice(0, 5)
+  const items = toCertificationViews(certifications).slice(0, 6)
 
   return (
     <section
       id="certificaciones"
       aria-labelledby="certificaciones-title"
-      className="border-b border-white/[0.06]"
+      className="border-t border-line py-20 lg:py-28"
     >
-      <div className="container-page py-14 lg:py-16">
+      <div className="container-page">
         <SectionHeading
           id="certificaciones-title"
-          eyebrow="Aprendizaje continuo"
+          label="Aprendizaje continuo"
           title="Certificaciones"
-          description="Conocimientos respaldados por certificaciones en diversas áreas de la tecnología y análisis de datos."
-          action={{ href: '/certificaciones', label: 'Ver todas las certificaciones' }}
+          description="Credenciales con fecha real de emisión y enlace a la verificación oficial."
+          action={{ href: '/certificaciones', label: 'Ver todas' }}
         />
         {items.length > 0 ? (
           <CertificationsGrid certifications={items} />

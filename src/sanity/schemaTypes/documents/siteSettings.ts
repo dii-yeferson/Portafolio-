@@ -35,13 +35,13 @@ export const siteSettings = defineType({
       validation: (rule) => rule.required().max(90),
     }),
     defineField({
-      name: 'heroEyebrow',
-      title: 'Antetítulo del hero',
-      description: 'Texto corto sobre tu nombre, p. ej. «Datos · Tecnología · Impacto real».',
+      name: 'availability',
+      title: 'Disponibilidad',
+      description:
+        'Estado visible en el hero, p. ej. «Disponible para nuevos proyectos». Déjalo vacío para ocultarlo.',
       type: 'string',
       group: 'hero',
-      initialValue: 'Datos · Tecnología · Impacto real',
-      validation: (rule) => rule.max(60),
+      validation: (rule) => rule.max(48),
     }),
     defineField({
       name: 'summary',
@@ -73,22 +73,14 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'heroBadges',
-      title: 'Tarjeta flotante del hero',
-      description: 'Pasos o especialidades, p. ej. Análisis, Modelado, Visualización, Soluciones.',
+      title: 'Insignias del hero',
+      description:
+        'Hasta 3 especialidades que orbitan alrededor del globo, p. ej. Análisis, Modelado, IA.',
       type: 'array',
       group: 'hero',
       of: [defineArrayMember({ type: 'string', validation: (rule) => rule.max(30) })],
       options: { layout: 'tags' },
-      validation: (rule) => rule.max(6).unique(),
-    }),
-    defineField({
-      name: 'heroQuote',
-      title: 'Frase lateral',
-      description: 'Se muestra en vertical junto al hero en pantallas grandes.',
-      type: 'string',
-      group: 'hero',
-      initialValue: 'Los datos también cuentan historias.',
-      validation: (rule) => rule.max(60),
+      validation: (rule) => rule.max(3).unique(),
     }),
     defineField({
       name: 'resumeFile',

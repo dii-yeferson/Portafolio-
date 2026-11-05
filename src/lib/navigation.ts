@@ -1,6 +1,5 @@
 /** Secciones de la portada enlazadas desde la navegación (FR-01). */
 export const NAV_ITEMS = [
-  { id: 'inicio', label: 'Inicio', href: '/#inicio' },
   { id: 'sobre-mi', label: 'Sobre mí', href: '/#sobre-mi' },
   { id: 'proyectos', label: 'Proyectos', href: '/#proyectos' },
   { id: 'certificaciones', label: 'Certificaciones', href: '/#certificaciones' },
@@ -10,10 +9,9 @@ export const NAV_ITEMS = [
 export type NavSection = (typeof NAV_ITEMS)[number]['id']
 
 /** Secciones observadas por el scroll-spy y el ítem del menú que activan. */
-export const SECTION_TO_NAV: Record<string, NavSection> = {
-  inicio: 'inicio',
+export const SECTION_TO_NAV: Record<string, NavSection | null> = {
+  inicio: null,
   'sobre-mi': 'sobre-mi',
-  redes: 'sobre-mi',
   proyectos: 'proyectos',
   certificaciones: 'certificaciones',
   contacto: 'contacto',

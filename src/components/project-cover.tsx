@@ -60,20 +60,20 @@ export function ProjectCover({ seed, categories, title, className }: CoverProps)
     >
       <defs>
         <linearGradient id={`${uid}-bg`} x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#0f241c" />
-          <stop offset="1" stopColor="#050b08" />
+          <stop stopColor="#17171d" />
+          <stop offset="1" stopColor="#0a0a0d" />
         </linearGradient>
         <linearGradient id={`${uid}-bar`} x1="0" y1="0" x2="0" y2="1">
-          <stop stopColor="#6fe0aa" />
-          <stop offset="1" stopColor="#1f6e50" />
+          <stop stopColor="#6bdeee" />
+          <stop offset="1" stopColor="#8b9cff" stopOpacity="0.55" />
         </linearGradient>
         <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
-          <stop stopColor="#4fb586" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#4fb586" stopOpacity="0" />
+          <stop stopColor="#62d2f8" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#8b9cff" stopOpacity="0" />
         </linearGradient>
         <radialGradient id={`${uid}-glow`} cx="0.75" cy="0.15" r="0.8">
-          <stop stopColor="#3b9470" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#3b9470" stopOpacity="0" />
+          <stop stopColor="#62d2f8" stopOpacity="0.22" />
+          <stop offset="1" stopColor="#8b9cff" stopOpacity="0" />
         </radialGradient>
       </defs>
       <rect width={W} height={H} fill={`url(#${uid}-bg)`} />
@@ -91,7 +91,7 @@ export function ProjectCover({ seed, categories, title, className }: CoverProps)
 /** Cada variante crea su propio generador: el render es puro (Strict Mode, hidratación). */
 type Part = { seed: number; uid?: string }
 
-const panel = { fill: '#0b1a14', stroke: '#1d4636', strokeWidth: 1 }
+const panel = { fill: '#141419', stroke: '#2a2a33', strokeWidth: 1 }
 
 function areaPath(values: number[], x0: number, y0: number, w: number, h: number) {
   const step = w / (values.length - 1)
@@ -112,14 +112,14 @@ function Dashboard({ seed, uid }: Part) {
       {[0, 1, 2].map((i) => (
         <g key={i}>
           <rect x={30 + i * 145} y={24} width={130} height={52} rx={8} {...panel} />
-          <rect x={44 + i * 145} y={38} width={44} height={6} rx={3} fill="#2c5c48" />
+          <rect x={44 + i * 145} y={38} width={44} height={6} rx={3} fill="#34343f" />
           <rect
             x={44 + i * 145}
             y={52}
             width={70 + rand() * 30}
             height={12}
             rx={4}
-            fill="#9ff2cc"
+            fill="#c4fbec"
             opacity={0.85}
           />
         </g>
@@ -137,7 +137,7 @@ function Dashboard({ seed, uid }: Part) {
         />
       ))}
       <rect x={244} y={92} width={206} height={184} rx={10} {...panel} />
-      <circle cx={300} cy={130} r={22} fill="none" stroke="#1d4636" strokeWidth={8} />
+      <circle cx={300} cy={130} r={22} fill="none" stroke="#2a2a33" strokeWidth={8} />
       <circle
         cx={300}
         cy={130}
@@ -153,16 +153,16 @@ function Dashboard({ seed, uid }: Part) {
         cy={130}
         r={22}
         fill="none"
-        stroke="#6fe0aa"
+        stroke="#6bdeee"
         strokeWidth={8}
         strokeDasharray="45 200"
         strokeDashoffset={-62}
         transform="rotate(-90 300 130)"
       />
-      <rect x={340} y={116} width={90} height={6} rx={3} fill="#2c5c48" />
-      <rect x={340} y={132} width={64} height={6} rx={3} fill="#2c5c48" />
+      <rect x={340} y={116} width={90} height={6} rx={3} fill="#34343f" />
+      <rect x={340} y={132} width={64} height={6} rx={3} fill="#34343f" />
       <path d={area} fill={`url(#${uid}-area)`} />
-      <path d={line} fill="none" stroke="#6fe0aa" strokeWidth={2.2} />
+      <path d={line} fill="none" stroke="#6bdeee" strokeWidth={2.2} />
     </g>
   )
 }
@@ -184,7 +184,7 @@ function Scatter({ seed }: Part) {
           x2={436}
           y1={52 + i * 52}
           y2={52 + i * 52}
-          stroke="#163a2d"
+          stroke="#24242c"
           strokeDasharray="3 5"
         />
       ))}
@@ -195,7 +195,7 @@ function Scatter({ seed }: Part) {
           y2={262}
           x1={56 + i * 63}
           x2={56 + i * 63}
-          stroke="#12301f"
+          stroke="#1d1d24"
           strokeDasharray="3 5"
         />
       ))}
@@ -205,12 +205,12 @@ function Scatter({ seed }: Part) {
           cx={x}
           cy={y}
           r={2.6 + (i % 3)}
-          fill={i % 4 === 0 ? '#5fd6c6' : '#3d8bfd'}
+          fill={i % 3 === 0 ? '#95fbdf' : i % 3 === 1 ? '#62d2f8' : '#8b9cff'}
           opacity={0.75}
         />
       ))}
-      <line x1={56} y1={241} x2={436} y2={73} stroke="#9ff2cc" strokeWidth={2.4} />
-      <rect x={52} y={34} width={70} height={7} rx={3} fill="#2c5c48" />
+      <line x1={56} y1={241} x2={436} y2={73} stroke="#c4fbec" strokeWidth={2.4} />
+      <rect x={52} y={34} width={70} height={7} rx={3} fill="#34343f" />
     </g>
   )
 }
@@ -221,13 +221,13 @@ function WebApp({ seed, uid }: Part) {
   const { line, area } = areaPath(trend, 170, 110, 260, 80)
   return (
     <g>
-      <rect x={24} y={18} width={432} height={266} rx={12} fill="#0a1611" stroke="#1d4636" />
-      <rect x={24} y={18} width={432} height={26} rx={12} fill="#10241b" />
+      <rect x={24} y={18} width={432} height={266} rx={12} fill="#101015" stroke="#2a2a33" />
+      <rect x={24} y={18} width={432} height={26} rx={12} fill="#16161c" />
       {['#ff5f57', '#febc2e', '#28c840'].map((c, i) => (
         <circle key={c} cx={42 + i * 14} cy={31} r={4.2} fill={c} opacity={0.85} />
       ))}
-      <rect x={120} y={26} width={240} height={10} rx={5} fill="#0a1611" />
-      <rect x={24} y={44} width={120} height={240} fill="#0d1d16" />
+      <rect x={120} y={26} width={240} height={10} rx={5} fill="#101015" />
+      <rect x={24} y={44} width={120} height={240} fill="#121217" />
       {[0, 1, 2, 3, 4, 5].map((i) => (
         <rect
           key={i}
@@ -236,27 +236,27 @@ function WebApp({ seed, uid }: Part) {
           width={i === 1 ? 92 : 70}
           height={10}
           rx={5}
-          fill={i === 1 ? '#3b9470' : '#1f3f32'}
+          fill={i === 1 ? '#6bdeee' : '#2a2a33'}
         />
       ))}
       {[0, 1, 2].map((i) => (
         <g key={i}>
           <rect x={160 + i * 96} y={56} width={84} height={42} rx={8} {...panel} />
-          <rect x={170 + i * 96} y={66} width={30} height={5} rx={2.5} fill="#2c5c48" />
+          <rect x={170 + i * 96} y={66} width={30} height={5} rx={2.5} fill="#34343f" />
           <rect
             x={170 + i * 96}
             y={78}
             width={50}
             height={10}
             rx={4}
-            fill="#9ff2cc"
+            fill="#c4fbec"
             opacity={0.85}
           />
         </g>
       ))}
       <rect x={160} y={106} width={280} height={96} rx={8} {...panel} />
       <path d={area} fill={`url(#${uid}-area)`} />
-      <path d={line} fill="none" stroke="#6fe0aa" strokeWidth={2} />
+      <path d={line} fill="none" stroke="#6bdeee" strokeWidth={2} />
       {[0, 1, 2].map((i) => (
         <g key={`r${i}`}>
           <rect
@@ -265,16 +265,16 @@ function WebApp({ seed, uid }: Part) {
             width={280}
             height={16}
             rx={5}
-            fill={i % 2 ? '#0d1d16' : '#10241b'}
+            fill={i % 2 ? '#121217' : '#16161c'}
           />
-          <rect x={172} y={219 + i * 22} width={90} height={6} rx={3} fill="#2c5c48" />
+          <rect x={172} y={219 + i * 22} width={90} height={6} rx={3} fill="#34343f" />
           <rect
             x={360}
             y={219 + i * 22}
             width={60}
             height={6}
             rx={3}
-            fill="#3b9470"
+            fill="#6bdeee"
             opacity={0.7}
           />
         </g>
@@ -302,14 +302,14 @@ function Network({ seed }: Part) {
           y1={nodes[i]![1]}
           x2={nodes[j]![0]}
           y2={nodes[j]![1]}
-          stroke="#2f7a5d"
+          stroke="#8b9cff"
           strokeOpacity={0.55}
         />
       ))}
       {nodes.map(([x, y], i) => (
         <g key={i}>
-          <circle cx={x} cy={y} r={i % 5 === 0 ? 9 : 4} fill="#3b9470" opacity={0.25} />
-          <circle cx={x} cy={y} r={i % 5 === 0 ? 4.5 : 2.4} fill="#9ff2cc" />
+          <circle cx={x} cy={y} r={i % 5 === 0 ? 9 : 4} fill="#6bdeee" opacity={0.18} />
+          <circle cx={x} cy={y} r={i % 5 === 0 ? 4.5 : 2.4} fill="#c4fbec" />
         </g>
       ))}
     </g>
@@ -319,56 +319,79 @@ function Network({ seed }: Part) {
 function Terrain({ seed, uid }: Part) {
   const rand = random(seed)
   const ridge = (base: number, amp: number) => {
-    const points = Array.from({ length: 13 }, (_, i) => `${i * 40},${base - rand() * amp}`)
+    const points = Array.from(
+      { length: 13 },
+      (_, i) => `${i * 40},${(base - rand() * amp).toFixed(1)}`,
+    )
     return `M0,${H} L${points.join(' L')} L${W},${H} Z`
   }
   return (
     <g>
       <defs>
         <linearGradient id={`${uid}-sky`} x1="0" y1="0" x2="0" y2="1">
-          <stop stopColor="#c99a6a" stopOpacity="0.55" />
-          <stop offset="0.55" stopColor="#3a3326" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#050b08" stopOpacity="0" />
+          <stop stopColor="#262b52" />
+          <stop offset="0.55" stopColor="#151826" />
+          <stop offset="1" stopColor="#0b0b0f" />
         </linearGradient>
+        <radialGradient id={`${uid}-dusk`} cx="0.7" cy="0.42" r="0.6">
+          <stop stopColor="#ead3a2" stopOpacity="0.28" />
+          <stop offset="1" stopColor="#ead3a2" stopOpacity="0" />
+        </radialGradient>
         <linearGradient id={`${uid}-rock`} x1="0" y1="0" x2="0" y2="1">
-          <stop stopColor="#8a6a4a" />
-          <stop offset="1" stopColor="#2a2118" />
+          <stop stopColor="#3a3f5c" />
+          <stop offset="1" stopColor="#121318" />
         </linearGradient>
+        <radialGradient id={`${uid}-lake`} cx="0.5" cy="0.5" r="0.5">
+          <stop stopColor="#c4fbec" />
+          <stop offset="0.6" stopColor="#6bdeee" />
+          <stop offset="1" stopColor="#62d2f8" stopOpacity="0" />
+        </radialGradient>
       </defs>
       <rect width={W} height={H} fill={`url(#${uid}-sky)`} />
-      <path d={ridge(120, 60)} fill="#5c4a37" opacity={0.6} />
-      <path d={ridge(165, 45)} fill={`url(#${uid}-rock)`} opacity={0.9} />
+      <rect width={W} height={H} fill={`url(#${uid}-dusk)`} />
+      {Array.from({ length: 18 }, (_, i) => (
+        <circle
+          key={`s${i}`}
+          cx={(rand() * W).toFixed(1)}
+          cy={(rand() * 90).toFixed(1)}
+          r={rand() < 0.2 ? 1.3 : 0.8}
+          fill="#e9fffa"
+          opacity={0.35 + rand() * 0.4}
+        />
+      ))}
+      <path d={ridge(128, 56)} fill="#2b3150" opacity={0.75} />
+      <path d={ridge(170, 42)} fill={`url(#${uid}-rock)`} />
       {[0, 1, 2, 3, 4].map((i) => (
         <ellipse
           key={i}
           cx={250}
-          cy={236}
-          rx={190 - i * 34}
+          cy={238}
+          rx={196 - i * 35}
           ry={44 - i * 8}
           fill="none"
-          stroke="#c9a273"
-          strokeOpacity={0.45 - i * 0.05}
-          strokeWidth={2}
+          stroke="#ead3a2"
+          strokeOpacity={0.5 - i * 0.07}
+          strokeWidth={1.6}
         />
       ))}
-      <ellipse cx={250} cy={236} rx={40} ry={8} fill="#1d6b5a" opacity={0.85} />
-      <rect x={340} y={150} width={60} height={22} rx={3} fill="#2f5d73" opacity={0.85} />
-      <rect x={350} y={140} width={34} height={12} rx={2} fill="#3b7c97" opacity={0.8} />
+      <ellipse cx={250} cy={238} rx={46} ry={9} fill={`url(#${uid}-lake)`} />
+      <rect x={346} y={152} width={58} height={20} rx={4} fill="#8b9cff" opacity={0.35} />
+      <rect x={356} y={142} width={30} height={11} rx={3} fill="#8b9cff" opacity={0.5} />
       {[
-        [120, 196],
-        [318, 206],
-        [212, 170],
+        [120, 198],
+        [318, 208],
+        [212, 172],
       ].map(([x, y]) => (
         <g key={`${x}`}>
-          <circle cx={x} cy={y} r={14} fill="none" stroke="#6fe0aa" strokeOpacity={0.5} />
-          <circle cx={x} cy={y} r={4} fill="#9ff2cc" />
+          <circle cx={x} cy={y} r={15} fill="none" stroke="#6bdeee" strokeOpacity={0.45} />
+          <circle cx={x} cy={y} r={4} fill="#c4fbec" />
         </g>
       ))}
       <path
-        d="M120 196 L212 170 L318 206"
+        d="M120 198 L212 172 L318 208"
         fill="none"
-        stroke="#6fe0aa"
-        strokeOpacity={0.6}
+        stroke="#95fbdf"
+        strokeOpacity={0.55}
         strokeDasharray="4 5"
       />
     </g>
@@ -380,8 +403,8 @@ function Thesis({ seed, uid }: Part) {
   const bars = Array.from({ length: 6 }, () => 0.3 + rand() * 0.7)
   return (
     <g>
-      <rect x={140} y={22} width={200} height={258} rx={8} fill="#0d1d16" stroke="#1d4636" />
-      <rect x={160} y={44} width={120} height={10} rx={5} fill="#9ff2cc" opacity={0.85} />
+      <rect x={140} y={22} width={200} height={258} rx={8} fill="#121217" stroke="#2a2a33" />
+      <rect x={160} y={44} width={120} height={10} rx={5} fill="#c4fbec" opacity={0.85} />
       {[0, 1, 2, 3].map((i) => (
         <rect
           key={i}
@@ -390,7 +413,7 @@ function Thesis({ seed, uid }: Part) {
           width={160 - (i % 2) * 30}
           height={6}
           rx={3}
-          fill="#2c5c48"
+          fill="#34343f"
         />
       ))}
       <rect x={160} y={134} width={160} height={84} rx={6} {...panel} />
@@ -413,7 +436,7 @@ function Thesis({ seed, uid }: Part) {
           width={150 - i * 20}
           height={6}
           rx={3}
-          fill="#2c5c48"
+          fill="#34343f"
         />
       ))}
     </g>

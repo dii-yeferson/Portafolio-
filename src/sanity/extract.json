@@ -1241,7 +1241,7 @@
         },
         "optional": false
       },
-      "heroEyebrow": {
+      "availability": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
@@ -1326,13 +1326,6 @@
           "of": {
             "type": "string"
           }
-        },
-        "optional": true
-      },
-      "heroQuote": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
         },
         "optional": true
       },

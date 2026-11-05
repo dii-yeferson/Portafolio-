@@ -12,8 +12,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings" && _id == "siteSettings"][0]{
     displayName,
     tagline,
-    heroEyebrow,
-    heroQuote,
+    availability,
     summary,
     heroPhrases,
     heroBadges,

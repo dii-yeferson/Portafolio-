@@ -1,150 +1,116 @@
-import { ArrowRight, ChartColumnIncreasing, GraduationCap, Target } from 'lucide-react'
+import { ArrowRight, GraduationCap, Layers, Target } from 'lucide-react'
 import Link from 'next/link'
 
-import { SanityImage } from '@/components/sanity-image'
-import { hasImageAsset } from '@/sanity/lib/image'
 import type { SiteSettings } from '@/sanity/lib/data'
 
-function CardTitle({ icon: Icon, children }: { icon: typeof Target; children: React.ReactNode }) {
+function CardIcon({ icon: Icon }: { icon: typeof Target }) {
   return (
-    <h3 className="flex items-center gap-3 text-[1.05rem] font-extrabold">
-      <Icon className="size-6 text-accent-bright" strokeWidth={2} aria-hidden="true" />
-      {children}
-    </h3>
+    <span className="grid size-11 place-items-center rounded-2xl border border-line bg-surface-2 text-aqua shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+      <Icon className="size-5" strokeWidth={2} aria-hidden="true" />
+    </span>
   )
 }
 
-/** Sobre mí y perfil técnico (FR-03): resumen, formación, habilidades y enfoque. */
+/** Sobre mí (FR-03): declaración principal y tres tarjetas — formación, stack y enfoque. */
 export function AboutSection({ settings }: { settings: SiteSettings }) {
   const education = settings?.education?.[0]
   const skills = [...new Set(settings?.skillGroups?.flatMap((group) => group.skills) ?? [])].slice(
     0,
-    10,
+    12,
   )
-  const principles = settings?.principles ?? []
+  const principles = (settings?.principles ?? []).slice(0, 5)
 
   return (
     <section
       id="sobre-mi"
       aria-labelledby="sobre-mi-title"
-      className="border-b border-white/[0.06]"
+      className="pt-14 pb-20 lg:pt-16 lg:pb-28"
     >
-      <div className="container-page grid gap-5 py-14 md:grid-cols-2 lg:py-16 xl:grid-cols-[1.12fr_1fr_1fr_1fr]">
-        <div className="reveal flex flex-col md:col-span-2 xl:col-span-1 xl:pr-4">
-          <p className="eyebrow relative pl-4 before:absolute before:top-1/2 before:left-0 before:h-4 before:w-[2px] before:-translate-y-1/2 before:rounded-full before:bg-accent-bright">
-            Conoce más
-          </p>
-          <h2
-            id="sobre-mi-title"
-            className="mt-3 pl-4 text-[2.35rem] leading-tight font-extrabold tracking-[-0.025em]"
-          >
-            Sobre mí
-          </h2>
-          <p className="mt-4 pl-4 leading-relaxed text-muted">
-            {settings?.summary || 'El perfil profesional se publicará muy pronto.'}
-          </p>
-          <Link href="/sobre-mi" className="btn btn-primary mt-7 ml-4 h-11 self-start px-5 text-sm">
-            Más sobre mí
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
-        </div>
+      <div className="container-page">
+        <p className="label reveal">Perfil</p>
+        <h2
+          id="sobre-mi-title"
+          className="reveal mt-3 text-[clamp(2.2rem,4.2vw,3.25rem)] leading-[1.02] font-black tracking-[-0.04em]"
+        >
+          Sobre mí
+        </h2>
+        <p className="reveal mt-8 max-w-4xl text-[clamp(1.35rem,2.5vw,2.05rem)] leading-[1.38] font-bold tracking-[-0.02em] text-foreground/90">
+          {settings?.summary || 'El perfil profesional se publicará muy pronto.'}
+        </p>
 
-        <article className="panel panel-interactive reveal overflow-hidden p-6">
-          {hasImageAsset(education?.image) ? (
-            <SanityImage
-              image={education?.image}
-              width={640}
-              height={480}
-              alt=""
-              sizes="(min-width: 1280px) 22vw, (min-width: 768px) 45vw, 100vw"
-              className="absolute inset-0 size-full object-cover opacity-25 [mask-image:linear-gradient(to_top,black,transparent)]"
-            />
-          ) : (
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 200 120"
-              className="absolute right-0 bottom-0 w-[85%] text-accent/15"
-            >
-              <path
-                d="M10 118V60l40-22 40 22v58M90 118V40l50-28 50 28v78"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              {[0, 1, 2, 3].map((row) =>
-                [0, 1, 2].map((col) => (
-                  <rect
-                    key={`${row}-${col}`}
-                    x={104 + col * 22}
-                    y={52 + row * 16}
-                    width="10"
-                    height="8"
-                    fill="currentColor"
-                  />
-                )),
-              )}
-            </svg>
-          )}
-          <div className="relative">
-            <CardTitle icon={GraduationCap}>Educación</CardTitle>
+        <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <article className="surface-card card-hover spotlight reveal flex flex-col p-7">
+            <CardIcon icon={GraduationCap} />
+            <p className="label mt-6">Formación</p>
             {education ? (
               <>
-                <p className="mt-6 text-[1.05rem] font-extrabold">{education.program}</p>
-                <p className="mt-1 font-bold text-accent-bright">{education.institution}</p>
-                <span className="mt-5 inline-flex rounded-md border border-accent/45 bg-accent/10 px-2.5 py-1 text-xs font-bold text-mint">
+                <h3 className="mt-2 text-[1.35rem] leading-snug font-extrabold tracking-[-0.02em]">
+                  {education.program}
+                </h3>
+                <p className="mt-1 font-bold text-muted">{education.institution}</p>
+                <span className="mt-6 inline-flex items-center gap-2 self-start rounded-full border border-line bg-surface-2 px-3 py-1 text-[0.78rem] font-bold text-foreground/85">
+                  <span className="status-dot size-1.5!" aria-hidden="true" />
                   {education.endYear
                     ? `${education.startYear ? `${education.startYear} – ` : ''}${education.endYear}`
                     : 'En formación'}
                 </span>
               </>
             ) : (
-              <p className="mt-6 text-sm text-muted">Formación académica próximamente.</p>
+              <p className="mt-2 text-muted">Formación académica próximamente.</p>
             )}
-          </div>
-        </article>
+          </article>
 
-        <article className="panel panel-interactive reveal p-6">
-          <CardTitle icon={ChartColumnIncreasing}>Habilidades</CardTitle>
-          {skills.length > 0 ? (
-            <ul className="mt-6 flex flex-wrap gap-2.5" aria-label="Habilidades">
-              {skills.map((skill) => (
-                <li
-                  key={skill}
-                  className="chip hover:border-accent-bright/60 hover:text-foreground"
-                >
-                  {skill}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-6 text-sm text-muted">Habilidades próximamente.</p>
-          )}
-        </article>
-
-        <article className="panel panel-interactive reveal p-6 md:col-span-2 xl:col-span-1">
-          <CardTitle icon={Target}>Mi enfoque</CardTitle>
-          {principles.length > 0 ? (
-            <ul className="mt-6 space-y-3.5">
-              {principles.map((principle) => (
-                <li
-                  key={principle._key}
-                  className="flex items-start gap-3 text-[0.9rem] font-semibold text-foreground/85"
-                >
-                  <svg
-                    viewBox="0 0 8 8"
-                    aria-hidden="true"
-                    className="mt-[0.42rem] size-2 shrink-0 fill-accent-bright"
+          <article className="surface-card card-hover spotlight reveal p-7">
+            <CardIcon icon={Layers} />
+            <p className="label mt-6">Stack técnico</p>
+            {skills.length > 0 ? (
+              <ul className="mt-4 flex flex-wrap gap-2" aria-label="Habilidades">
+                {skills.map((skill) => (
+                  <li
+                    key={skill}
+                    className="chip transition-colors hover:border-line-strong hover:text-foreground"
                   >
-                    <path d="M0 0l8 4-8 4z" />
-                  </svg>
-                  {principle.title}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-6 text-sm text-muted">Principios de trabajo próximamente.</p>
-          )}
-        </article>
+                    {skill}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-muted">Habilidades próximamente.</p>
+            )}
+          </article>
+
+          <article className="surface-card card-hover spotlight reveal p-7 md:col-span-2 lg:col-span-1">
+            <CardIcon icon={Target} />
+            <p className="label mt-6">Cómo trabajo</p>
+            {principles.length > 0 ? (
+              <ol className="mt-4 space-y-3">
+                {principles.map((principle, index) => (
+                  <li
+                    key={principle._key}
+                    className="flex items-baseline gap-3.5 text-[0.98rem] font-bold text-foreground/90"
+                  >
+                    <span className="text-aurora w-6 shrink-0 text-[0.8rem] font-black tabular-nums">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    {principle.title}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="mt-2 text-muted">Principios de trabajo próximamente.</p>
+            )}
+          </article>
+        </div>
+
+        <Link
+          href="/sobre-mi"
+          className="group reveal mt-10 inline-flex items-center gap-2 text-[0.95rem] font-extrabold"
+        >
+          Ver perfil completo
+          <span className="grid size-8 place-items-center rounded-full border border-line-strong transition-[transform,background-color] duration-300 group-hover:translate-x-0.5 group-hover:bg-white/[0.07]">
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </span>
+        </Link>
       </div>
     </section>
   )

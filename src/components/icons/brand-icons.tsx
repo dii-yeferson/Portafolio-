@@ -78,9 +78,9 @@ export function BrandIcon({ platform, className }: { platform: string } & IconPr
       return (
         <span
           aria-hidden="true"
-          className={`grid place-items-center rounded-[22%] bg-accent/20 ${className ?? ''}`}
+          className={`grid place-items-center rounded-[22%] bg-surface-3 ${className ?? ''}`}
         >
-          <Globe className="size-[62%] text-mint" strokeWidth={2} />
+          <Globe className="size-[62%] text-aqua" strokeWidth={2} />
         </span>
       )
   }

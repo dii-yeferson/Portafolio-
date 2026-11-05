@@ -3,60 +3,60 @@ import Link from 'next/link'
 
 type Crumb = { href: string; label: string }
 
-/** Cabecera de páginas internas con migas de pan y resplandor de marca. */
+/** Cabecera de páginas internas: migas, etiqueta, título y bajada. */
 export function PageHero({
-  eyebrow,
+  label,
   title,
   description,
   crumbs = [],
   children,
 }: {
-  eyebrow: string
+  label: string
   title: string
   description?: string
   crumbs?: Crumb[]
   children?: React.ReactNode
 }) {
   return (
-    <section className="relative isolate overflow-hidden border-b border-white/[0.06]">
+    <section className="relative isolate overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(60%_90%_at_80%_0%,rgba(42,120,90,0.28),transparent_65%),linear-gradient(180deg,#07100c,#060c09)]"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_85%_0%,rgba(98,210,248,0.13),transparent_65%),radial-gradient(40%_60%_at_0%_0%,rgba(149,251,223,0.07),transparent_70%)]"
       />
-      <div aria-hidden="true" className="grain absolute inset-0 -z-10 opacity-[0.15]" />
-      <div className="container-page py-14 lg:py-20">
-        <nav aria-label="Migas de pan" className="animate-fade-up">
-          <ol className="flex flex-wrap items-center gap-1.5 text-sm font-semibold text-muted">
+      <div aria-hidden="true" className="grain absolute inset-0 -z-10 opacity-[0.12]" />
+      <div className="container-page pt-36 pb-14 lg:pt-44 lg:pb-20">
+        <nav aria-label="Migas de pan" className="animate-rise">
+          <ol className="flex flex-wrap items-center gap-1.5 text-[0.85rem] font-bold text-subtle">
             <li>
-              <Link href="/" className="hover:text-foreground">
+              <Link href="/" className="transition-colors hover:text-foreground">
                 Inicio
               </Link>
             </li>
             {crumbs.map((crumb) => (
               <li key={crumb.href} className="flex items-center gap-1.5">
-                <ChevronRight className="size-3.5 text-subtle" aria-hidden="true" />
-                <Link href={crumb.href} className="hover:text-foreground">
+                <ChevronRight className="size-3.5" aria-hidden="true" />
+                <Link href={crumb.href} className="transition-colors hover:text-foreground">
                   {crumb.label}
                 </Link>
               </li>
             ))}
-            <li className="flex items-center gap-1.5" aria-current="page">
-              <ChevronRight className="size-3.5 text-subtle" aria-hidden="true" />
-              <span className="text-foreground/80">{title}</span>
+            <li className="flex items-center gap-1.5 text-muted" aria-current="page">
+              <ChevronRight className="size-3.5" aria-hidden="true" />
+              {title}
             </li>
           </ol>
         </nav>
-        <p className="eyebrow mt-8 animate-fade-up [animation-delay:60ms]">{eyebrow}</p>
-        <h1 className="mt-4 max-w-4xl animate-fade-up text-[clamp(2.5rem,6vw,4.4rem)] leading-[1.02] font-black tracking-[-0.04em] [animation-delay:120ms]">
+        <p className="label mt-10 animate-rise [animation-delay:60ms]">{label}</p>
+        <h1 className="text-satin mt-3 max-w-4xl text-[clamp(2.8rem,6.5vw,5rem)] leading-[0.98] font-black tracking-[-0.05em]">
           {title}
         </h1>
         {description ? (
-          <p className="mt-5 max-w-2xl animate-fade-up text-lg leading-relaxed text-muted [animation-delay:180ms]">
+          <p className="mt-6 max-w-2xl animate-rise text-[1.12rem] leading-relaxed text-muted [animation-delay:160ms]">
             {description}
           </p>
         ) : null}
         {children ? (
-          <div className="mt-8 animate-fade-up [animation-delay:240ms]">{children}</div>
+          <div className="mt-9 animate-rise [animation-delay:220ms]">{children}</div>
         ) : null}
       </div>
     </section>

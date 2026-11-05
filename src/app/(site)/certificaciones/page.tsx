@@ -4,7 +4,7 @@ import { CertificationsCatalog } from '@/components/certifications/certification
 import { ContactSection } from '@/components/sections/contact-section'
 import { PageHero } from '@/components/ui/page-hero'
 import { toCertificationViews } from '@/lib/certifications'
-import { getCertifications, getSiteSettings } from '@/sanity/lib/data'
+import { getCertifications, getSiteSettings, getSocialLinks } from '@/sanity/lib/data'
 
 export const metadata: Metadata = {
   title: 'Certificaciones',
@@ -14,21 +14,25 @@ export const metadata: Metadata = {
 }
 
 export default async function CertificationsPage() {
-  const [certifications, settings] = await Promise.all([getCertifications(), getSiteSettings()])
+  const [certifications, settings, socialLinks] = await Promise.all([
+    getCertifications(),
+    getSiteSettings(),
+    getSocialLinks(),
+  ])
 
   return (
     <>
       <PageHero
-        eyebrow="Aprendizaje continuo"
+        label="Aprendizaje continuo"
         title="Certificaciones"
         description="Credenciales con fecha real de emisión y enlace a la verificación oficial de cada entidad."
       />
-      <section aria-label="Catálogo de certificaciones" className="border-b border-white/[0.06]">
-        <div className="container-page py-14 lg:py-16">
+      <section aria-label="Catálogo de certificaciones" className="pb-24 lg:pb-32">
+        <div className="container-page">
           <CertificationsCatalog certifications={toCertificationViews(certifications)} />
         </div>
       </section>
-      <ContactSection settings={settings} />
+      <ContactSection settings={settings} socialLinks={socialLinks} />
     </>
   )
 }

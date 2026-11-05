@@ -74,20 +74,20 @@ export function SearchDialog() {
         onClick={() => dialogRef.current?.showModal()}
         aria-label="Buscar proyectos y certificaciones"
         aria-haspopup="dialog"
-        className="glass grid size-10 place-items-center rounded-full text-muted transition-[color,transform] hover:text-foreground active:scale-95"
+        className="grid size-10 place-items-center rounded-full text-muted transition-[color,background-color,transform] hover:bg-white/[0.08] hover:text-foreground active:scale-95"
       >
         <Search className="size-[1.05rem]" aria-hidden="true" />
       </button>
       <dialog
         ref={dialogRef}
         aria-labelledby={`${inputId}-title`}
-        className="glass mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-2xl p-0 text-foreground backdrop:bg-background/75 backdrop:backdrop-blur-sm"
+        className="glass mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-[1.5rem] bg-[rgb(18_18_22/0.94)] p-0 text-foreground backdrop:bg-black/65 backdrop:backdrop-blur-sm"
       >
         <h2 id={`${inputId}-title`} className="sr-only">
           Buscar proyectos y certificaciones
         </h2>
-        <div className="flex items-center gap-3 border-b border-white/[0.08] px-5">
-          <Search className="size-5 shrink-0 text-accent-bright" aria-hidden="true" />
+        <div className="flex items-center gap-3 border-b border-line px-5">
+          <Search className="size-5 shrink-0 text-aqua" aria-hidden="true" />
           <label htmlFor={inputId} className="sr-only">
             Término de búsqueda
           </label>
@@ -99,7 +99,7 @@ export function SearchDialog() {
             placeholder="Buscar: Power BI, minería, Python…"
             maxLength={64}
             autoComplete="off"
-            className="h-16 w-full bg-transparent text-lg font-semibold outline-none placeholder:text-subtle"
+            className="h-16 w-full bg-transparent text-lg font-bold outline-none placeholder:text-subtle"
           />
           <button
             type="button"
@@ -111,20 +111,22 @@ export function SearchDialog() {
           </button>
         </div>
         <div className="max-h-[55vh] overflow-y-auto p-3">
-          <div aria-live="polite" className="px-2 py-1 text-sm">
+          <div aria-live="polite" className="px-2 py-1 text-sm font-semibold">
             {!current ? (
               <p className="text-subtle">Escribe al menos 2 caracteres. Atajo: Ctrl / ⌘ + K.</p>
             ) : null}
-            {current?.status === 'loading' ? <p className="text-muted">Buscando…</p> : null}
+            {current?.status === 'loading' ? (
+              <p className="animate-pulse text-muted">Buscando…</p>
+            ) : null}
             {current?.status === 'error' ? (
-              <p className="text-red-300">No se pudo completar la búsqueda.</p>
+              <p className="text-danger">No se pudo completar la búsqueda.</p>
             ) : null}
             {current?.status === 'done' && current.results.length === 0 ? (
               <p className="text-muted">Sin resultados para «{current.term}».</p>
             ) : null}
           </div>
           {current?.status === 'done' && current.results.length > 0 ? (
-            <ul className="mt-1 space-y-1.5">
+            <ul className="mt-1 space-y-1">
               {current.results.map((result) => {
                 const Icon = result.type === 'project' ? FolderOpen : Award
                 return (
@@ -132,16 +134,16 @@ export function SearchDialog() {
                     <Link
                       href={result.href}
                       onClick={close}
-                      className="flex items-center gap-4 rounded-xl border border-transparent px-3 py-3 transition-colors hover:border-accent/40 hover:bg-white/[0.04]"
+                      className="flex items-center gap-4 rounded-2xl border border-transparent px-3 py-3 transition-colors hover:border-line hover:bg-white/[0.05]"
                     >
-                      <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-accent-bright">
+                      <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-line bg-surface-2 text-aqua">
                         <Icon className="size-5" aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-[0.7rem] font-extrabold tracking-[0.2em] text-champagne-light uppercase">
+                        <span className="label block text-[0.64rem]!">
                           {TYPE_LABEL[result.type]}
                         </span>
-                        <span className="block truncate font-bold">{result.title}</span>
+                        <span className="block truncate font-extrabold">{result.title}</span>
                         <span className="block truncate text-sm text-muted">
                           {result.description}
                         </span>

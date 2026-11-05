@@ -14,7 +14,7 @@ test('la portada muestra hero, globo, secciones y pie con el año actual', async
 
   await expect(page.getByRole('heading', { level: 1 })).not.toBeEmpty()
   // Los estilos cargaron: fondo del sistema de diseño y tipografía Nunito.
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(6, 12, 9)')
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(9, 9, 11)')
   await expect(page.locator('body')).toHaveCSS('font-family', /Nunito/)
   await expect(page.locator('#inicio canvas')).toBeVisible()
   for (const name of ['Sobre mí', 'Proyectos', 'Certificaciones', '¿Trabajamos juntos?']) {
