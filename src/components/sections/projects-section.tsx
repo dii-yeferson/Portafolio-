@@ -1,19 +1,23 @@
+import { ProjectsShowcase } from '@/components/projects/projects-showcase'
+import { SectionHeading } from '@/components/ui/section-heading'
 import type { ProjectSummary } from '@/sanity/lib/data'
-
-import { ProjectsGallery } from '../projects-gallery'
-import { SectionHeading } from '../section-heading'
 
 export function ProjectsSection({ projects }: { projects: ProjectSummary[] }) {
   return (
-    <section aria-labelledby="proyectos-title" id="proyectos" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <section
+      id="proyectos"
+      aria-labelledby="proyectos-title"
+      className="border-b border-white/[0.06]"
+    >
+      <div className="container-page py-14 lg:py-16">
         <SectionHeading
           id="proyectos-title"
-          eyebrow="Proyectos"
-          title="Soluciones con datos reales"
-          description="Machine Learning, Big Data, Power BI y aplicaciones web aplicadas a problemas concretos."
+          eyebrow="Trabajos destacados"
+          title="Proyectos"
+          description="Explora algunos de mis proyectos. Cada uno representa un aprendizaje y una solución a un problema real."
+          action={{ href: '/proyectos', label: 'Ver todos los proyectos' }}
         />
-        <ProjectsGallery projects={projects} />
+        <ProjectsShowcase projects={projects} limit={4} />
       </div>
     </section>
   )

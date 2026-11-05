@@ -1,7 +1,11 @@
 import { CheckmarkCircleIcon } from '@sanity/icons/CheckmarkCircle'
 import { defineField, defineType } from 'sanity'
 
-import { CERTIFICATION_CATEGORIES, getCertificationCategoryLabel } from '../../../lib/taxonomy'
+import {
+  CERTIFICATION_CATEGORIES,
+  CERTIFICATION_ICONS,
+  getCertificationCategoryLabel,
+} from '../../../lib/taxonomy'
 import {
   validateExpiryAfterIssue,
   validateHttpsUrl,
@@ -41,6 +45,14 @@ export const certification = defineType({
       type: 'string',
       options: { list: [...CERTIFICATION_CATEGORIES], layout: 'dropdown' },
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'iconKey',
+      title: 'Ícono',
+      description: 'Ícono tecnológico de la tarjeta.',
+      type: 'string',
+      options: { list: [...CERTIFICATION_ICONS], layout: 'dropdown' },
+      initialValue: 'analytics',
     }),
     defineField({
       name: 'issueDate',

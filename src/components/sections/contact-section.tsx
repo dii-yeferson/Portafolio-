@@ -1,36 +1,43 @@
+import { Download } from 'lucide-react'
+
+import { ContactDialog } from '@/components/contact/contact-dialog'
 import type { SiteSettings } from '@/sanity/lib/data'
 
-import { ContactForm } from '../contact-form'
-
-/** Tarjeta de conversión final (FR-08). */
+/** Llamado a la acción final (FR-08). */
 export function ContactSection({ settings }: { settings: SiteSettings }) {
   return (
-    <section aria-labelledby="contacto-title" id="contacto" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <div className="card grid gap-10 p-8 md:grid-cols-[1fr_1.4fr] md:p-12">
-          <div>
-            <p className="font-mono text-xs tracking-[0.2em] text-accent uppercase">Contacto</p>
-            <h2
-              id="contacto-title"
-              className="mt-3 font-display text-3xl font-extrabold sm:text-4xl"
-            >
-              ¿Trabajamos juntos?
-            </h2>
-            <p className="mt-4 text-muted">
-              Cuéntame tu reto de datos: analítica, modelos predictivos, dashboards o pipelines de
-              Big Data.
-            </p>
-            {settings?.resume?.url ? (
-              <a
-                href="/cv"
-                rel="nofollow"
-                className="mt-8 inline-block rounded-full border border-champagne/60 px-6 py-3 font-semibold text-champagne transition-colors hover:bg-champagne/10"
-              >
-                Descargar CV
-              </a>
-            ) : null}
-          </div>
-          <ContactForm contactEmail={settings?.contactEmail ?? null} />
+    <section
+      id="contacto"
+      aria-labelledby="contacto-title"
+      className="relative isolate overflow-hidden border-b border-white/[0.06]"
+    >
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(50%_120%_at_70%_50%,rgba(42,120,90,0.2),transparent_70%)]"
+      />
+      <div className="container-page flex flex-col gap-8 py-14 lg:flex-row lg:items-center lg:justify-between lg:py-16">
+        <div className="reveal max-w-xl">
+          <h2
+            id="contacto-title"
+            className="text-[2.1rem] leading-tight font-extrabold tracking-[-0.025em] sm:text-[2.4rem]"
+          >
+            ¿Trabajamos juntos?
+          </h2>
+          <p className="mt-3 text-[1.02rem] leading-relaxed text-muted">
+            Estoy siempre abierto a nuevas oportunidades, proyectos interesantes y conversaciones
+            sobre datos, tecnología e innovación.
+          </p>
+        </div>
+        <div className="reveal flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+          <ContactDialog contactEmail={settings?.contactEmail || null} />
+          <a
+            href="/cv"
+            rel="nofollow"
+            className="btn btn-outline h-14 w-full px-8 text-[1.02rem] sm:w-auto sm:min-w-[11rem]"
+          >
+            <Download className="size-[1.1rem]" aria-hidden="true" />
+            Descargar CV
+          </a>
         </div>
       </div>
     </section>

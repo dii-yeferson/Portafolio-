@@ -63,7 +63,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
     'aria-invalid': fieldErrors?.[name] ? true : undefined,
     'aria-describedby': fieldErrors?.[name] ? `${id}-${name}-error` : undefined,
     className:
-      'w-full rounded-xl border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-accent aria-invalid:border-red-400',
+      'w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 font-semibold outline-none transition-colors placeholder:text-subtle focus:border-accent-bright/70 focus:bg-white/[0.05] aria-invalid:border-red-400',
   })
 
   const error = (name: FieldName) =>
@@ -77,7 +77,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
     <form onSubmit={handleSubmit} className="grid gap-4" aria-describedby={`${id}-status`}>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor={`${id}-name`} className="mb-1 block text-sm text-muted">
+          <label htmlFor={`${id}-name`} className="mb-1.5 block text-sm font-bold text-muted">
             Nombre
           </label>
           <input
@@ -91,7 +91,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
           {error('name')}
         </div>
         <div>
-          <label htmlFor={`${id}-email`} className="mb-1 block text-sm text-muted">
+          <label htmlFor={`${id}-email`} className="mb-1.5 block text-sm font-bold text-muted">
             Correo
           </label>
           <input
@@ -105,14 +105,14 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
         </div>
       </div>
       <div>
-        <label htmlFor={`${id}-subject`} className="mb-1 block text-sm text-muted">
+        <label htmlFor={`${id}-subject`} className="mb-1.5 block text-sm font-bold text-muted">
           Asunto <span className="text-muted/70">(opcional)</span>
         </label>
         <input {...field('subject')} type="text" maxLength={CONTACT_LIMITS.subject.max} />
         {error('subject')}
       </div>
       <div>
-        <label htmlFor={`${id}-message`} className="mb-1 block text-sm text-muted">
+        <label htmlFor={`${id}-message`} className="mb-1.5 block text-sm font-bold text-muted">
           Mensaje
         </label>
         <textarea
@@ -135,9 +135,9 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
         <button
           type="submit"
           disabled={status.state === 'submitting'}
-          className="rounded-full bg-accent px-6 py-3 font-semibold text-background transition-colors hover:bg-accent-strong disabled:opacity-60"
+          className="btn btn-primary h-12 px-7 text-base disabled:opacity-60"
         >
-          {status.state === 'submitting' ? 'Enviando…' : 'Contáctame'}
+          {status.state === 'submitting' ? 'Enviando…' : 'Enviar mensaje'}
         </button>
         {mailto ? (
           <a

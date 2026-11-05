@@ -22,8 +22,11 @@ function resolveSiteIdentity(settings: SiteSettings) {
   return { name, tagline, title, description }
 }
 
-/** Metadatos globales del sitio (layout raíz): SEO, Open Graph y Twitter Cards. */
-export function buildRootMetadata(settings: SiteSettings): Metadata {
+/**
+ * Metadatos globales del sitio (layout raíz): SEO, Open Graph y Twitter Cards.
+ * Con `indexable: false` (contenido de demostración) se pide no indexar.
+ */
+export function buildRootMetadata(settings: SiteSettings, indexable = true): Metadata {
   const { name, title, description } = resolveSiteIdentity(settings)
   const ogSource = hasImageAsset(settings?.seoMeta?.ogImage)
     ? settings?.seoMeta?.ogImage
@@ -56,7 +59,7 @@ export function buildRootMetadata(settings: SiteSettings): Metadata {
       creator: normalizeTwitterHandle(settings?.seoMeta?.twitterHandle),
       images: images?.map((image) => image.url),
     },
-    robots: { index: true, follow: true },
+    robots: indexable ? { index: true, follow: true } : { index: false, follow: false },
     formatDetection: { email: false, address: false, telephone: false },
   }
 }

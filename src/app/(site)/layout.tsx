@@ -1,5 +1,5 @@
-import { SiteFooter } from '@/components/site-footer'
-import { SiteHeader } from '@/components/site-header'
+import { SiteFooter } from '@/components/layout/site-footer'
+import { SiteHeader } from '@/components/layout/site-header'
 import { getSiteSettings, getSocialLinks } from '@/sanity/lib/data'
 
 export default async function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -9,11 +9,11 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
     <>
       <a
         href="#contenido"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-background"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:font-bold focus:text-white"
       >
         Saltar al contenido
       </a>
-      <SiteHeader settings={settings} />
+      <SiteHeader settings={settings} socialLinks={socialLinks} />
       <main id="contenido">{children}</main>
       <SiteFooter settings={settings} socialLinks={socialLinks} />
     </>

@@ -1,35 +1,29 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono, Manrope } from 'next/font/google'
+import { JetBrains_Mono, Nunito } from 'next/font/google'
 
+import { MotionProvider } from '@/components/motion-provider'
 import { buildRootMetadata } from '@/lib/seo'
 import { SITE_DEFAULTS } from '@/lib/site'
-import { getSiteSettings } from '@/sanity/lib/data'
+import { getSiteSettings, isDemoContent } from '@/sanity/lib/data'
 
 import './globals.css'
 
-const manrope = Manrope({
+/** Nunito variable (200–1000): la misma familia de Qurri y Mikuy. */
+const nunito = Nunito({
   subsets: ['latin'],
-  weight: ['700', '800'],
-  variable: '--font-manrope',
-  display: 'swap',
-})
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-inter',
+  variable: '--font-nunito',
   display: 'swap',
 })
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['400', '500'],
   variable: '--font-jetbrains-mono',
   display: 'swap',
 })
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildRootMetadata(await getSiteSettings())
+  return buildRootMetadata(await getSiteSettings(), !isDemoContent)
 }
 
 export const viewport: Viewport = {
@@ -39,11 +33,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang={SITE_DEFAULTS.language}
-      className={`${manrope.variable} ${inter.variable} ${jetbrainsMono.variable}`}
-    >
-      <body>{children}</body>
+    <html lang={SITE_DEFAULTS.language} className={`${nunito.variable} ${jetbrainsMono.variable}`}>
+      <body>
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   )
 }

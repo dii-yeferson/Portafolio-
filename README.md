@@ -7,15 +7,16 @@
 Sitio público de alto rendimiento y CMS headless sin código: el propietario publica
 proyectos, certificaciones, redes y CV desde `/studio` sin tocar el código.
 
-| Capa            | Tecnología                                                        |
-| --------------- | ----------------------------------------------------------------- |
-| Framework       | Next.js 16 (App Router, React 19, TypeScript estricto, Turbopack) |
-| CMS             | Sanity 6 (Studio embebido en `/studio`), GROQ y Sanity TypeGen    |
-| Integración     | `@sanity/client` + `next-sanity` (Studio, webhooks e imágenes)    |
-| Estilos         | Tailwind CSS 4 con tokens semánticos _Dark Luxury Tech_           |
-| Validación      | Zod 4 (API) y reglas de Sanity con mensajes en español            |
-| Calidad         | ESLint 9 (`eslint-config-next`), Prettier, Vitest 5, Playwright   |
-| Hosting y CI/CD | Vercel + GitHub Actions + Dependabot                              |
+| Capa            | Tecnología                                                          |
+| --------------- | ------------------------------------------------------------------- |
+| Framework       | Next.js 16 (App Router, React 19, TypeScript estricto, Turbopack)   |
+| CMS             | Sanity 6 (Studio embebido en `/studio`), GROQ y Sanity TypeGen      |
+| Integración     | `@sanity/client` + `next-sanity` (Studio, webhooks e imágenes)      |
+| Diseño          | Tailwind CSS 4, Nunito y vidrio de Qurri/Mikuy (_Dark Luxury Tech_) |
+| Movimiento      | Motion, animaciones CSS por scroll y globo de datos en Canvas 2D    |
+| Validación      | Zod 4 (API) y reglas de Sanity con mensajes en español              |
+| Calidad         | ESLint 9 (`eslint-config-next`), Prettier, Vitest 5, Playwright     |
+| Hosting y CI/CD | Vercel + GitHub Actions + Dependabot                                |
 
 ---
 
@@ -48,23 +49,52 @@ Páginas (ISR)      Rutas API (/api/*)       Sanity Studio (/studio)
 4. La siguiente visita regenera la página con datos frescos (ISR). Como respaldo,
    todo el contenido se revalida además cada hora.
 
-Si `NEXT_PUBLIC_SANITY_PROJECT_ID` no está definido, la capa de datos devuelve contenido
-vacío en lugar de fallar: el proyecto compila y se prueba en CI sin credenciales.
+Si `NEXT_PUBLIC_SANITY_PROJECT_ID` no está definido, el sitio muestra el **contenido de
+demostración** del diseño aprobado (`src/content/demo.ts`) con `noindex`: así se puede revisar
+el diseño completo y probarlo en CI sin credenciales. Con el CMS conectado, todo el contenido
+sale exclusivamente de Sanity.
+
+## Interfaz
+
+| Sección / página    | Qué muestra                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| Barra superior      | Vidrio con blur, se compacta al hacer scroll, sección activa animada, buscador (Ctrl/⌘ + K) y CV. |
+| Hero                | Nombre, especialidad, lema y CTA; **tu retrato con el globo de datos girando detrás**.            |
+| Sobre mí            | Resumen, formación (Tecsup), habilidades y enfoque de trabajo.                                    |
+| Redes               | Tarjetas con íconos de marca y vista previa.                                                      |
+| Proyectos           | Filtros sin recarga, tarjeta insignia (_Centinela Minero_) y portadas ilustradas si falta imagen. |
+| Certificaciones     | Ícono tecnológico, sello champán, año y verificación oficial.                                     |
+| `/proyectos`        | Catálogo completo con filtros.                                                                    |
+| `/proyectos/[slug]` | Estudio de caso: problema, metodología, solución, resultados, métricas y galería.                 |
+| `/certificaciones`  | Catálogo filtrable por categoría y entidad emisora.                                               |
+| `/sobre-mi`         | Perfil extendido, formación, habilidades, principios y todas las redes.                           |
+
+- **Adaptable** a teléfono, tablet, laptop y monitores grandes (probado de 390 px a 1440 px).
+- **Globo de datos** (`src/components/hero/data-globe.tsx`): continentes como puntos a partir de
+  una máscara de 4 KB (`npm run globe:generate`), arcos con pulsos desde Lima, se puede
+  arrastrar, se pausa fuera de pantalla y respeta `prefers-reduced-motion`.
+- **Tu foto:** súbela en _Configuración del sitio → Hero → Retrato_. Lo ideal es un PNG
+  vertical con fondo transparente (mín. 1200 × 1500 px) para que el globo gire detrás de ti.
+- **Sin imágenes todavía:** proyectos y formación muestran ilustraciones de marca hasta que
+  subas portadas reales desde el Studio.
 
 ## Estructura
 
 ```text
 ├── sanity.config.ts            # Studio: esquemas, singleton y herramientas
 ├── sanity.cli.ts               # CLI: proyecto, extracción de esquema y TypeGen
-├── scripts/seed.ts             # Contenido inicial idempotente (npm run seed)
+├── scripts/
+│   ├── seed.ts                 # Contenido inicial del diseño (npm run seed)
+│   └── generate-globe-mask.mjs # Máscara de continentes del globo
 ├── src/
 │   ├── app/
-│   │   ├── (site)/             # Sitio público: portada y /proyectos/[slug]
+│   │   ├── (site)/             # Portada, /proyectos, /certificaciones, /sobre-mi
 │   │   ├── api/                # revalidate · cv · contact · search · health
 │   │   ├── studio/[[...tool]]/ # Sanity Studio embebido
 │   │   ├── layout.tsx          # Fuentes, metadatos globales (SEO / OG / Twitter)
 │   │   ├── sitemap.ts · robots.ts
-│   ├── components/             # UI (secciones, filtros, formulario, buscador)
+│   ├── components/             # UI: hero y globo, secciones, tarjetas, íconos, diálogos
+│   ├── content/demo.ts         # Contenido de demostración (solo sin Sanity)
 │   ├── lib/                    # Dominio: SEO, contacto, rate limit, búsqueda, URLs
 │   └── sanity/
 │       ├── env.ts              # Configuración desde variables de entorno
@@ -97,8 +127,8 @@ npm ci
 
 3. **Autoriza el Studio embebido:** en _sanity.io/manage → API → CORS origins_ agrega
    `http://localhost:3000` y tu dominio de producción con **Allow credentials** activado.
-4. **(Opcional) Siembra contenido inicial** — configuración del sitio y el proyecto
-   _Centinela Minero_ como borradores, y el enlace de GitHub:
+4. **(Opcional) Siembra el contenido del diseño** — textos, proyectos y certificaciones
+   como borradores, y las redes (ocultas salvo GitHub) para completar y publicar en `/studio`:
 
    ```bash
    npx sanity login
@@ -200,18 +230,19 @@ Los errores siguen el formato `{ "error": "codigo", "message": "…", ...detalle
 
 ## Calidad
 
-| Script              | Descripción                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| `npm run dev`       | Servidor de desarrollo                                       |
-| `npm run build`     | Build de producción                                          |
-| `npm run check`     | Lint + tipos + formato + pruebas unitarias                   |
-| `npm run lint`      | ESLint (Core Web Vitals, TypeScript y reglas de React Hooks) |
-| `npm run typecheck` | Tipos de rutas de Next.js + `tsc --noEmit`                   |
-| `npm run format`    | Prettier                                                     |
-| `npm test`          | Pruebas unitarias (Vitest)                                   |
-| `npm run test:e2e`  | Pruebas E2E (Playwright) sobre el build de producción        |
-| `npm run typegen`   | Extrae el esquema y regenera `src/sanity/types.ts`           |
-| `npm run seed`      | Contenido inicial idempotente en Sanity                      |
+| Script                   | Descripción                                                  |
+| ------------------------ | ------------------------------------------------------------ |
+| `npm run dev`            | Servidor de desarrollo                                       |
+| `npm run build`          | Build de producción                                          |
+| `npm run check`          | Lint + tipos + formato + pruebas unitarias                   |
+| `npm run lint`           | ESLint (Core Web Vitals, TypeScript y reglas de React Hooks) |
+| `npm run typecheck`      | Tipos de rutas de Next.js + `tsc --noEmit`                   |
+| `npm run format`         | Prettier                                                     |
+| `npm test`               | Pruebas unitarias (Vitest)                                   |
+| `npm run test:e2e`       | Pruebas E2E (Playwright) sobre el build de producción        |
+| `npm run typegen`        | Extrae el esquema y regenera `src/sanity/types.ts`           |
+| `npm run seed`           | Contenido inicial idempotente en Sanity                      |
+| `npm run globe:generate` | Regenera la máscara de continentes del globo                 |
 
 Las pruebas E2E levantan `next start` automáticamente; ejecuta antes el build:
 
@@ -237,8 +268,9 @@ npm run build && npm run test:e2e
 
 Dependabot propone actualizaciones semanales agrupadas (Sanity, Next/React y tooling).
 
-## Próximos pasos (frontend)
+## Próximos pasos
 
-La base funcional del sitio público está lista. Quedan las mejoras visuales de la fase 3
-del PRD: globo 3D con React Three Fiber (con pausa fuera del viewport), animaciones con
-Motion, indicador de sección activa en la navegación y la auditoría Lighthouse final.
+1. Conectar Sanity, ejecutar `npm run seed` y completar en `/studio` tu retrato, CV, portadas,
+   enlaces de redes y verificación de certificaciones; luego publicar.
+2. Desplegar en Vercel con dominio propio y crear el webhook de revalidación.
+3. Auditoría Lighthouse sobre el dominio final con el contenido real.

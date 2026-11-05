@@ -99,6 +99,15 @@ export type Certification = {
     | 'cloud'
     | 'programming'
     | 'other'
+  iconKey?:
+    | 'python'
+    | 'sql'
+    | 'power-bi'
+    | 'excel'
+    | 'machine-learning'
+    | 'big-data'
+    | 'cloud'
+    | 'analytics'
   issueDate: string
   expiresAt?: string
   credentialId?: string
@@ -199,6 +208,7 @@ export type SiteSettings = {
   _rev: string
   displayName: string
   tagline: string
+  heroEyebrow?: string
   summary: string
   heroPortrait?: {
     asset?: SanityImageAssetReference
@@ -210,6 +220,7 @@ export type SiteSettings = {
   }
   heroPhrases: Array<string>
   heroBadges?: Array<string>
+  heroQuote?: string
   resumeFile: {
     asset?: SanityFileAssetReference
     media?: unknown
@@ -222,6 +233,14 @@ export type SiteSettings = {
     startYear?: number
     endYear?: number
     description?: string
+    image?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      alt?: string
+      _type: 'image'
+    }
     _type: 'educationItem'
     _key: string
   }>
@@ -360,10 +379,12 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    displayName,    tagline,    summary,    heroPhrases,    heroBadges,    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },    contactEmail,    education[]{ _key, institution, program, startYear, endYear, description },    skillGroups[]{ _key, title, skills },    principles[]{ _key, title, description },    seoMeta{      metaTitle,      metaDescription,      keywords,      twitterHandle,      ogImage{ asset, crop, hotspot, alt }    }  }
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    displayName,    tagline,    heroEyebrow,    heroQuote,    summary,    heroPhrases,    heroBadges,    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },    contactEmail,    education[]{      _key,      institution,      program,      startYear,      endYear,      description,      image{ asset, crop, hotspot, alt }    },    skillGroups[]{ _key, title, skills },    principles[]{ _key, title, description },    seoMeta{      metaTitle,      metaDescription,      keywords,      twitterHandle,      ogImage{ asset, crop, hotspot, alt }    }  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   displayName: string
   tagline: string
+  heroEyebrow: string | null
+  heroQuote: string | null
   summary: string
   heroPhrases: Array<string>
   heroBadges: Array<string> | null
@@ -388,6 +409,12 @@ export type SITE_SETTINGS_QUERY_RESULT = {
     startYear: number | null
     endYear: number | null
     description: string | null
+    image: {
+      asset: SanityImageAssetReference | null
+      crop: SanityImageCrop | null
+      hotspot: SanityImageHotspot | null
+      alt: string | null
+    } | null
   }> | null
   skillGroups: Array<{
     _key: string
@@ -487,7 +514,7 @@ export type PROJECT_SLUGS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: CERTIFICATIONS_QUERY
-// Query: *[_type == "certification"] | order(sortOrder asc, issueDate desc){    _id,    title,    issuer,    category,    issueDate,    expiresAt,    credentialId,    verificationUrl,    featured,    certificateImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }  }
+// Query: *[_type == "certification"] | order(sortOrder asc, issueDate desc){    _id,    title,    issuer,    category,    iconKey,    issueDate,    expiresAt,    credentialId,    verificationUrl,    featured,    certificateImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }  }
 export type CERTIFICATIONS_QUERY_RESULT = Array<{
   _id: string
   title: string
@@ -500,6 +527,16 @@ export type CERTIFICATIONS_QUERY_RESULT = Array<{
     | 'machine-learning'
     | 'other'
     | 'programming'
+  iconKey:
+    | 'analytics'
+    | 'big-data'
+    | 'cloud'
+    | 'excel'
+    | 'machine-learning'
+    | 'power-bi'
+    | 'python'
+    | 'sql'
+    | null
   issueDate: string
   expiresAt: string | null
   credentialId: string | null
@@ -560,11 +597,11 @@ export type SEARCH_QUERY_RESULT = Array<
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    displayName,\n    tagline,\n    summary,\n    heroPhrases,\n    heroBadges,\n    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },\n    contactEmail,\n    education[]{ _key, institution, program, startYear, endYear, description },\n    skillGroups[]{ _key, title, skills },\n    principles[]{ _key, title, description },\n    seoMeta{\n      metaTitle,\n      metaDescription,\n      keywords,\n      twitterHandle,\n      ogImage{ asset, crop, hotspot, alt }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT
+    '\n  *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    displayName,\n    tagline,\n    heroEyebrow,\n    heroQuote,\n    summary,\n    heroPhrases,\n    heroBadges,\n    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },\n    contactEmail,\n    education[]{\n      _key,\n      institution,\n      program,\n      startYear,\n      endYear,\n      description,\n      image{ asset, crop, hotspot, alt }\n    },\n    skillGroups[]{ _key, title, skills },\n    principles[]{ _key, title, description },\n    seoMeta{\n      metaTitle,\n      metaDescription,\n      keywords,\n      twitterHandle,\n      ogImage{ asset, crop, hotspot, alt }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT
     '\n  *[_type == "project" && status == "published" && defined(slug.current)]\n    | order(sortOrder asc, _createdAt desc){\n      _id,\n      title,\n      "slug": slug.current,\n      category,\n      shortDescription,\n      technologies,\n      featured,\n      demoUrl,\n      codeUrl,\n      coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }\n    }\n': PROJECTS_QUERY_RESULT
     '\n  *[_type == "project" && status == "published" && slug.current == $slug][0]{\n    _id,\n    _updatedAt,\n    title,\n    "slug": slug.current,\n    category,\n    shortDescription,\n    problem,\n    approach,\n    solution,\n    results,\n    metrics[]{ _key, label, value, context },\n    technologies,\n    featured,\n    demoUrl,\n    codeUrl,\n    coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    gallery[]{ _key, asset, crop, hotspot, alt, caption, "lqip": asset->metadata.lqip }\n  }\n': PROJECT_BY_SLUG_QUERY_RESULT
     '\n  *[_type == "project" && status == "published" && defined(slug.current)]{\n    "slug": slug.current,\n    _updatedAt\n  }\n': PROJECT_SLUGS_QUERY_RESULT
-    '\n  *[_type == "certification"] | order(sortOrder asc, issueDate desc){\n    _id,\n    title,\n    issuer,\n    category,\n    issueDate,\n    expiresAt,\n    credentialId,\n    verificationUrl,\n    featured,\n    certificateImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }\n  }\n': CERTIFICATIONS_QUERY_RESULT
+    '\n  *[_type == "certification"] | order(sortOrder asc, issueDate desc){\n    _id,\n    title,\n    issuer,\n    category,\n    iconKey,\n    issueDate,\n    expiresAt,\n    credentialId,\n    verificationUrl,\n    featured,\n    certificateImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }\n  }\n': CERTIFICATIONS_QUERY_RESULT
     '\n  *[_type == "socialLink" && visibility == true] | order(sortOrder asc){\n    _id,\n    platformName,\n    url,\n    iconKey,\n    label\n  }\n': SOCIAL_LINKS_QUERY_RESULT
     '\n  *[\n    (_type == "project" && status == "published" && defined(slug.current)) ||\n    _type == "certification"\n  ]\n  | score(\n      boost(title match $term, 4),\n      boost(technologies match $term, 2),\n      boost(issuer match $term, 2),\n      shortDescription match $term,\n      category match $term\n    )\n  [_score > 0]\n  | order(_score desc)[0...$limit]{\n    _id,\n    _type,\n    title,\n    _score,\n    _type == "project" => { "slug": slug.current, shortDescription, category },\n    _type == "certification" => { issuer, category, issueDate, verificationUrl }\n  }\n': SEARCH_QUERY_RESULT
   }

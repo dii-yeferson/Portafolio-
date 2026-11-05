@@ -1,24 +1,27 @@
-import { isExpired } from '@/lib/format'
+import { CertificationsGrid } from '@/components/certifications/certifications-grid'
+import { SectionHeading } from '@/components/ui/section-heading'
+import { toCertificationViews } from '@/lib/certifications'
 import type { CertificationItem } from '@/sanity/lib/data'
 
-import { CertificationsCatalog } from '../certifications-catalog'
-import { SectionHeading } from '../section-heading'
-
 export function CertificationsSection({ certifications }: { certifications: CertificationItem[] }) {
-  // El vencimiento se calcula en el servidor para evitar diferencias de hidratación.
-  const items = certifications.map((item) => ({ ...item, expired: isExpired(item.expiresAt) }))
+  const items = toCertificationViews(certifications).slice(0, 5)
 
   return (
-    <section aria-labelledby="certificaciones-title" id="certificaciones" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <section
+      id="certificaciones"
+      aria-labelledby="certificaciones-title"
+      className="border-b border-white/[0.06]"
+    >
+      <div className="container-page py-14 lg:py-16">
         <SectionHeading
           id="certificaciones-title"
-          eyebrow="Certificaciones"
-          title="Credenciales verificadas"
-          description="Cada credencial enlaza a la verificación oficial de la entidad emisora."
+          eyebrow="Aprendizaje continuo"
+          title="Certificaciones"
+          description="Conocimientos respaldados por certificaciones en diversas áreas de la tecnología y análisis de datos."
+          action={{ href: '/certificaciones', label: 'Ver todas las certificaciones' }}
         />
         {items.length > 0 ? (
-          <CertificationsCatalog certifications={items} />
+          <CertificationsGrid certifications={items} />
         ) : (
           <p className="text-muted">Las certificaciones se publicarán muy pronto.</p>
         )}

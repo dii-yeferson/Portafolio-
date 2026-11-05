@@ -90,6 +90,12 @@ test.describe('GET /api/search', () => {
   })
 })
 
+test('GET /cv sin CV: los navegadores vuelven a la sección de contacto', async ({ request }) => {
+  const response = await request.get('/cv', { maxRedirects: 0, headers: { accept: 'text/html' } })
+  expect(response.status()).toBe(307)
+  expect(response.headers()['location']).toMatch(/\/(cdn\.sanity\.io\/.+\.pdf|#contacto)/)
+})
+
 test('GET /cv descarga el PDF de Sanity o responde 404 si no hay CV', async ({ request }) => {
   const response = await request.get('/cv', { maxRedirects: 0 })
   if (response.status() === 307) {

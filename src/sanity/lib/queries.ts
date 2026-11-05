@@ -12,13 +12,23 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings" && _id == "siteSettings"][0]{
     displayName,
     tagline,
+    heroEyebrow,
+    heroQuote,
     summary,
     heroPhrases,
     heroBadges,
     heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },
     "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },
     contactEmail,
-    education[]{ _key, institution, program, startYear, endYear, description },
+    education[]{
+      _key,
+      institution,
+      program,
+      startYear,
+      endYear,
+      description,
+      image{ asset, crop, hotspot, alt }
+    },
     skillGroups[]{ _key, title, skills },
     principles[]{ _key, title, description },
     seoMeta{
@@ -82,6 +92,7 @@ export const CERTIFICATIONS_QUERY = defineQuery(`
     title,
     issuer,
     category,
+    iconKey,
     issueDate,
     expiresAt,
     credentialId,

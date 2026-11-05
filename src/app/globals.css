@@ -1,31 +1,64 @@
 @import 'tailwindcss';
 
-/* Dark Luxury Tech — tokens semánticos del sistema de diseño (PRD §5). */
+/*
+ * Dark Luxury Tech — sistema de diseño del portafolio (PRD §5).
+ * Tipografía y material «vidrio» heredados de Qurri y Mikuy: Nunito 800 con
+ * tracking negativo en titulares, blur(22px) saturate(180%) con brillo interior
+ * y easing con resorte suave.
+ */
 @theme {
-  --color-background: #080e0b;
-  --color-surface: #0d1713;
-  --color-surface-raised: #11201a;
+  --color-background: #060c09;
+  --color-surface: #0a1511;
+  --color-surface-raised: #0f1d17;
   --color-border: #174b39;
   --color-accent: #3b9470;
-  --color-accent-strong: #4fae86;
+  --color-accent-strong: #4fb586;
+  --color-accent-bright: #6fe0aa;
+  --color-mint: #a9eccb;
   --color-champagne: #9c896c;
-  --color-foreground: #e7efe9;
-  --color-muted: #9db3a7;
+  --color-champagne-light: #d2bd92;
+  --color-foreground: #eef4f0;
+  --color-muted: #9fb3a8;
+  --color-subtle: #6d8378;
 
-  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  --animate-fade-in: fade-in 600ms ease-out;
+  --ease-spring: cubic-bezier(0.22, 1.12, 0.36, 1);
+  --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
 
-  @keyframes fade-in {
+  --animate-fade-up: fade-up 0.9s var(--ease-soft) both;
+  --animate-fade-in: fade-in 0.6s ease-out both;
+  --animate-float: float 7s ease-in-out infinite;
+
+  @keyframes fade-up {
     from {
       opacity: 0;
-      transform: translateY(4px);
+      transform: translateY(18px);
     }
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
     }
   }
 }
@@ -37,6 +70,10 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    scrollbar-color: #1b3a2e var(--color-background);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -44,11 +81,39 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: rgb(59 148 112 / 0.45);
+    color: #fff;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent-strong);
+    outline: 2px solid var(--color-accent-bright);
     outline-offset: 3px;
+  }
+
+  dialog[open] {
+    animation: dialog-in 0.4s var(--ease-spring) both;
+  }
+
+  dialog[open]::backdrop {
+    animation: fade-in 0.3s ease-out both;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -66,8 +131,189 @@
   }
 }
 
-@utility card {
-  border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
-  background: linear-gradient(160deg, var(--color-surface-raised), var(--color-surface));
-  border-radius: 1rem;
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Contenedor principal: 1280 px con márgenes adaptables. */
+@utility container-page {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 2.75rem;
+  }
+}
+
+/* Material vidrio (Qurri): fondo translúcido, desenfoque saturado y brillo superior. */
+@utility glass {
+  background: rgb(255 255 255 / 0.045);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 18px 40px -18px rgb(0 0 0 / 0.65);
+}
+
+/* Tarjeta verde pino con profundidad y microborde. */
+@utility panel {
+  position: relative;
+  border-radius: 1.1rem;
+  border: 1px solid rgb(46 125 94 / 0.26);
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgb(40 110 82 / 0.16), transparent 55%),
+    linear-gradient(
+      170deg,
+      rgb(16 34 27 / 0.92) 0%,
+      rgb(9 19 15 / 0.94) 60%,
+      rgb(7 15 12 / 0.96) 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.045),
+    0 24px 50px -32px rgb(0 0 0 / 0.9);
+  transition:
+    border-color 0.3s var(--ease-soft),
+    transform 0.45s var(--ease-spring),
+    box-shadow 0.3s var(--ease-soft);
+}
+
+@utility panel-interactive {
+  &:hover {
+    border-color: rgb(95 214 160 / 0.5);
+    transform: translateY(-3px);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 26px 60px -30px rgb(59 148 112 / 0.55);
+  }
+}
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    transform 0.28s var(--ease-spring),
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.25s,
+    color 0.2s,
+    opacity 0.2s;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+@utility btn-primary {
+  color: #fff;
+  background: linear-gradient(180deg, #41b083 0%, #2b8763 100%);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.24),
+    0 14px 32px -14px rgb(59 148 112 / 0.75);
+
+  &:hover {
+    background: linear-gradient(180deg, #4cc191 0%, #30946c 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.28),
+      0 18px 40px -14px rgb(79 181 134 / 0.85);
+  }
+}
+
+@utility btn-outline {
+  color: var(--color-foreground);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: rgb(255 255 255 / 0.025);
+
+  &:hover {
+    border-color: rgb(111 224 170 / 0.6);
+    background: rgb(59 148 112 / 0.1);
+  }
+}
+
+@utility btn-ghost-accent {
+  color: var(--color-mint);
+  border: 1px solid rgb(95 214 160 / 0.32);
+  background: rgb(59 148 112 / 0.06);
+
+  &:hover {
+    border-color: rgb(111 224 170 / 0.7);
+    background: rgb(59 148 112 / 0.16);
+  }
+}
+
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid rgb(88 201 154 / 0.24);
+  background: rgb(8 22 17 / 0.7);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #b9cfc3;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+
+@utility eyebrow {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--color-accent-strong);
+}
+
+@utility text-gradient-accent {
+  background: linear-gradient(100deg, #8cf3c3 0%, #57cc97 42%, #2f9d70 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Textura de grano sutil para dar acabado fotográfico a los fondos. */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Aparición al hacer scroll sin JavaScript (animaciones ligadas al viewport). */
+@utility reveal {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
 }

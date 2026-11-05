@@ -40,6 +40,20 @@ export const CERTIFICATION_CATEGORIES = [
 
 export type CertificationCategory = (typeof CERTIFICATION_CATEGORIES)[number]['value']
 
+/** Ícono tecnológico que acompaña a cada certificación en las tarjetas. */
+export const CERTIFICATION_ICONS = [
+  { title: 'Python', value: 'python' },
+  { title: 'SQL / Bases de datos', value: 'sql' },
+  { title: 'Power BI', value: 'power-bi' },
+  { title: 'Excel', value: 'excel' },
+  { title: 'Machine Learning / IA', value: 'machine-learning' },
+  { title: 'Big Data', value: 'big-data' },
+  { title: 'Cloud', value: 'cloud' },
+  { title: 'Analítica', value: 'analytics' },
+] as const satisfies readonly Option[]
+
+export type CertificationIcon = (typeof CERTIFICATION_ICONS)[number]['value']
+
 /** Plataformas del ecosistema social (FR-04 / CMS-04). */
 export const SOCIAL_PLATFORMS = [
   { title: 'LinkedIn', value: 'linkedin' },

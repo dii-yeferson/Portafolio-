@@ -7,13 +7,16 @@ vi.mock('@/sanity/lib/data', () => data)
 const { GET: getCv } = await import('@/app/api/cv/route')
 const { GET: search } = await import('@/app/api/search/route')
 
+const cvRequest = (accept = 'application/json') =>
+  new NextRequest('http://localhost/api/cv', { headers: { accept } })
+
 describe('GET /api/cv', () => {
   it('redirige al PDF de Sanity forzando la descarga', async () => {
     data.getSiteSettings.mockResolvedValue({
       displayName: 'Di Yeferson',
       resume: { url: 'https://cdn.sanity.io/files/p1/production/abc.pdf' },
     })
-    const response = await getCv()
+    const response = await getCv(cvRequest())
     expect(response.status).toBe(307)
     const location = new URL(response.headers.get('location') ?? '')
     expect(location.hostname).toBe('cdn.sanity.io')
@@ -21,16 +24,23 @@ describe('GET /api/cv', () => {
     expect(response.headers.get('cache-control')).toBe('no-store')
   })
 
-  it('responde 404 si no hay CV cargado', async () => {
+  it('responde 404 en JSON a clientes de API si no hay CV', async () => {
     data.getSiteSettings.mockResolvedValue({ displayName: 'Di Yeferson', resume: null })
-    const response = await getCv()
+    const response = await getCv(cvRequest())
     expect(response.status).toBe(404)
     await expect(response.json()).resolves.toMatchObject({ error: 'resume_not_found' })
   })
 
+  it('devuelve a los navegadores a la sección de contacto si no hay CV', async () => {
+    data.getSiteSettings.mockResolvedValue({ displayName: 'Di Yeferson', resume: null })
+    const response = await getCv(cvRequest('text/html,application/xhtml+xml'))
+    expect(response.status).toBe(307)
+    expect(response.headers.get('location')).toBe('http://localhost/#contacto')
+  })
+
   it('no redirige a dominios ajenos aunque el CMS los contenga', async () => {
     data.getSiteSettings.mockResolvedValue({ resume: { url: 'https://evil.example/files/cv.pdf' } })
-    expect((await getCv()).status).toBe(404)
+    expect((await getCv(cvRequest())).status).toBe(404)
   })
 })
 
