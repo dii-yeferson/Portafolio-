@@ -62,7 +62,8 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return jsonError(422, 'validation_error', 'Datos inválidos.')
 
   const client = getWriteClient()
-  if (!client) return NextResponse.json(DISABLED, { status: 503, headers: NO_STORE_HEADERS })
+  // Sin token de escritura: el corazón funciona solo en este navegador.
+  if (!client) return NextResponse.json(DISABLED, { headers: NO_STORE_HEADERS })
 
   // Solo proyectos publicados: nadie puede crear contadores arbitrarios.
   const published = await getProjectSlugs()

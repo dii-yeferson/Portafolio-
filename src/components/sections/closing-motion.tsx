@@ -45,11 +45,15 @@ export function ClosingMotion({ lang }: { lang: Locale }) {
               key={line.start}
               className={`block ${
                 line.accent
-                  ? 'accent-serif text-aurora -my-[0.08em] text-[clamp(3.4rem,13vw,10.5rem)] leading-[1]'
+                  ? 'accent-serif text-aqua -my-[0.08em] text-[clamp(3.4rem,13vw,10.5rem)] leading-[1]'
                   : 'text-[clamp(2.9rem,11vw,9rem)] leading-[0.9] font-black tracking-[-0.055em]'
               }`}
             >
-              <SplitLetters text={line.text} offset={line.start} />
+              <SplitLetters
+                text={line.text}
+                offset={line.start}
+                letterClassName={line.accent ? 'pr-[0.04em]' : ''}
+              />
             </span>
           ))}
         </p>

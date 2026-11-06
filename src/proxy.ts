@@ -4,7 +4,7 @@ import { type NextRequest, NextResponse } from 'next/server'
  * Enrutado por idioma (Next 16 `proxy`).
  *
  * - `/en/...` se sirve tal cual (segmento `[lang] = en`).
- * - `/es/...` redirige a la versión sin prefijo para que exista una sola URL canónica.
+ * - `/es/...` se sirve igual; su `canonical` apunta a la versión sin prefijo.
  * - El resto se reescribe en silencio a `/es/...`: el español no lleva prefijo.
  */
 const PASSTHROUGH = new Set(['/cv'])
@@ -15,11 +15,8 @@ export function proxy(request: NextRequest) {
 
   if (pathname === '/en' || pathname.startsWith('/en/')) return NextResponse.next()
 
-  if (pathname === '/es' || pathname.startsWith('/es/')) {
-    const url = request.nextUrl.clone()
-    url.pathname = pathname.slice(3) || '/'
-    return NextResponse.redirect(url, 308)
-  }
+  // `/es/...` también se sirve (la URL canónica de esas páginas es la que no lleva prefijo).
+  if (pathname === '/es' || pathname.startsWith('/es/')) return NextResponse.next()
 
   const url = request.nextUrl.clone()
   url.pathname = `/es${pathname === '/' ? '' : pathname}`

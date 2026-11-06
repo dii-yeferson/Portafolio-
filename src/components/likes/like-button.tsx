@@ -57,7 +57,7 @@ export function LikeButton({
       onClick={onClick}
       aria-pressed={state.liked}
       aria-label={state.liked ? t.likes.unlike(title) : t.likes.like(title)}
-      className={`group/like relative z-10 inline-flex items-center gap-1.5 rounded-full transition-[transform,background-color,border-color] duration-150 ease-[cubic-bezier(.23,1,.32,1)] active:scale-[0.94] ${
+      className={`group/like z-10 inline-flex ${className.includes('absolute') ? '' : 'relative'} items-center gap-1.5 rounded-full transition-[transform,background-color,border-color] duration-150 ease-[cubic-bezier(.23,1,.32,1)] active:scale-[0.94] ${
         large
           ? 'glass liquid h-12 px-4 text-[0.95rem] font-extrabold'
           : 'glass h-9 px-2.5 text-[0.8rem] font-extrabold'

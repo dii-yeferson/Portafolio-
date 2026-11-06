@@ -56,41 +56,49 @@ sale exclusivamente de Sanity.
 
 ## Interfaz
 
-**Sistema «Aurora Graphite»**, con el mismo ADN de Qurri y Mikuy:
+**Vidrio líquido + minimalismo** sobre el sistema «Aurora Graphite».
 
-- **Grafito neutro** (`#09090b`, superficies `#121215` → `#212126`) en lugar de fondos teñidos.
-- **Una sola firma luminosa**: degradado aurora menta → aqua → cielo → iris, reservado para lo
-  importante (rol, botón principal, globo, cifras). **Champán** solo para distinciones.
-- **Nunito** con pesos firmes (800–900) y tracking negativo en titulares; etiquetas pequeñas en
-  mayúsculas.
-- **Vidrio** `blur(22px) saturate(180%)` con brillo superior, radios de 22 px y píldoras.
-- **Microinteracciones**: resorte suave, botones que ceden al presionar, luz que sigue al puntero
-  en las tarjetas, barrido satinado en los titulares, cifras que cuentan al aparecer, control
-  segmentado con indicador deslizante y hojas que suben desde abajo.
+- **Dos temas:** grafito (oscuro, por defecto) y porcelana (claro). El botón sol / luna revela el
+  tema nuevo en un círculo que nace del botón; la elección se recuerda y no hay parpadeo al
+  cargar (script en `<head>`). El globo cambia de paleta con el tema.
+- **Dos idiomas:** español en `/` e inglés en `/en`, con la misma página al cambiar (ES / EN),
+  `hreflang`, sitemap bilingüe y textos del CMS en ambos idiomas (campos _English_; si un campo
+  en inglés está vacío se usa el español).
+- **Píldora de vidrio** en la barra superior con idioma y tema (también en el menú del celular).
+- **Tipografía:** Nunito firme + **serif itálica de acento** (Instrument Serif) + mono en
+  mayúsculas para anillos y etiquetas. En cualquier título del panel, lo que va entre asteriscos
+  sale en serif itálica: `Proyectos que *resuelven algo.*`
+- **Voz:** frases cortas en primera persona repartidas por la página. Sin rayas largas, sin
+  comillas angulares y sin listas numeradas: la forma de trabajar es un **subtítulo vivo** en
+  serif itálica que cambia solo.
 
-| Sección / página    | Contenido                                                                                          |
-| ------------------- | -------------------------------------------------------------------------------------------------- |
-| Barra superior      | Píldora flotante de vidrio: monograma, navegación con sección activa, buscador (Ctrl/⌘ + K), CV.   |
-| Hero                | Disponibilidad, nombre, rol, lema, CTA, cifras clave y **tu retrato con el globo girando detrás**. |
-| Sobre mí            | Declaración principal y tres tarjetas: formación, stack técnico y forma de trabajo.                |
-| Proyectos           | Filtro segmentado, proyecto insignia a todo lo ancho y grilla de casos.                            |
-| Certificaciones     | Lista con ícono tecnológico, emisor, año, sello champán y verificación oficial.                    |
-| Contacto            | Invitación, formulario en hoja de vidrio, CV y todas las redes en un solo lugar.                   |
-| `/proyectos`        | Catálogo completo con filtros.                                                                     |
-| `/proyectos/[slug]` | Estudio de caso: problema, metodología, solución, resultados, métricas, galería y relacionados.    |
-| `/certificaciones`  | Catálogo filtrable por categoría y entidad emisora.                                                |
-| `/sobre-mi`         | Perfil extendido: formación, habilidades y principios.                                             |
+| Sección / página    | Contenido                                                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Hero                | Tu foto (fondo transparente) delante del globo, **nombre que se arma letra por letra en 3D** y dos anillos de texto. |
+| Sobre mí            | Una idea grande, subtítulo vivo, **trayectoria** (experiencia + formación) y con qué trabajas.                       |
+| Proyectos           | Filtro segmentado, proyecto insignia, tarjetas con **me gusta** y tus **repositorios de GitHub** al final.           |
+| Certificaciones     | Lista con ícono tecnológico, emisor, año y verificación oficial.                                                     |
+| Recomendaciones     | Solo aparece cuando apruebas alguna: foto, nombre, cargo y sello **Verificado con LinkedIn**.                        |
+| Cierre              | Pieza de movimiento sin nada que tocar: letras que se arman con el scroll y un anillo que gira, hacia el contacto.   |
+| Contacto            | Formulario (ventana en computadora, hoja que se arrastra en el celular), CV y redes.                                 |
+| `/proyectos/[slug]` | Estudio de caso + **me gusta** + **Publicar en LinkedIn** / copiar enlace / compartir.                               |
+| `/recomendar`       | Enlace para que un docente deje su recomendación verificada con LinkedIn.                                            |
 
-- **Sin repeticiones**: el nombre vive en el hero, las redes en contacto y el pie es mínimo.
-- **Adaptable** a teléfono, tablet, laptop y monitores grandes (verificado de 390 a 1440 px y sin
-  desbordamiento horizontal en ninguna página).
-- **Globo de datos** (`src/components/hero/data-globe.tsx`): continentes como puntos a partir de
-  una máscara de 4 KB (`npm run globe:generate`), arcos aurora desde Lima, se puede arrastrar, se
-  pausa fuera de pantalla y respeta `prefers-reduced-motion`.
-- **Tu foto:** súbela en _Configuración del sitio → Hero → Retrato_. Lo ideal es un PNG vertical
-  con fondo transparente (mín. 1200 × 1500 px) para que el globo gire detrás de ti.
-- **Sin imágenes todavía:** los proyectos muestran ilustraciones de marca hasta que subas
-  portadas reales desde el Studio.
+### Movimiento (criterios de Emil Kowalski y del recetario de scroll)
+
+- **Lenis sobre el scroll nativo** (nunca virtual), solo con mouse o trackpad: `lerp: 0.09`,
+  `syncTouch: false`; en el celular manda la inercia del dedo. Lenis corre dentro del mismo
+  bucle de animación de Motion (un solo `requestAnimationFrame`).
+- **`position: sticky`** para la escena del cierre (sin pin de JS) y animaciones CSS ligadas al
+  scroll (`animation-timeline`), que corren fuera del hilo principal.
+- **Solo `transform` y `opacity`.** Curvas fuertes de salida, nada aparece desde `scale(0)`,
+  botones que ceden a `0.97`, hover solo con puntero fino y todo respeta «reducir movimiento».
+- **Me gusta:** el corazón late, suelta partículas aurora, deja una onda y suena un «pop»
+  cristalino sintetizado con Web Audio (sin archivos, volumen bajo).
+- **Vaul** para la hoja inferior del formulario en el celular (curva tipo iOS, arrastrar para
+  cerrar).
+- **Por qué no hay partículas para el nombre:** el globo ya es un campo de partículas; repetir el
+  recurso le quitaría fuerza. El nombre usa letras en 3D, que es más limpio.
 
 ## Estructura
 
@@ -162,17 +170,22 @@ npm ci
 
 ## Variables de entorno
 
-| Variable                          | Obligatoria | Uso                                                                    |
-| --------------------------------- | ----------- | ---------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`            | Producción  | URL canónica (SEO, Open Graph, sitemap). Respaldo: dominio de Vercel   |
-| `NEXT_PUBLIC_SANITY_PROJECT_ID`   | Sí          | Proyecto de Sanity                                                     |
-| `NEXT_PUBLIC_SANITY_DATASET`      | Sí          | Dataset (por defecto `production`)                                     |
-| `NEXT_PUBLIC_STUDIO_ADMIN_EMAILS` | Recomendado | Correos que pueden entrar al panel (separados por comas)               |
-| `NEXT_PUBLIC_SANITY_API_VERSION`  | No          | Versión fija de la API (por defecto `2026-10-01`)                      |
-| `SANITY_REVALIDATE_SECRET`        | Producción  | Secreto compartido con el webhook (`openssl rand -hex 32`)             |
-| `RESEND_API_KEY`                  | No          | Envío del formulario de contacto mediante [Resend](https://resend.com) |
-| `CONTACT_FROM_EMAIL`              | No          | Remitente verificado en Resend                                         |
-| `CONTACT_TO_EMAIL`                | No          | Destinatario; si falta se usa el correo de _Configuración del sitio_   |
+| Variable                          | Obligatoria | Uso                                                                      |
+| --------------------------------- | ----------- | ------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_SITE_URL`            | Producción  | URL canónica (SEO, Open Graph, sitemap). Respaldo: dominio de Vercel     |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID`   | Sí          | Proyecto de Sanity                                                       |
+| `NEXT_PUBLIC_SANITY_DATASET`      | Sí          | Dataset (por defecto `production`)                                       |
+| `NEXT_PUBLIC_STUDIO_ADMIN_EMAILS` | Recomendado | Correos que pueden entrar al panel (separados por comas)                 |
+| `NEXT_PUBLIC_SANITY_API_VERSION`  | No          | Versión fija de la API (por defecto `2026-10-01`)                        |
+| `SANITY_REVALIDATE_SECRET`        | Producción  | Secreto compartido con el webhook (`openssl rand -hex 32`)               |
+| `RESEND_API_KEY`                  | No          | Envío del formulario de contacto mediante [Resend](https://resend.com)   |
+| `CONTACT_FROM_EMAIL`              | No          | Remitente verificado en Resend                                           |
+| `CONTACT_TO_EMAIL`                | No          | Destinatario; si falta se usa el correo de _Configuración del sitio_     |
+| `SANITY_API_WRITE_TOKEN`          | No          | Token _Editor_ de Sanity: activa los **me gusta** y las recomendaciones  |
+| `AUTH_SECRET`                     | No          | Firma la sesión de LinkedIn (mín. 32 caracteres, `openssl rand -hex 32`) |
+| `LINKEDIN_CLIENT_ID`              | No          | App de LinkedIn con «Sign In with LinkedIn using OpenID Connect»         |
+| `LINKEDIN_CLIENT_SECRET`          | No          | Secreto de esa app                                                       |
+| `GITHUB_TOKEN`                    | No          | Opcional: sube el límite de la API de GitHub (sin permisos)              |
 
 Sin `RESEND_API_KEY`, el formulario responde `503` y la interfaz ofrece el enlace
 `mailto:` como alternativa.
@@ -195,14 +208,39 @@ la identidad del portafolio.
 - **Publicar:** pulsa _Publicar_ y el sitio se actualiza en segundos (webhook de revalidación).
   Cada proyecto tiene _Abrir vista previa_ para verlo en el sitio.
 
+### Recomendaciones verificadas con LinkedIn
+
+1. En [LinkedIn Developers](https://www.linkedin.com/developers/apps) crea una app y activa el
+   producto **Sign In with LinkedIn using OpenID Connect**.
+2. En _Auth → Authorized redirect URLs_ agrega `https://TU-DOMINIO/api/auth/linkedin/callback`.
+3. Define `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, `AUTH_SECRET` y
+   `SANITY_API_WRITE_TOKEN` (en _sanity.io/manage → API → Tokens_, permiso _Editor_).
+4. Comparte `https://TU-DOMINIO/recomendar` con tu docente. Inicia sesión con LinkedIn, escribe y
+   la recomendación llega a _Recomendaciones → Pendiente_. Cámbiala a _Aprobada_ para publicarla.
+
+Nadie puede firmar en nombre de otra persona: el nombre y la foto vienen de LinkedIn, no del
+formulario. El correo de quien recomienda nunca se guarda. LinkedIn no entrega la URL del perfil
+por esta vía, así que la persona puede pegarla (se valida que sea `linkedin.com/in/...`).
+
+### GitHub y me gusta
+
+- **GitHub:** escribe tu usuario en _Contacto y CV → Usuario de GitHub_ (o deja el enlace de
+  GitHub en redes). Tus repositorios públicos aparecen solos, sin forks ni archivados, y se
+  actualizan cada hora.
+- **Me gusta:** con `SANITY_API_WRITE_TOKEN` el conteo se guarda en Sanity (documentos
+  `likes-<slug>`, de solo lectura en el panel). Sin el token, el corazón funciona solo en el
+  navegador de cada visitante.
+
 ## Modelo de contenido (CMS)
 
-| Documento       | Requisito | Reglas de negocio                                                                                                                                                                                   |
-| --------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `siteSettings`  | CMS-01    | **Singleton** (no se puede crear, duplicar ni eliminar). Textos globales, retrato, frases del hero, formación, habilidades, principios, SEO y el **CV en PDF** activo (se valida la extensión).     |
-| `project`       | CMS-02    | Estados **Borrador / Publicado / Archivado**: solo `Publicado` es público. Orden por `sortOrder` ascendente. Estructura de estudio de caso: problema, metodología, solución, resultados y métricas. |
-| `certification` | CMS-03    | URLs **solo HTTPS**; emisión obligatoria y no futura; vencimiento **opcional** y posterior a la emisión; exige URL de verificación o imagen.                                                        |
-| `socialLink`    | CMS-04    | Interruptor de visibilidad; HTTPS para redes y `mailto:` para correo.                                                                                                                               |
+| Documento        | Requisito | Reglas de negocio                                                                                                                                                                                   |
+| ---------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `siteSettings`   | CMS-01    | **Singleton** (no se puede crear, duplicar ni eliminar). Textos globales, retrato, frases del hero, formación, habilidades, principios, SEO y el **CV en PDF** activo (se valida la extensión).     |
+| `project`        | CMS-02    | Estados **Borrador / Publicado / Archivado**: solo `Publicado` es público. Orden por `sortOrder` ascendente. Estructura de estudio de caso: problema, metodología, solución, resultados y métricas. |
+| `certification`  | CMS-03    | URLs **solo HTTPS**; emisión obligatoria y no futura; vencimiento **opcional** y posterior a la emisión; exige URL de verificación o imagen.                                                        |
+| `socialLink`     | CMS-04    | Interruptor de visibilidad; HTTPS para redes y `mailto:` para correo.                                                                                                                               |
+| `recommendation` | Nuevo     | Llega desde `/recomendar` como **Pendiente**; solo **Aprobada** es pública. Nombre y foto de LinkedIn de solo lectura.                                                                              |
+| `likeCounter`    | Nuevo     | Contador de me gusta por proyecto. Lo escribe solo la API.                                                                                                                                          |
 
 Todas las imágenes exigen texto alternativo (accesibilidad). Las categorías y estados
 viven en `src/lib/taxonomy.ts`, la única fuente de verdad para el Studio y los filtros.
@@ -217,29 +255,34 @@ npm run typegen
 
 En _sanity.io/manage → API → Webhooks → Create webhook_:
 
-| Campo       | Valor                                                                 |
-| ----------- | --------------------------------------------------------------------- |
-| URL         | `https://TU-DOMINIO/api/revalidate`                                   |
-| Dataset     | `production`                                                          |
-| Trigger on  | Create, Update, Delete                                                |
-| Filter      | `_type in ["siteSettings", "project", "certification", "socialLink"]` |
-| Projection  | `{_type, _id}`                                                        |
-| HTTP method | `POST`                                                                |
-| Drafts      | Desactivado                                                           |
-| Secret      | El mismo valor de `SANITY_REVALIDATE_SECRET`                          |
+| Campo       | Valor                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------- |
+| URL         | `https://TU-DOMINIO/api/revalidate`                                                     |
+| Dataset     | `production`                                                                            |
+| Trigger on  | Create, Update, Delete                                                                  |
+| Filter      | `_type in ["siteSettings", "project", "certification", "socialLink", "recommendation"]` |
+| Projection  | `{_type, _id}`                                                                          |
+| HTTP method | `POST`                                                                                  |
+| Drafts      | Desactivado                                                                             |
+| Secret      | El mismo valor de `SANITY_REVALIDATE_SECRET`                                            |
 
 Respuestas: `200` revalidado (o tipo ignorado, sin reintentos), `400` cuerpo inválido,
 `401` firma inválida o ausente, `500` secreto no configurado.
 
 ## API
 
-| Método | Ruta              | Descripción                                                                                                      |
-| ------ | ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/cv` · `/api/cv` | Descarga directa del CV (redirección `307` al CDN de Sanity con `?dl=CV-Nombre.pdf`); `404` si no hay CV.        |
-| `POST` | `/api/contact`    | Formulario de contacto. JSON validado con Zod, honeypot, mismo origen, límite de 10 KB y 5 envíos/10 min por IP. |
-| `GET`  | `/api/search?q=`  | Búsqueda con relevancia (GROQ `score`) en proyectos y certificaciones. 60 consultas/min por IP.                  |
-| `POST` | `/api/revalidate` | Webhook de Sanity (ver arriba).                                                                                  |
-| `GET`  | `/api/health`     | Sonda de disponibilidad.                                                                                         |
+| Método | Ruta                                 | Descripción                                                                                                      |
+| ------ | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/cv` · `/api/cv`                    | Descarga directa del CV (redirección `307` al CDN de Sanity con `?dl=CV-Nombre.pdf`); `404` si no hay CV.        |
+| `POST` | `/api/contact`                       | Formulario de contacto. JSON validado con Zod, honeypot, mismo origen, límite de 10 KB y 5 envíos/10 min por IP. |
+| `GET`  | `/api/search?q=`                     | Búsqueda con relevancia (GROQ `score`) en proyectos y certificaciones. 60 consultas/min por IP.                  |
+| `POST` | `/api/revalidate`                    | Webhook de Sanity (ver arriba).                                                                                  |
+| `GET`  | `/api/health`                        | Sonda de disponibilidad.                                                                                         |
+| `GET`  | `/api/likes?slugs=`                  | Conteos de me gusta (`{ enabled, counts }`). 120 lecturas/min por IP.                                            |
+| `POST` | `/api/likes`                         | `{ slug, action: "like" \| "unlike" }`, solo proyectos publicados. 30 votos/min por IP.                          |
+| `GET`  | `/api/og` · `/api/og/project/[slug]` | Imágenes 1200 × 630 para compartir (portada y cada proyecto), en `?lang=es\|en`.                                 |
+| `GET`  | `/api/auth/linkedin`                 | Inicia sesión con LinkedIn (OpenID Connect, `state` anti-CSRF).                                                  |
+| `POST` | `/api/recommendations`               | Guarda una recomendación pendiente; exige la sesión firmada de LinkedIn. 3 envíos/10 min por IP.                 |
 
 Los errores siguen el formato `{ "error": "codigo", "message": "…", ...detalles }`.
 

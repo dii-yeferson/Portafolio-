@@ -84,7 +84,15 @@ describe('buildRootMetadata', () => {
       template: `%s | ${SITE_DEFAULTS.displayName}`,
     })
     expect(metadata.description).toBe(es.meta.description)
-    expect(metadata.twitter).toMatchObject({ card: 'summary' })
+    // Sin imagen en el CMS se usa la generada (1200 × 630) para compartir.
+    expect(metadata.twitter).toMatchObject({
+      card: 'summary_large_image',
+      images: ['/api/og?lang=es'],
+    })
+    expect(metadata.alternates).toMatchObject({
+      canonical: '/',
+      languages: { es: '/', en: '/en', 'x-default': '/' },
+    })
   })
 
   it('genera Open Graph 1200×630 y Twitter Card grande desde el CMS', () => {
@@ -129,7 +137,19 @@ describe('buildProjectMetadata', () => {
 
     const metadata = buildProjectMetadata(project, null)
     expect(metadata.title).toBe('Centinela Minero')
-    expect(metadata.alternates).toEqual({ canonical: '/proyectos/centinela-minero' })
+    expect(metadata.alternates).toEqual({
+      canonical: '/proyectos/centinela-minero',
+      languages: {
+        es: '/proyectos/centinela-minero',
+        en: '/en/proyectos/centinela-minero',
+        'x-default': '/proyectos/centinela-minero',
+      },
+    })
+    expect(buildProjectMetadata(project, null, 'en').openGraph).toMatchObject({
+      url: '/en/proyectos/centinela-minero',
+      locale: 'en_US',
+      images: [{ url: '/api/og/project/centinela-minero?lang=en', width: 1200, height: 630 }],
+    })
     expect(metadata.openGraph).toMatchObject({
       type: 'article',
       url: '/proyectos/centinela-minero',

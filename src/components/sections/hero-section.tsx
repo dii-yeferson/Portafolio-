@@ -15,7 +15,7 @@ import type { SiteSettings } from '@/sanity/lib/data'
 type HeroStats = { projects: number; certifications: number; technologies: number }
 
 const PORTRAIT_MASK =
-  '[mask-composite:intersect] [mask-image:linear-gradient(to_bottom,black_70%,transparent),linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]'
+  '[mask-composite:intersect] [mask-image:linear-gradient(to_bottom,black_84%,transparent),linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]'
 
 /**
  * Portada (FR-02): el nombre se arma letra por letra, dos anillos de texto

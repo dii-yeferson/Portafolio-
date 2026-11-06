@@ -34,6 +34,10 @@ export function PageHero({
         className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_85%_0%,rgba(98,210,248,0.13),transparent_65%),radial-gradient(40%_60%_at_0%_0%,rgba(149,251,223,0.07),transparent_70%)]"
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10 opacity-[0.12]" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-linear-to-b from-transparent to-background"
+      />
       <div className="container-page pt-36 pb-14 lg:pt-44 lg:pb-20">
         <nav aria-label={t.breadcrumbs} className="animate-rise">
           <ol className="flex flex-wrap items-center gap-1.5 text-[0.85rem] font-bold text-subtle">

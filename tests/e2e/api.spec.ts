@@ -130,3 +130,30 @@ test('cabeceras de seguridad y Studio no indexable', async ({ request }) => {
   expect(studio.status()).toBe(200)
   expect(studio.headers()['x-robots-tag']).toContain('noindex')
 })
+
+test.describe('API de me gusta', () => {
+  test('sin token de escritura responde desactivado (el corazón funciona localmente)', async ({
+    request,
+  }) => {
+    const response = await request.get('/api/likes?slugs=qurri,mikuy')
+    expect(response.status()).toBe(200)
+    await expect(response.json()).resolves.toMatchObject({ enabled: false })
+  })
+
+  test('valida los slugs', async ({ request }) => {
+    expect((await request.get('/api/likes?slugs=../x')).status()).toBe(400)
+  })
+})
+
+test('API de recomendaciones exige sesión de LinkedIn', async ({ request }) => {
+  const response = await request.post('/api/recommendations', { data: { message: 'hola' } })
+  expect(response.status()).toBe(401)
+})
+
+test('el inicio de sesión con LinkedIn sin configurar vuelve a /recomendar', async ({
+  request,
+}) => {
+  const response = await request.get('/api/auth/linkedin?lang=en', { maxRedirects: 0 })
+  expect(response.status()).toBe(307)
+  expect(response.headers().location).toMatch(/\/en\/recomendar\?error=config$/)
+})

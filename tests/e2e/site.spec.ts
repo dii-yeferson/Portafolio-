@@ -17,9 +17,18 @@ test('la portada muestra hero, globo, secciones y pie con el año actual', async
   await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(9, 9, 11)')
   await expect(page.locator('body')).toHaveCSS('font-family', /Nunito/)
   await expect(page.locator('#inicio canvas')).toBeVisible()
-  for (const name of ['Sobre mí', 'Proyectos', 'Certificaciones', '¿Trabajamos juntos?']) {
+  await expect(page.getByRole('heading', { level: 1, name: 'Di Yeferson' })).toBeVisible()
+  for (const name of [
+    'Me gusta que los números cuenten algo.',
+    'Proyectos que resuelven algo.',
+    'Certificaciones',
+    '¿Tienes datos y una pregunta? Hablemos.',
+  ]) {
     await expect(page.getByRole('heading', { level: 2, name, exact: true })).toBeVisible()
   }
+  // El retrato real va delante del globo y nunca hay recomendaciones inventadas.
+  await expect(page.getByRole('img', { name: 'Retrato de Di Yeferson' })).toBeVisible()
+  await expect(page.locator('#recomendaciones')).toHaveCount(0)
   await expect(page.getByRole('link', { name: /Descargar CV/ }).first()).toBeVisible()
   await expect(page.locator('footer')).toContainText(`© ${new Date().getFullYear()}`)
 })
@@ -86,8 +95,9 @@ test('el formulario de contacto (ventana) informa la alternativa si no hay prove
   page,
 }) => {
   await page.goto('/#contacto')
-  await page.getByRole('button', { name: 'Contáctame' }).click()
-  const dialog = page.getByRole('dialog', { name: '¿Trabajamos juntos?' })
+  await page.getByRole('button', { name: 'Escríbeme' }).click()
+  // Computadora: ventana centrada. Celular: hoja inferior (Vaul).
+  const dialog = page.getByRole('dialog', { name: 'Hablemos' })
   await expect(dialog).toBeVisible()
   await dialog.getByLabel('Nombre').fill('Visitante E2E')
   await dialog.getByLabel('Correo').fill('visitante@example.com')
@@ -120,15 +130,84 @@ test('páginas internas: proyectos, certificaciones y perfil', async ({ page }) 
 test('un proyecto inexistente responde 404', async ({ page }) => {
   const response = await page.goto('/proyectos/proyecto-que-no-existe')
   expect(response?.status()).toBe(404)
-  await expect(page.getByRole('heading', { name: 'Página no encontrada' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Esta página no existe' })).toBeVisible()
 })
 
 test('sin desbordamiento horizontal', async ({ page }) => {
-  for (const path of ['/', '/proyectos', '/certificaciones', '/sobre-mi']) {
+  for (const path of ['/', '/en', '/proyectos', '/certificaciones', '/sobre-mi', '/recomendar']) {
     await page.goto(path)
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     )
     expect(overflow, path).toBeLessThanOrEqual(0)
   }
+})
+
+test('versión en inglés bajo /en con hreflang y cambio de idioma', async ({ page }) => {
+  const response = await page.goto('/en')
+  expect(response?.status()).toBe(200)
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Projects that solve something.' }),
+  ).toBeVisible()
+  await expect(page.locator('link[rel="alternate"][hreflang="es"]')).toHaveAttribute(
+    'href',
+    /^https?:\/\/[^/]+\/?$/,
+  )
+
+  await page.goto('/proyectos/qurri')
+  await page.getByRole('link', { name: 'English' }).first().click()
+  await expect(page).toHaveURL(/\/en\/proyectos\/qurri$/)
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await page.getByRole('link', { name: 'Español' }).first().click()
+  await expect(page).toHaveURL(/\/proyectos\/qurri$/)
+})
+
+test('/es responde y declara como canónica la URL sin prefijo', async ({ page }) => {
+  const response = await page.goto('/es/proyectos')
+  expect(response?.status()).toBe(200)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /[^/]\/proyectos$/)
+})
+
+test('modo claro y oscuro: se aplica al instante y se recuerda', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.getByRole('button', { name: 'Cambiar a modo claro' }).first().click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(245, 245, 241)')
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.getByRole('button', { name: 'Cambiar a modo oscuro' }).first().click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+})
+
+test('me gusta: el corazón se marca y se recuerda en este navegador', async ({ page }) => {
+  await page.goto('/proyectos/centinela-minero')
+  const heart = page.getByRole('button', { name: 'Me gusta Centinela Minero' })
+  await heart.click()
+  const liked = page.getByRole('button', { name: 'Quitar me gusta de Centinela Minero' })
+  await expect(liked).toHaveAttribute('aria-pressed', 'true')
+  await page.reload()
+  await expect(liked).toHaveAttribute('aria-pressed', 'true')
+  await liked.click()
+  await expect(heart).toHaveAttribute('aria-pressed', 'false')
+})
+
+test('cada proyecto tiene imagen para compartir y botón de LinkedIn', async ({ page, request }) => {
+  await page.goto('/proyectos/qurri')
+  await expect(page.getByRole('button', { name: 'Publicar en LinkedIn' })).toBeVisible()
+  const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content')
+  expect(ogImage).toContain('/api/og/project/qurri')
+  const image = await request.get(new URL(ogImage ?? '').pathname + '?lang=es')
+  expect(image.status()).toBe(200)
+  expect(image.headers()['content-type']).toContain('image/png')
+})
+
+test('recomendaciones: sin LinkedIn configurado se explica que se activan pronto', async ({
+  page,
+}) => {
+  const response = await page.goto('/recomendar')
+  expect(response?.status()).toBe(200)
+  await expect(page.getByText('Las recomendaciones se activan muy pronto.')).toBeVisible()
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
 })

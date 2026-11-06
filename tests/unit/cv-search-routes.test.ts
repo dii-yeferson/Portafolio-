@@ -76,7 +76,7 @@ describe('GET /api/search', () => {
       }),
     )
     expect(response.status).toBe(200)
-    expect(data.searchContent).toHaveBeenCalledWith('centinela* mine*', 5)
+    expect(data.searchContent).toHaveBeenCalledWith('centinela* mine*', 5, 'es')
     const body = await response.json()
     expect(body.results).toEqual([
       {
