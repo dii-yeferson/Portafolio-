@@ -4,16 +4,13 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 
 import { SegmentedControl } from '@/components/ui/segmented-control'
+import { useI18n } from '@/i18n/client'
+import { projectCategoryLabel } from '@/i18n/labels'
 import { PROJECT_CATEGORIES, type ProjectCategory } from '@/lib/taxonomy'
 
 import { FeaturedProject, ProjectCard, type ProjectCardData } from './project-card'
 
 type Filter = 'all' | ProjectCategory
-
-const FILTERS: { value: Filter; label: string }[] = [
-  { value: 'all', label: 'Todos' },
-  ...PROJECT_CATEGORIES.map(({ value, title }) => ({ value, label: title })),
-]
 
 /**
  * Catálogo de proyectos (FR-05): en «Todos» el proyecto insignia ocupa el
@@ -27,7 +24,15 @@ export function ProjectsShowcase({
   projects: ProjectCardData[]
   limit?: number
 }) {
+  const { lang, t } = useI18n()
   const [filter, setFilter] = useState<Filter>('all')
+  // Solo las categorías que tienen proyectos: ningún filtro lleva a una lista vacía.
+  const filters: { value: Filter; label: string }[] = [
+    { value: 'all', label: t.projects.all },
+    ...PROJECT_CATEGORIES.filter(({ value }) =>
+      projects.some((project) => project.category.includes(value)),
+    ).map(({ value }) => ({ value, label: projectCategoryLabel(value, lang) })),
+  ]
   const featured = filter === 'all' ? projects.find((project) => project.featured) : undefined
   const filtered = projects.filter(
     (project) => project !== featured && (filter === 'all' || project.category.includes(filter)),
@@ -38,8 +43,8 @@ export function ProjectsShowcase({
     <div>
       <div className="reveal">
         <SegmentedControl
-          label="Filtrar proyectos por categoría"
-          options={FILTERS}
+          label={t.projects.filterLabel}
+          options={filters}
           value={filter}
           onChange={setFilter}
         />
@@ -47,12 +52,12 @@ export function ProjectsShowcase({
 
       {featured ? (
         <div className="reveal mt-8">
-          <FeaturedProject project={featured} />
+          <FeaturedProject project={featured} lang={lang} />
         </div>
       ) : null}
 
       {grid.length === 0 && !featured ? (
-        <p className="mt-10 text-muted">Aún no hay proyectos publicados en esta categoría.</p>
+        <p className="mt-10 text-muted">{t.projects.empty}</p>
       ) : (
         <motion.ul layout className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout" initial={false}>
@@ -65,7 +70,7 @@ export function ProjectsShowcase({
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 32 }}
               >
-                <ProjectCard project={project} />
+                <ProjectCard project={project} lang={lang} />
               </motion.li>
             ))}
           </AnimatePresence>

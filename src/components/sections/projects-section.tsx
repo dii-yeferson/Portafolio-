@@ -1,20 +1,27 @@
 import { ProjectsShowcase } from '@/components/projects/projects-showcase'
 import { SectionHeading } from '@/components/ui/section-heading'
+import { type Locale, localePath } from '@/i18n/config'
+import { getDictionary } from '@/i18n'
 import { resolveCopy } from '@/lib/copy'
 import type { ProjectSummary, SiteSettings } from '@/sanity/lib/data'
 
 export function ProjectsSection({
   projects,
   settings,
+  lang,
+  children,
 }: {
   projects: ProjectSummary[]
   settings: SiteSettings
+  lang: Locale
+  /** Bloque opcional al final (repositorios de GitHub). */
+  children?: React.ReactNode
 }) {
+  const t = getDictionary(lang).projects
   const copy = resolveCopy(settings?.projectsCopy, {
-    label: 'Trabajo seleccionado',
-    title: 'Proyectos',
-    description:
-      'Casos reales contados de principio a fin: el problema, la metodología, la solución y sus resultados.',
+    label: t.label,
+    title: t.title,
+    description: t.description,
   })
 
   return (
@@ -29,9 +36,10 @@ export function ProjectsSection({
           label={copy.label}
           title={copy.title}
           description={copy.description}
-          action={{ href: '/proyectos', label: 'Ver todos' }}
+          action={{ href: localePath(lang, '/proyectos'), label: t.viewAll }}
         />
         <ProjectsShowcase projects={projects} limit={3} />
+        {children}
       </div>
     </section>
   )

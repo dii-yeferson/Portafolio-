@@ -11,7 +11,7 @@ export function LogoMark({ className }: { className?: string }) {
       </defs>
       <path
         d="M4 4.5h7.5a10.5 10.5 0 0 1 0 21H4z"
-        stroke="#f4f4f2"
+        stroke="currentColor"
         strokeWidth="3.4"
         strokeLinejoin="round"
       />

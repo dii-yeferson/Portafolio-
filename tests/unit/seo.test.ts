@@ -7,6 +7,7 @@ import {
   normalizeTwitterHandle,
   serializeJsonLd,
 } from '@/lib/seo'
+import { es } from '@/i18n/dictionaries/es'
 import { getSiteUrl, SITE_DEFAULTS } from '@/lib/site'
 import type { ProjectDetail, SiteSettings } from '@/sanity/lib/data'
 
@@ -82,7 +83,7 @@ describe('buildRootMetadata', () => {
       default: `${SITE_DEFAULTS.displayName} · ${SITE_DEFAULTS.tagline}`,
       template: `%s | ${SITE_DEFAULTS.displayName}`,
     })
-    expect(metadata.description).toBe(SITE_DEFAULTS.description)
+    expect(metadata.description).toBe(es.meta.description)
     expect(metadata.twitter).toMatchObject({ card: 'summary' })
   })
 

@@ -2,6 +2,7 @@
 
 import { useId, useState } from 'react'
 
+import { useI18n } from '@/i18n/client'
 import { CONTACT_LIMITS } from '@/lib/contact/limits'
 
 type FieldName = 'name' | 'email' | 'subject' | 'message'
@@ -18,6 +19,8 @@ type ApiResponse = { message?: string; fieldErrors?: FieldErrors; fallback?: str
 
 /** Formulario de contacto conectado a `/api/contact`, con alternativa `mailto:` (FR-08). */
 export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
+  const { t: dict } = useI18n()
+  const t = dict.contact
   const id = useId()
   const [status, setStatus] = useState<Status>({ state: 'idle' })
   const mailto = contactEmail ? `mailto:${contactEmail}` : null
@@ -45,14 +48,14 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
       } else {
         setStatus({
           state: 'error',
-          message: body.message ?? 'No se pudo enviar el mensaje.',
+          message: t.error,
           fieldErrors: body.fieldErrors,
         })
       }
     } catch {
       setStatus({
         state: 'error',
-        message: 'Error de red. Revisa tu conexión e inténtalo de nuevo.',
+        message: t.network,
       })
     }
   }
@@ -63,13 +66,13 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
     'aria-invalid': fieldErrors?.[name] ? true : undefined,
     'aria-describedby': fieldErrors?.[name] ? `${id}-${name}-error` : undefined,
     className:
-      'w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 font-semibold outline-none transition-[border-color,background-color,box-shadow] placeholder:text-subtle focus:border-aqua/60 focus:bg-surface-3 focus:shadow-[0_0_0_4px_rgba(107,222,238,0.12)] aria-invalid:border-danger',
+      'w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 font-semibold outline-none transition-[border-color,background-color,box-shadow] placeholder:text-subtle focus:border-aqua/60 focus:bg-surface-3 focus:shadow-[0_0_0_4px_rgb(107_222_238/0.14)] aria-invalid:border-danger',
   })
 
   const error = (name: FieldName) =>
     fieldErrors?.[name]?.[0] ? (
-      <p id={`${id}-${name}-error`} className="mt-1 text-sm text-red-300">
-        {fieldErrors[name][0]}
+      <p id={`${id}-${name}-error`} className="mt-1 text-sm font-semibold text-danger">
+        {t.fieldErrors[name]}
       </p>
     ) : null
 
@@ -82,7 +85,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor={`${id}-name`} className="mb-1.5 block text-sm font-bold text-muted">
-            Nombre
+            {t.name}
           </label>
           <input
             {...field('name')}
@@ -96,7 +99,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
         </div>
         <div>
           <label htmlFor={`${id}-email`} className="mb-1.5 block text-sm font-bold text-muted">
-            Correo
+            {t.email}
           </label>
           <input
             {...field('email')}
@@ -110,14 +113,14 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
       </div>
       <div>
         <label htmlFor={`${id}-subject`} className="mb-1.5 block text-sm font-bold text-muted">
-          Asunto <span className="text-muted/70">(opcional)</span>
+          {t.subject} <span className="text-subtle">{t.optional}</span>
         </label>
         <input {...field('subject')} type="text" maxLength={CONTACT_LIMITS.subject.max} />
         {error('subject')}
       </div>
       <div>
         <label htmlFor={`${id}-message`} className="mb-1.5 block text-sm font-bold text-muted">
-          Mensaje
+          {t.message}
         </label>
         <textarea
           {...field('message')}
@@ -131,7 +134,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
 
       {/* Honeypot: oculto para personas, visible para bots. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-        <label htmlFor={`${id}-website`}>No completar</label>
+        <label htmlFor={`${id}-website`}>{t.honeypot}</label>
         <input id={`${id}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
@@ -141,31 +144,29 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
           disabled={status.state === 'submitting'}
           className="btn btn-primary h-12 px-7 text-base disabled:opacity-60"
         >
-          {status.state === 'submitting' ? 'Enviando…' : 'Enviar mensaje'}
+          {status.state === 'submitting' ? t.sending : t.send}
         </button>
         {mailto ? (
           <a
             href={mailto}
             className="text-sm text-muted underline-offset-4 hover:text-foreground hover:underline"
           >
-            o escríbeme a {contactEmail}
+            {t.orEmail(contactEmail ?? '')}
           </a>
         ) : null}
       </div>
 
       <div id={`${id}-status`} role="status" aria-live="polite" className="text-sm">
-        {status.state === 'success' ? (
-          <p className="font-bold text-success">
-            ¡Gracias! Tu mensaje fue enviado. Te responderé pronto.
-          </p>
+        {status.state === 'success' ? <p className="font-bold text-success">{t.success}</p> : null}
+        {status.state === 'error' ? (
+          <p className="font-semibold text-danger">{status.message}</p>
         ) : null}
-        {status.state === 'error' ? <p className="text-red-300">{status.message}</p> : null}
         {status.state === 'unavailable' ? (
           <p className="text-muted">
-            El formulario no está disponible ahora.{' '}
+            {t.unavailable}{' '}
             {status.fallback ? (
               <a href={status.fallback} className="font-bold text-aqua underline">
-                Escríbeme por correo
+                {t.emailInstead}
               </a>
             ) : null}
           </p>

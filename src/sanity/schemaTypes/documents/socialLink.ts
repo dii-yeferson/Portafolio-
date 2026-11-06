@@ -50,6 +50,12 @@ export const socialLink = defineType({
       validation: (rule) => rule.max(80),
     }),
     defineField({
+      name: 'labelEn',
+      title: 'Etiqueta (English)',
+      type: 'string',
+      validation: (rule) => rule.max(80),
+    }),
+    defineField({
       name: 'visibility',
       title: 'Visible en el sitio',
       type: 'boolean',

@@ -1,7 +1,8 @@
 import { CogIcon } from '@sanity/icons/Cog'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
-import { validatePdfFile, validateYearRange } from '../../lib/validation'
+import { EXPERIENCE_KINDS } from '../../../lib/taxonomy'
+import { validateDateOrder, validatePdfFile, validateYearRange } from '../../lib/validation'
 import { altTextField } from '../objects/fields'
 
 /** CMS-01 · Documento único (singleton) con los textos globales y el CV activo. */
@@ -17,6 +18,7 @@ export const siteSettings = defineType({
     { name: 'contact', title: 'Contacto y CV' },
     { name: 'texts', title: 'Textos del sitio' },
     { name: 'seo', title: 'SEO' },
+    { name: 'english', title: 'English' },
   ],
   fields: [
     defineField({
@@ -65,7 +67,8 @@ export const siteSettings = defineType({
     defineField({
       name: 'heroPhrases',
       title: 'Frases del hero',
-      description: 'Lema y frases rotativas. La primera es el lema principal.',
+      description:
+        'La primera es el lema. La segunda, si existe, aparece al lado en serif itálica (p. ej. «Detrás de cada dato hay una decisión.» + «Me gusta encontrarla.»).',
       type: 'array',
       group: 'hero',
       of: [defineArrayMember({ type: 'string', validation: (rule) => rule.required().max(90) })],
@@ -74,14 +77,14 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'heroBadges',
-      title: 'Insignias del hero',
+      title: 'Palabras del anillo',
       description:
-        'Hasta 3 especialidades que orbitan alrededor del globo, p. ej. Análisis, Modelado, IA.',
+        'Hasta 5 palabras que giran en el anillo alrededor del globo, p. ej. Análisis, Modelado, IA aplicada.',
       type: 'array',
       group: 'hero',
       of: [defineArrayMember({ type: 'string', validation: (rule) => rule.max(30) })],
       options: { layout: 'tags' },
-      validation: (rule) => rule.max(3).unique(),
+      validation: (rule) => rule.max(5).unique(),
     }),
     defineField({
       name: 'resumeFile',
@@ -156,6 +159,19 @@ export const siteSettings = defineType({
               validation: (rule) => rule.max(400),
             }),
             defineField({
+              name: 'programEn',
+              title: 'Programa (English)',
+              type: 'string',
+              validation: (rule) => rule.max(120),
+            }),
+            defineField({
+              name: 'descriptionEn',
+              title: 'Descripción (English)',
+              type: 'text',
+              rows: 3,
+              validation: (rule) => rule.max(400),
+            }),
+            defineField({
               name: 'image',
               title: 'Imagen de fondo',
               description: 'Opcional: foto del campus o de la institución.',
@@ -167,6 +183,99 @@ export const siteSettings = defineType({
           preview: { select: { title: 'program', subtitle: 'institution', media: 'image' } },
         }),
       ],
+    }),
+    defineField({
+      name: 'experience',
+      title: 'Experiencia',
+      description:
+        'Prácticas, empleos, proyectos independientes o voluntariado. Mientras esté vacío, la línea de tiempo muestra tu formación.',
+      type: 'array',
+      group: 'about',
+      of: [
+        defineArrayMember({
+          name: 'experienceItem',
+          title: 'Experiencia',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'kind',
+              title: 'Tipo',
+              type: 'string',
+              options: { list: [...EXPERIENCE_KINDS], layout: 'radio', direction: 'horizontal' },
+              initialValue: 'internship',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'role',
+              title: 'Cargo',
+              type: 'string',
+              validation: (rule) => rule.required().max(80),
+            }),
+            defineField({
+              name: 'organization',
+              title: 'Organización',
+              type: 'string',
+              validation: (rule) => rule.required().max(80),
+            }),
+            defineField({
+              name: 'startDate',
+              title: 'Inicio',
+              type: 'date',
+              options: { dateFormat: 'MM/YYYY' },
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'endDate',
+              title: 'Fin',
+              description: 'Déjalo vacío si sigue en curso.',
+              type: 'date',
+              options: { dateFormat: 'MM/YYYY' },
+              validation: (rule) =>
+                rule.custom((endDate, context) =>
+                  validateDateOrder(
+                    (context.parent as { startDate?: string } | undefined)?.startDate,
+                    endDate,
+                  ),
+                ),
+            }),
+            defineField({
+              name: 'description',
+              title: 'Qué hiciste',
+              description: 'Una o dos frases, en primera persona.',
+              type: 'text',
+              rows: 3,
+              validation: (rule) => rule.max(300),
+            }),
+            defineField({
+              name: 'roleEn',
+              title: 'Cargo (English)',
+              type: 'string',
+              validation: (rule) => rule.max(80),
+            }),
+            defineField({
+              name: 'descriptionEn',
+              title: 'Qué hiciste (English)',
+              type: 'text',
+              rows: 3,
+              validation: (rule) => rule.max(300),
+            }),
+          ],
+          preview: { select: { title: 'role', subtitle: 'organization' } },
+        }),
+      ],
+      validation: (rule) => rule.max(12),
+    }),
+    defineField({
+      name: 'githubUsername',
+      title: 'Usuario de GitHub',
+      description:
+        'Tus repositorios públicos aparecen solos en el sitio (sin forks ni archivados). Ejemplo: dii-yeferson',
+      type: 'string',
+      group: 'contact',
+      validation: (rule) =>
+        rule.regex(/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/, {
+          name: 'usuario de GitHub',
+        }),
     }),
     defineField({
       name: 'skillGroups',
@@ -185,6 +294,12 @@ export const siteSettings = defineType({
               title: 'Grupo',
               type: 'string',
               validation: (rule) => rule.required().max(60),
+            }),
+            defineField({
+              name: 'titleEn',
+              title: 'Grupo (English)',
+              type: 'string',
+              validation: (rule) => rule.max(60),
             }),
             defineField({
               name: 'skills',
@@ -223,6 +338,19 @@ export const siteSettings = defineType({
               rows: 3,
               validation: (rule) => rule.max(300),
             }),
+            defineField({
+              name: 'titleEn',
+              title: 'Título (English)',
+              type: 'string',
+              validation: (rule) => rule.max(60),
+            }),
+            defineField({
+              name: 'descriptionEn',
+              title: 'Descripción (English)',
+              type: 'text',
+              rows: 3,
+              validation: (rule) => rule.max(300),
+            }),
           ],
         }),
       ],
@@ -253,6 +381,46 @@ export const siteSettings = defineType({
       description: 'La última palabra del título se resalta con el degradado.',
       type: 'sectionCopy',
       group: 'texts',
+    }),
+    defineField({
+      name: 'taglineEn',
+      title: 'Tagline',
+      description: 'Versión en inglés. Cualquier campo vacío usa el texto en español.',
+      type: 'string',
+      group: 'english',
+      validation: (rule) => rule.max(90),
+    }),
+    defineField({
+      name: 'availabilityEn',
+      title: 'Availability',
+      type: 'string',
+      group: 'english',
+      validation: (rule) => rule.max(48),
+    }),
+    defineField({
+      name: 'summaryEn',
+      title: 'Summary',
+      type: 'text',
+      rows: 5,
+      group: 'english',
+      validation: (rule) => rule.max(900),
+    }),
+    defineField({
+      name: 'heroPhrasesEn',
+      title: 'Hero phrases',
+      type: 'array',
+      group: 'english',
+      of: [defineArrayMember({ type: 'string', validation: (rule) => rule.max(90) })],
+      validation: (rule) => rule.max(6),
+    }),
+    defineField({
+      name: 'heroBadgesEn',
+      title: 'Orbit words',
+      type: 'array',
+      group: 'english',
+      of: [defineArrayMember({ type: 'string', validation: (rule) => rule.max(30) })],
+      options: { layout: 'tags' },
+      validation: (rule) => rule.max(5),
     }),
     defineField({
       name: 'seoMeta',

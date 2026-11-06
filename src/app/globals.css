@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 /*
- * Aurora Graphite — sistema de diseño del portafolio.
+ * Aurora Graphite: sistema de diseño del portafolio.
  *
- * Mismo ADN que Qurri y Mikuy: grafito neutro (no teñido), una sola firma
- * luminosa (aurora: menta → aqua → cielo → iris) usada con moderación, champán
- * para distinciones, Nunito con pesos firmes, vidrio con blur + saturación y
- * movimiento con resorte suave.
+ * Vidrio líquido + minimalismo. Grafito neutro en oscuro, porcelana en
+ * claro, una sola firma luminosa (aurora) usada con moderación, Nunito con
+ * pesos firmes y una serif itálica de acento. El movimiento solo anima
+ * `transform` y `opacity` y respeta «reducir movimiento».
  */
 @theme {
-  /* Grafito */
+  /* Grafito (modo oscuro por defecto; el claro redefine estos tokens). */
   --color-background: #09090b;
   --color-surface: #121215;
   --color-surface-2: #18181c;
@@ -19,6 +19,9 @@
   --color-foreground: #f4f4f2;
   --color-muted: #a1a1aa;
   --color-subtle: #6b6b75;
+  --color-ink: #ffffff;
+  --color-sheet: rgb(18 18 22 / 0.94);
+  --color-scrim: rgb(0 0 0 / 0.7);
 
   /* Aurora (firma de marca) */
   --color-mint: #95fbdf;
@@ -33,16 +36,22 @@
 
   --color-success: #3cc867;
   --color-danger: #ff6b6b;
+  --color-heart: #ff5d7a;
 
   --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
+  /* Curvas (Emil Kowalski): salida fuerte, movimiento en pantalla y cajón tipo iOS. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-spring: cubic-bezier(0.22, 1.12, 0.36, 1);
   --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
 
-  --animate-rise: rise 0.9s var(--ease-soft) both;
+  --animate-rise: rise 0.9s var(--ease-out) both;
   --animate-fade: fade 0.8s ease-out both;
-  --animate-float: float 6s ease-in-out infinite;
 
   @keyframes rise {
     from {
@@ -63,21 +72,16 @@
       opacity: 1;
     }
   }
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-7px);
-    }
-  }
 }
 
 @layer base {
   :root {
     color-scheme: dark;
+    --ink-rgb: 255 255 255;
+    --shadow-rgb: 0 0 0;
+    --glass-bg: rgb(22 22 26 / 0.58);
+    --glass-bg-strong: rgb(18 18 22 / 0.82);
+    --seg-active: #26262c;
     --aurora: linear-gradient(
       110deg,
       #95fbdf 0%,
@@ -88,12 +92,63 @@
     );
   }
 
+  /* Porcelana: mismo sistema, otra luz. */
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --color-background: #f5f5f1;
+    --color-surface: #ffffff;
+    --color-surface-2: #f0f0ec;
+    --color-surface-3: #e7e7e2;
+    --color-line: rgb(12 12 16 / 0.08);
+    --color-line-strong: rgb(12 12 16 / 0.15);
+    --color-foreground: #0c0c10;
+    --color-muted: #50505a;
+    --color-subtle: #7a7a84;
+    --color-ink: #0c0c10;
+    --color-sheet: rgb(255 255 255 / 0.94);
+    --color-scrim: rgb(24 24 32 / 0.32);
+    --color-mint: #0fa888;
+    --color-aqua: #0a8fa5;
+    --color-sky: #1683c9;
+    --color-iris: #5262e6;
+    --color-on-aurora: #ffffff;
+    --color-champagne: #8f6a2a;
+    --color-champagne-deep: #74551f;
+    --color-success: #16954a;
+    --color-danger: #d63b3b;
+    --color-heart: #e8365a;
+    --ink-rgb: 12 12 16;
+    --shadow-rgb: 40 40 60;
+    --glass-bg: rgb(255 255 255 / 0.6);
+    --glass-bg-strong: rgb(255 255 255 / 0.82);
+    --seg-active: #ffffff;
+    --aurora: linear-gradient(110deg, #0fa888 0%, #0a9db0 32%, #1683c9 66%, #5262e6 100%);
+  }
+
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
-    scrollbar-color: #2a2a30 var(--color-background);
+    scrollbar-color: rgb(var(--ink-rgb) / 0.18) var(--color-background);
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+  }
+
+  /* Lenis suaviza el scroll real; el scroll nativo suave se apaga mientras actúa. */
+  html.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
   }
 
   body {
@@ -121,7 +176,7 @@
 
   ::selection {
     background: rgb(107 222 238 / 0.32);
-    color: #fff;
+    color: var(--color-foreground);
   }
 
   :focus-visible {
@@ -129,13 +184,20 @@
     outline-offset: 3px;
   }
 
-  /* Hojas que suben con resorte, como en Qurri. */
+  /* Modales: aparecen desde 0.96 con opacidad (nunca desde la nada). */
   dialog[open] {
-    animation: sheet-in 0.5s var(--ease-spring) both;
+    animation: modal-in 0.26s var(--ease-out) both;
   }
 
   dialog[open]::backdrop {
-    animation: fade 0.3s ease-out both;
+    animation: fade 0.26s var(--ease-out) both;
+  }
+
+  /* Cambio de tema: el nuevo tema se revela en círculo desde el botón (JS). */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -153,10 +215,10 @@
   }
 }
 
-@keyframes sheet-in {
+@keyframes modal-in {
   from {
-    opacity: 0.4;
-    transform: translateY(40px);
+    opacity: 0;
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
@@ -175,15 +237,6 @@
   }
 }
 
-@keyframes satin {
-  from {
-    background-position: 120% 0;
-  }
-  to {
-    background-position: -20% 0;
-  }
-}
-
 @keyframes ping-soft {
   0% {
     transform: scale(1);
@@ -193,6 +246,102 @@
   100% {
     transform: scale(2.6);
     opacity: 0;
+  }
+}
+
+/* Letras que se arman girando en 3D (portada y cierre). */
+@keyframes letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em) rotateX(-95deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* Mancha de aurora que respira detrás del globo (solo transform). */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -3%, 0) rotate(28deg) scale(1.08);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 1;
+  }
+}
+
+/* Partículas del «me gusta». */
+@keyframes burst {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateY(calc(var(--d, 22px) * -1)) scale(0.2);
+  }
+}
+
+@keyframes heart-pop {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.82);
+  }
+  65% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes ring-pop {
+  from {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -211,31 +360,49 @@
   }
 }
 
-/* Tarjeta base: superficie grafito, microborde y brillo superior. */
+/* Serif itálica de acento (mezcla tipográfica de la marca). */
+@utility accent-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Mono en mayúsculas para etiquetas técnicas y anillos. */
+@utility mono-caps {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Tarjeta base: superficie, microborde y brillo superior. */
 @utility surface-card {
   position: relative;
   isolation: isolate;
   border-radius: 1.375rem;
   border: 1px solid var(--color-line);
   background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.028), rgb(255 255 255 / 0.008)),
+    linear-gradient(180deg, rgb(var(--ink-rgb) / 0.028), rgb(var(--ink-rgb) / 0.008)),
     var(--color-surface);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.05),
-    0 30px 60px -40px rgb(0 0 0 / 0.9);
+    0 30px 60px -40px rgb(var(--shadow-rgb) / 0.55);
   transition:
-    border-color 0.3s var(--ease-soft),
-    transform 0.45s var(--ease-spring),
-    box-shadow 0.35s var(--ease-soft);
+    border-color 0.3s var(--ease-out),
+    transform 0.45s var(--ease-out),
+    box-shadow 0.35s var(--ease-out);
 }
 
 @utility card-hover {
-  &:hover {
-    border-color: var(--color-line-strong);
-    transform: translateY(-3px);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.07),
-      0 36px 70px -40px rgb(0 0 0 / 0.95);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: var(--color-line-strong);
+      transform: translateY(-3px);
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.07),
+        0 36px 70px -40px rgb(var(--shadow-rgb) / 0.65);
+    }
   }
 }
 
@@ -253,7 +420,7 @@
       transparent 45%
     );
     opacity: 0;
-    transition: opacity 0.35s var(--ease-soft);
+    transition: opacity 0.35s var(--ease-out);
     pointer-events: none;
   }
 
@@ -262,15 +429,47 @@
   }
 }
 
-/* Vidrio (Qurri): fondo translúcido, desenfoque saturado y brillo superior. */
+/* Vidrio: translúcido, desenfoque saturado, brillo superior y sombra suave. */
 @utility glass {
-  background: rgb(22 22 26 / 0.62);
+  background: var(--glass-bg);
   -webkit-backdrop-filter: blur(22px) saturate(180%);
   backdrop-filter: blur(22px) saturate(180%);
-  border: 1px solid rgb(255 255 255 / 0.09);
+  border: 1px solid rgb(var(--ink-rgb) / 0.09);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.08),
-    0 18px 40px -16px rgb(0 0 0 / 0.7);
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    inset 0 -1px 0 rgb(var(--ink-rgb) / 0.03),
+    0 18px 40px -16px rgb(var(--shadow-rgb) / 0.5);
+}
+
+/*
+ * Vidrio líquido: borde especular que capta la luz en las esquinas, como un
+ * lente. Se combina con `glass`; el elemento necesita `position` propia.
+ */
+@utility liquid {
+  isolation: isolate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.5),
+      rgb(255 255 255 / 0) 32%,
+      rgb(255 255 255 / 0) 64%,
+      rgb(255 255 255 / 0.28)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
 }
 
 /* Borde con la firma aurora. */
@@ -294,32 +493,6 @@
   color: transparent;
 }
 
-@utility text-champagne {
-  background: linear-gradient(110deg, #f5e3bd, #d4b47c 55%, #b8925a);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Barrido satinado una sola vez al cargar (titulares). */
-@utility text-satin {
-  background: linear-gradient(
-    100deg,
-    #f4f4f2 0%,
-    #f4f4f2 42%,
-    #ffffff 47%,
-    #c4fbec 50%,
-    #f4f4f2 56%,
-    #f4f4f2 100%
-  );
-  background-size: 260% 100%;
-  background-position: -20% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: satin 2.6s var(--ease-soft) 0.5s both;
-}
-
 @utility label {
   font-size: 0.72rem;
   font-weight: 800;
@@ -337,7 +510,7 @@
   font-weight: 800;
   white-space: nowrap;
   transition:
-    transform 0.28s var(--ease-spring),
+    transform 160ms var(--ease-out),
     background 0.2s,
     border-color 0.2s,
     box-shadow 0.25s,
@@ -345,11 +518,11 @@
     filter 0.2s;
 
   &:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
   }
 }
 
-/* Botón principal con la firma aurora y resplandor (Qurri primary-grad-btn). */
+/* Botón principal con la firma aurora y resplandor. */
 @utility btn-primary {
   color: var(--color-on-aurora);
   background: var(--aurora);
@@ -357,23 +530,27 @@
     inset 0 1px 0 rgb(255 255 255 / 0.45),
     0 14px 34px -14px rgb(98 210 248 / 0.65);
 
-  &:hover {
-    filter: brightness(1.06) saturate(1.05);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.5),
-      0 18px 44px -14px rgb(98 210 248 / 0.85);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      filter: brightness(1.06) saturate(1.05);
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.5),
+        0 18px 44px -14px rgb(98 210 248 / 0.85);
+    }
   }
 }
 
 @utility btn-glass {
   color: var(--color-foreground);
-  background: rgb(255 255 255 / 0.04);
+  background: rgb(var(--ink-rgb) / 0.04);
   border: 1px solid var(--color-line-strong);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
 
-  &:hover {
-    background: rgb(255 255 255 / 0.08);
-    border-color: rgb(255 255 255 / 0.22);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: rgb(var(--ink-rgb) / 0.08);
+      border-color: rgb(var(--ink-rgb) / 0.22);
+    }
   }
 }
 
@@ -387,7 +564,7 @@
   padding: 0.34rem 0.8rem;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #d4d4d8;
+  color: var(--color-muted);
 }
 
 /* Textura de grano para un acabado fotográfico. */
@@ -396,7 +573,7 @@
   mix-blend-mode: overlay;
 }
 
-/* Aparición al hacer scroll sin JavaScript. */
+/* Aparición al hacer scroll sin JavaScript (animaciones ligadas al scroll). */
 @utility reveal {
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
@@ -422,6 +599,172 @@
     inset: 0;
     border-radius: inherit;
     background: var(--color-success);
-    animation: ping-soft 2.2s var(--ease-soft) infinite;
+    animation: ping-soft 2.2s var(--ease-out) infinite;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Piezas de movimiento                                                */
+/* ------------------------------------------------------------------ */
+
+@layer components {
+  /* Nombre que se arma letra por letra girando en 3D. */
+  .letters {
+    perspective: 900px;
+  }
+
+  .letter {
+    display: inline-block;
+    transform-origin: 50% 85%;
+    backface-visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .letters-intro .letter {
+      animation: letter-in 1.05s var(--ease-out) both;
+      animation-delay: calc(var(--i, 0) * 42ms + 120ms);
+    }
+  }
+
+  /* Anillos de texto que orbitan el globo en sentidos opuestos. */
+  .orbit {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .orbit svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .orbit-a {
+      animation: spin 90s linear infinite;
+    }
+
+    .orbit-b {
+      animation: spin-reverse 70s linear infinite;
+    }
+
+    .orbit-dot {
+      animation: spin 24s linear infinite;
+    }
+
+    .aurora-blob {
+      animation: drift 22s var(--ease-in-out) infinite;
+    }
+
+    .breathe {
+      animation: breathe 2.4s var(--ease-in-out) infinite;
+    }
+  }
+
+  /* Subtítulo vivo: una sola frase en serif itálica que cambia con un punto que late. */
+  .live-caption {
+    animation: caption-in 0.6s var(--ease-out) both;
+  }
+
+  /* Cierre: pieza de movimiento ligada al scroll que lleva al contacto. */
+  .closing {
+    view-timeline-name: --closing;
+    height: 230svh;
+  }
+
+  .closing-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: clip;
+    pointer-events: none;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .closing .letter {
+        animation: letter-in linear both;
+        animation-timeline: --closing;
+        animation-range: contain calc(var(--i, 0) * 1.4%) contain calc(24% + var(--i, 0) * 1.4%);
+      }
+
+      .closing-ring {
+        animation: spin linear both;
+        animation-timeline: --closing;
+        animation-range: cover 0% cover 100%;
+      }
+
+      .closing-band {
+        animation: band-slide linear both;
+        animation-timeline: --closing;
+        animation-range: cover 0% cover 100%;
+      }
+    }
+  }
+
+  @keyframes band-slide {
+    from {
+      transform: translateX(0) rotate(-6deg);
+    }
+    to {
+      transform: translateX(-30%) rotate(-6deg);
+    }
+  }
+
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(var(--ink-rgb) / 0.12);
+  }
+
+  /* «Me gusta»: corazón que late + partículas aurora + onda. */
+  .like-heart[data-pop='true'] {
+    animation: heart-pop 0.5s var(--ease-out);
+  }
+
+  .like-particle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin: -2.5px 0 0 -2.5px;
+    border-radius: 9999px;
+    background: var(--c);
+    opacity: 0;
+    pointer-events: none;
+    animation: burst 0.7s var(--ease-out) both;
+  }
+
+  .like-ring {
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    border: 1.5px solid var(--color-heart);
+    opacity: 0;
+    pointer-events: none;
+    animation: ring-pop 0.6s var(--ease-out) both;
+  }
+}
+
+/* Sin animaciones ligadas al scroll (o con «reducir movimiento»): el cierre es un póster quieto. */
+@supports not (animation-timeline: view()) {
+  .closing {
+    height: auto;
+  }
+
+  .closing .closing-stage {
+    position: relative;
+    height: 80svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .closing {
+    height: auto;
+  }
+
+  .closing .closing-stage {
+    position: relative;
+    height: 80svh;
   }
 }

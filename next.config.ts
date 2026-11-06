@@ -13,13 +13,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  experimental: { globalNotFound: true },
   poweredByHeader: false,
   images: {
-    remotePatterns: [{ protocol: 'https', hostname: 'cdn.sanity.io', pathname: '/images/**' }],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'cdn.sanity.io', pathname: '/images/**' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+    ],
   },
   async rewrites() {
     // Enlace corto y estable para compartir el CV: https://dominio/cv
-    return [{ source: '/cv', destination: '/api/cv' }]
+    // `beforeFiles`: se resuelve antes que la ruta dinámica `[lang]`.
+    return { beforeFiles: [{ source: '/cv', destination: '/api/cv' }] }
   },
   async headers() {
     return [

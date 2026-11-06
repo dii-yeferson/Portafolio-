@@ -4,20 +4,22 @@ import { cache } from 'react'
 
 import {
   DEMO_CERTIFICATIONS,
-  DEMO_PROJECTS,
-  DEMO_SITE_SETTINGS,
-  DEMO_SOCIAL_LINKS,
+  getDemoProjects,
+  getDemoSiteSettings,
+  getDemoSocialLinks,
   searchDemoContent,
 } from '@/content/demo'
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/config'
 
 import { isSanityConfigured } from '../env'
-import type { SEARCH_QUERY_RESULT } from '../types'
+import type { RECOMMENDATIONS_QUERY_RESULT, SEARCH_QUERY_RESULT } from '../types'
 import { sanityFetch } from './fetch'
 import {
   CERTIFICATIONS_QUERY,
   PROJECT_BY_SLUG_QUERY,
   PROJECT_SLUGS_QUERY,
   PROJECTS_QUERY,
+  RECOMMENDATIONS_QUERY,
   SEARCH_QUERY,
   SITE_SETTINGS_QUERY,
   SOCIAL_LINKS_QUERY,
@@ -26,11 +28,11 @@ import {
 /**
  * Repositorio de contenido: única puerta de entrada del sitio a Sanity.
  *
- * - `cache()` de React deduplica llamadas dentro de un mismo render
- *   (layout, página y `generateMetadata` comparten resultado).
+ * - Cada función recibe el idioma; las consultas GROQ eligen el campo en
+ *   inglés cuando existe y si no, usan el español.
+ * - `cache()` de React deduplica llamadas dentro de un mismo render.
  * - Sin proyecto de Sanity configurado se sirve el contenido de demostración
- *   (`src/content/demo.ts`) y las páginas se marcan `noindex`, de modo que el
- *   diseño se puede revisar y probar en CI sin credenciales.
+ *   (`src/content/demo.ts`) y las páginas se marcan `noindex`.
  */
 
 /** `true` cuando se está mostrando contenido de demostración. */
@@ -50,26 +52,28 @@ function shouldUseDemo(): boolean {
 }
 
 /** Formato válido de slug generado por Sanity. */
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
-export const getSiteSettings = cache(async () => {
-  if (shouldUseDemo()) return DEMO_SITE_SETTINGS
-  return sanityFetch({ query: SITE_SETTINGS_QUERY, tags: ['siteSettings'] })
+export const getSiteSettings = cache(async (lang: Locale = DEFAULT_LOCALE) => {
+  if (shouldUseDemo()) return getDemoSiteSettings(lang)
+  return sanityFetch({ query: SITE_SETTINGS_QUERY, params: { lang }, tags: ['siteSettings'] })
 })
 
-export const getProjects = cache(async () => {
-  if (shouldUseDemo()) return DEMO_PROJECTS
-  return sanityFetch({ query: PROJECTS_QUERY, tags: ['project'] })
+export const getProjects = cache(async (lang: Locale = DEFAULT_LOCALE) => {
+  if (shouldUseDemo()) return getDemoProjects(lang)
+  return sanityFetch({ query: PROJECTS_QUERY, params: { lang }, tags: ['project'] })
 })
 
-export const getProjectBySlug = cache(async (slug: string) => {
+export const getProjectBySlug = cache(async (slug: string, lang: Locale = DEFAULT_LOCALE) => {
   if (!SLUG_PATTERN.test(slug)) return null
-  if (shouldUseDemo()) return DEMO_PROJECTS.find((project) => project.slug === slug) ?? null
-  return sanityFetch({ query: PROJECT_BY_SLUG_QUERY, params: { slug }, tags: ['project'] })
+  if (shouldUseDemo()) return getDemoProjects(lang).find((project) => project.slug === slug) ?? null
+  return sanityFetch({ query: PROJECT_BY_SLUG_QUERY, params: { slug, lang }, tags: ['project'] })
 })
 
 export const getProjectSlugs = cache(async () => {
-  if (shouldUseDemo()) return DEMO_PROJECTS.map(({ slug, _updatedAt }) => ({ slug, _updatedAt }))
+  if (shouldUseDemo()) {
+    return getDemoProjects(DEFAULT_LOCALE).map(({ slug, _updatedAt }) => ({ slug, _updatedAt }))
+  }
   return sanityFetch({ query: PROJECT_SLUGS_QUERY, tags: ['project'] })
 })
 
@@ -78,17 +82,27 @@ export const getCertifications = cache(async () => {
   return sanityFetch({ query: CERTIFICATIONS_QUERY, tags: ['certification'] })
 })
 
-export const getSocialLinks = cache(async () => {
-  if (shouldUseDemo()) return DEMO_SOCIAL_LINKS
-  return sanityFetch({ query: SOCIAL_LINKS_QUERY, tags: ['socialLink'] })
+export const getSocialLinks = cache(async (lang: Locale = DEFAULT_LOCALE) => {
+  if (shouldUseDemo()) return getDemoSocialLinks(lang)
+  return sanityFetch({ query: SOCIAL_LINKS_QUERY, params: { lang }, tags: ['socialLink'] })
+})
+
+/** Recomendaciones aprobadas. El modo demostración nunca inventa recomendaciones. */
+export const getRecommendations = cache(async (): Promise<RECOMMENDATIONS_QUERY_RESULT> => {
+  if (shouldUseDemo()) return []
+  return sanityFetch({ query: RECOMMENDATIONS_QUERY, tags: ['recommendation'] })
 })
 
 /** Búsqueda de proyectos y certificaciones. `term` debe venir de `buildSearchTerm`. */
-export async function searchContent(term: string, limit: number): Promise<SEARCH_QUERY_RESULT> {
-  if (shouldUseDemo()) return searchDemoContent(term, limit)
+export async function searchContent(
+  term: string,
+  limit: number,
+  lang: Locale = DEFAULT_LOCALE,
+): Promise<SEARCH_QUERY_RESULT> {
+  if (shouldUseDemo()) return searchDemoContent(term, limit, lang)
   return sanityFetch({
     query: SEARCH_QUERY,
-    params: { term, limit },
+    params: { term, limit, lang },
     tags: ['project', 'certification'],
     revalidate: 300,
   })
@@ -99,3 +113,4 @@ export type ProjectSummary = Awaited<ReturnType<typeof getProjects>>[number]
 export type ProjectDetail = NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>
 export type CertificationItem = Awaited<ReturnType<typeof getCertifications>>[number]
 export type SocialLinkItem = Awaited<ReturnType<typeof getSocialLinks>>[number]
+export type RecommendationItem = RECOMMENDATIONS_QUERY_RESULT[number]

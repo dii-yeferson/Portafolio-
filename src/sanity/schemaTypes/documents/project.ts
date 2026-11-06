@@ -22,6 +22,7 @@ export const project = defineType({
     { name: 'media', title: 'Imágenes' },
     { name: 'links', title: 'Enlaces' },
     { name: 'publishing', title: 'Publicación' },
+    { name: 'english', title: 'English' },
   ],
   fields: [
     defineField({
@@ -124,6 +125,18 @@ export const project = defineType({
               type: 'string',
               validation: (rule) => rule.max(120),
             }),
+            defineField({
+              name: 'labelEn',
+              title: 'Indicador (English)',
+              type: 'string',
+              validation: (rule) => rule.max(60),
+            }),
+            defineField({
+              name: 'contextEn',
+              title: 'Contexto (English)',
+              type: 'string',
+              validation: (rule) => rule.max(120),
+            }),
           ],
           preview: { select: { title: 'value', subtitle: 'label' } },
         }),
@@ -167,6 +180,46 @@ export const project = defineType({
       type: 'url',
       group: 'links',
       validation: (rule) => rule.uri({ scheme: ['https'] }).custom((v) => validateHttpsUrl(v)),
+    }),
+    defineField({
+      name: 'titleEn',
+      title: 'Title (English)',
+      description: 'Opcional. Vacío = se usa el título en español.',
+      type: 'string',
+      group: 'english',
+      validation: (rule) => rule.max(100),
+    }),
+    defineField({
+      name: 'shortDescriptionEn',
+      title: 'Short summary (English)',
+      type: 'text',
+      rows: 3,
+      group: 'english',
+      validation: (rule) => rule.max(200),
+    }),
+    defineField({
+      name: 'problemEn',
+      title: 'The problem (English)',
+      type: 'blockContent',
+      group: 'english',
+    }),
+    defineField({
+      name: 'approachEn',
+      title: 'Approach (English)',
+      type: 'blockContent',
+      group: 'english',
+    }),
+    defineField({
+      name: 'solutionEn',
+      title: 'What I built (English)',
+      type: 'blockContent',
+      group: 'english',
+    }),
+    defineField({
+      name: 'resultsEn',
+      title: 'Results (English)',
+      type: 'blockContent',
+      group: 'english',
     }),
     defineField({
       name: 'status',

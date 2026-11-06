@@ -10,68 +10,96 @@
  * - Configuración del sitio, proyectos y certificaciones se crean como
  *   BORRADORES: agrega fotos, portadas y enlaces de verificación en /studio
  *   y publícalos (el Studio no deja publicar si falta algo obligatorio).
- * - Las redes se crean ocultas, salvo GitHub; edita cada URL y actívala.
+ * - Las redes se crean visibles salvo LinkedIn: pega la URL de tu perfil y actívala.
  */
 import type { IdentifiedSanityDocumentStub } from '@sanity/client'
 import { getCliClient } from 'sanity/cli'
 
 import {
   DEMO_CERTIFICATIONS,
-  DEMO_PROJECTS,
-  DEMO_SITE_SETTINGS,
-  DEMO_SOCIAL_LINKS,
+  DEMO_CONTACT_EMAIL,
+  DEMO_GITHUB_USERNAME,
+  DEMO_PROFILE,
+  DEMO_PROJECT_SOURCES,
+  getDemoSocialLinks,
+  paragraphs,
 } from '../src/content/demo'
 import { apiVersion } from '../src/sanity/env'
 
 const VERIFIED_SOCIAL_URLS = new Set(['https://github.com/dii-yeferson'])
 
 function buildDocuments(): IdentifiedSanityDocumentStub[] {
-  const settings = DEMO_SITE_SETTINGS
+  const profile = DEMO_PROFILE
   const siteSettings: IdentifiedSanityDocumentStub = {
     _id: 'drafts.siteSettings',
     _type: 'siteSettings',
-    displayName: settings.displayName,
-    tagline: settings.tagline,
-    availability: settings.availability,
-    summary: settings.summary,
-    heroPhrases: settings.heroPhrases,
-    heroBadges: settings.heroBadges,
-    education: settings.education?.map((item) => ({
+    displayName: 'Di Yeferson',
+    tagline: profile.tagline.es,
+    taglineEn: profile.tagline.en,
+    availability: profile.availability.es,
+    availabilityEn: profile.availability.en,
+    summary: profile.summary.es,
+    summaryEn: profile.summary.en,
+    heroPhrases: profile.heroPhrases.es,
+    heroPhrasesEn: profile.heroPhrases.en,
+    heroBadges: profile.heroBadges.es,
+    heroBadgesEn: profile.heroBadges.en,
+    contactEmail: DEMO_CONTACT_EMAIL,
+    githubUsername: DEMO_GITHUB_USERNAME,
+    education: profile.education.map((item) => ({
       _key: item._key,
       _type: 'educationItem',
       institution: item.institution,
-      program: item.program,
-      startYear: item.startYear,
-      endYear: item.endYear,
-      description: item.description,
+      program: item.program.es,
+      programEn: item.program.en,
+      description: item.description.es,
+      descriptionEn: item.description.en,
     })),
-    skillGroups: settings.skillGroups?.map((group) => ({ ...group, _type: 'skillGroup' })),
-    principles: settings.principles?.map((principle) => ({ ...principle, _type: 'principle' })),
+    skillGroups: profile.skillGroups.map((group) => ({
+      _key: group._key,
+      _type: 'skillGroup',
+      title: group.title.es,
+      titleEn: group.title.en,
+      skills: group.skills,
+    })),
+    principles: profile.principles.map((principle) => ({
+      _key: principle._key,
+      _type: 'principle',
+      title: principle.title.es,
+      titleEn: principle.title.en,
+    })),
   }
 
-  const socialLinks = DEMO_SOCIAL_LINKS.map((link, index) => ({
+  const socialLinks = getDemoSocialLinks('es').map((link, index) => ({
     _id: `socialLink-${link.iconKey}`,
     _type: 'socialLink',
     platformName: link.platformName,
     iconKey: link.iconKey,
     label: link.label,
-    url: link.iconKey === 'email' ? 'mailto:correo@ejemplo.com' : link.url,
-    visibility: VERIFIED_SOCIAL_URLS.has(link.url),
+    labelEn: getDemoSocialLinks('en')[index]?.label,
+    url: link.url,
+    visibility: link.iconKey !== 'linkedin' || VERIFIED_SOCIAL_URLS.has(link.url),
     sortOrder: (index + 1) * 10,
   }))
 
-  const projects = DEMO_PROJECTS.map((project, index) => ({
+  const projects = DEMO_PROJECT_SOURCES.map((project, index) => ({
     _id: `drafts.project-${project.slug}`,
     _type: 'project',
-    title: project.title,
+    title: project.title.es,
+    titleEn: project.title.en,
     slug: { _type: 'slug', current: project.slug },
     category: project.category,
-    shortDescription: project.shortDescription,
+    shortDescription: project.shortDescription.es,
+    shortDescriptionEn: project.shortDescription.en,
     technologies: project.technologies,
-    problem: project.problem,
-    approach: project.approach,
-    solution: project.solution,
-    results: project.results,
+    problem: paragraphs(project.problem.es),
+    problemEn: paragraphs(project.problem.en),
+    approach: paragraphs(project.approach.es),
+    approachEn: paragraphs(project.approach.en),
+    solution: paragraphs(project.solution.es),
+    solutionEn: paragraphs(project.solution.en),
+    results: paragraphs(project.results.es),
+    resultsEn: paragraphs(project.results.en),
     featured: project.featured ?? false,
     status: 'published',
     sortOrder: (index + 1) * 10,

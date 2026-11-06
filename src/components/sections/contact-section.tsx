@@ -2,7 +2,10 @@ import { ArrowUpRight, Download } from 'lucide-react'
 
 import { ContactDialog } from '@/components/contact/contact-dialog'
 import { BrandIcon } from '@/components/icons/brand-icons'
-import { resolveCopy, splitHighlight } from '@/lib/copy'
+import { Accent } from '@/i18n/accent'
+import type { Locale } from '@/i18n/config'
+import { getDictionary } from '@/i18n'
+import { resolveCopy } from '@/lib/copy'
 import { EXTERNAL_LINK_PROPS, isSafeExternalUrl } from '@/lib/url'
 import type { SiteSettings, SocialLinkItem } from '@/sanity/lib/data'
 
@@ -10,18 +13,19 @@ import type { SiteSettings, SocialLinkItem } from '@/sanity/lib/data'
 export function ContactSection({
   settings,
   socialLinks,
+  lang,
 }: {
   settings: SiteSettings
   socialLinks: SocialLinkItem[]
+  lang: Locale
 }) {
+  const t = getDictionary(lang)
   const links = socialLinks.filter((link) => isSafeExternalUrl(link.url))
   const copy = resolveCopy(settings?.contactCopy, {
-    label: 'Contacto',
-    title: '¿Trabajamos juntos?',
-    description:
-      'Estoy abierto a nuevas oportunidades, proyectos y conversaciones sobre datos, tecnología e innovación.',
+    label: t.contact.label,
+    title: t.contact.title,
+    description: t.contact.description,
   })
-  const [titleStart, titleHighlight, titleEnd] = splitHighlight(copy.title)
 
   return (
     <section
@@ -42,30 +46,30 @@ export function ContactSection({
                 id="contacto-title"
                 className="mt-4 text-[clamp(2.5rem,5.2vw,4.2rem)] leading-[0.98] font-black tracking-[-0.045em]"
               >
-                {titleStart}
-                <span className="text-aurora">{titleHighlight}</span>
-                {titleEnd}
+                <Accent text={copy.title} className="accent-serif text-aurora pr-1" />
               </h2>
               <p className="mt-5 max-w-lg text-[1.08rem] leading-relaxed text-muted">
                 {copy.description}
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <ContactDialog contactEmail={settings?.contactEmail || null} />
+                {/* /cv es una redirección de descarga (API), no una página. */}
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a href="/cv" rel="nofollow" className="btn btn-glass h-14 px-7 text-[1rem]">
                   <Download className="size-[1.1rem]" aria-hidden="true" />
-                  Descargar CV
+                  {t.header.downloadCv}
                 </a>
               </div>
             </div>
 
             {links.length > 0 ? (
-              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2" aria-label="Redes sociales">
+              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2" aria-label={t.contact.social}>
                 {links.map((link) => (
                   <li key={link._id}>
                     <a
                       href={link.url}
                       {...(link.iconKey === 'email' ? {} : EXTERNAL_LINK_PROPS)}
-                      className="group flex items-center gap-3 rounded-2xl border border-line bg-white/[0.025] p-3 pr-4 transition-[background-color,border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:bg-white/[0.05]"
+                      className="group flex items-center gap-3 rounded-2xl border border-line bg-ink/[0.025] p-3 pr-4 transition-[background-color,border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:bg-ink/[0.05]"
                     >
                       <BrandIcon platform={link.iconKey} className="size-9 shrink-0" />
                       <span className="min-w-0 flex-1">

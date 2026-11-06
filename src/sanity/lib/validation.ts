@@ -90,6 +90,19 @@ export function validateYearRange(
   return endYear >= startYear ? true : 'El año de fin debe ser igual o posterior al de inicio.'
 }
 
+/** La fecha de fin (`YYYY-MM-DD`) no puede ser anterior a la de inicio. */
+export function validateDateOrder(
+  startDate: string | null | undefined,
+  endDate: string | null | undefined,
+): ValidationResult {
+  const start = parseIsoDate(startDate)
+  const end = parseIsoDate(endDate)
+  if (!start || !end) return true
+  return end.getTime() >= start.getTime()
+    ? true
+    : 'La fecha de fin debe ser igual o posterior a la de inicio.'
+}
+
 /**
  * Los IDs de archivos de Sanity tienen la forma `file-<hash>-<extensión>`,
  * así que la extensión se puede comprobar sin consultar la API.

@@ -10,7 +10,12 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 
 import { apiVersion, dataset, projectId, studioBasePath } from './src/sanity/env'
-import { SINGLETON_ACTIONS, SINGLETON_TYPES, schemaTypes } from './src/sanity/schemaTypes'
+import {
+  API_ONLY_TYPES,
+  SINGLETON_ACTIONS,
+  SINGLETON_TYPES,
+  schemaTypes,
+} from './src/sanity/schemaTypes'
 import { structure } from './src/sanity/structure'
 import { AdminGate } from './src/sanity/studio/admin-gate'
 import { StudioIcon } from './src/sanity/studio/studio-icon'
@@ -38,7 +43,9 @@ export default defineConfig({
     types: schemaTypes,
     // Los singletons no aparecen en «Crear documento».
     templates: (templates) =>
-      templates.filter(({ schemaType }) => !SINGLETON_TYPES.has(schemaType)),
+      templates.filter(
+        ({ schemaType }) => !SINGLETON_TYPES.has(schemaType) && !API_ONLY_TYPES.has(schemaType),
+      ),
   },
   document: {
     // Los singletons solo se pueden publicar, descartar cambios o restaurar.

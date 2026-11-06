@@ -35,16 +35,61 @@ const CITIES: [number, number][] = [
   [51.5, -0.12], // Londres
 ]
 
-/** Paleta aurora: menta → aqua → iris sobre grafito. */
-const COLORS = {
-  dot: '#7fe6f0',
-  dotBack: '#3d5a86',
-  graticule: 'rgba(139, 156, 255, 0.085)',
-  arcFrom: [149, 251, 223] as const,
-  arcTo: [139, 156, 255] as const,
-  node: '#e9fffa',
-  ring: '139, 156, 255',
+type Palette = {
+  dot: string
+  dotEdge: string
+  dotBack: string
+  graticule: string
+  arcFrom: readonly [number, number, number]
+  arcTo: readonly [number, number, number]
+  node: string
+  pulse: string
+  glow: string
+  ring: string
+  atmosphere: readonly [string, string, string]
+  body: readonly [string, string, string]
+  rim: readonly [string, string, string]
 }
+
+/** Paletas aurora: oscura (grafito) y clara (porcelana). Se eligen según `data-theme`. */
+const PALETTES: Record<'dark' | 'light', Palette> = {
+  dark: {
+    dot: '#7fe6f0',
+    dotEdge: '#8b9cff',
+    dotBack: '#3d5a86',
+    graticule: 'rgba(139, 156, 255, 0.085)',
+    arcFrom: [149, 251, 223],
+    arcTo: [139, 156, 255],
+    node: '#e9fffa',
+    pulse: '107, 222, 238',
+    glow: 'rgba(236, 255, 250, 0.95)',
+    ring: '139, 156, 255',
+    atmosphere: ['rgba(98, 210, 248, 0.22)', 'rgba(139, 156, 255, 0.08)', 'rgba(139, 156, 255, 0)'],
+    body: ['rgba(34, 52, 78, 0.6)', 'rgba(12, 16, 26, 0.86)', 'rgba(7, 8, 12, 0.94)'],
+    rim: ['rgba(149, 251, 223, 0.42)', 'rgba(98, 210, 248, 0.08)', 'rgba(139, 156, 255, 0.32)'],
+  },
+  light: {
+    dot: '#0b8ea3',
+    dotEdge: '#5a6cf0',
+    dotBack: '#9fb0c8',
+    graticule: 'rgba(70, 90, 200, 0.1)',
+    arcFrom: [16, 170, 140],
+    arcTo: [90, 108, 240],
+    node: '#0b6f80',
+    pulse: '11, 142, 163',
+    glow: 'rgba(11, 142, 163, 0.9)',
+    ring: '90, 108, 240',
+    atmosphere: ['rgba(27, 143, 214, 0.16)', 'rgba(90, 108, 240, 0.06)', 'rgba(90, 108, 240, 0)'],
+    body: ['rgba(255, 255, 255, 0.85)', 'rgba(238, 242, 248, 0.92)', 'rgba(224, 230, 240, 0.96)'],
+    rim: ['rgba(16, 170, 140, 0.5)', 'rgba(27, 143, 214, 0.12)', 'rgba(90, 108, 240, 0.4)'],
+  },
+}
+
+function currentPalette(): Palette {
+  return document.documentElement.dataset.theme === 'light' ? PALETTES.light : PALETTES.dark
+}
+
+let COLORS: Palette = PALETTES.dark
 
 function arcColor(t: number, alpha: number) {
   const [r0, g0, b0] = COLORS.arcFrom
@@ -151,6 +196,16 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
   const nodes = [HUB, ...CITIES].map(([lat, lng]) => latLngToVector(lat, lng))
   const rings = [buildRing(1.2, 74 * DEG, -16 * DEG), buildRing(1.36, 80 * DEG, 22 * DEG)]
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  COLORS = currentPalette()
+  // El tema puede cambiar sin recargar: el globo cambia de paleta en el siguiente cuadro.
+  const themeObserver = new MutationObserver(() => {
+    COLORS = currentPalette()
+    if (reducedMotion) render(elapsed)
+  })
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  })
 
   let width = 0
   let height = 0
@@ -236,9 +291,9 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
 
     // Atmósfera.
     const atmosphere = ctx!.createRadialGradient(cx, cy, radius * 0.9, cx, cy, radius * 1.42)
-    atmosphere.addColorStop(0, 'rgba(98, 210, 248, 0.22)')
-    atmosphere.addColorStop(0.55, 'rgba(139, 156, 255, 0.08)')
-    atmosphere.addColorStop(1, 'rgba(139, 156, 255, 0)')
+    atmosphere.addColorStop(0, COLORS.atmosphere[0])
+    atmosphere.addColorStop(0.55, COLORS.atmosphere[1])
+    atmosphere.addColorStop(1, COLORS.atmosphere[2])
     ctx!.fillStyle = atmosphere
     ctx!.beginPath()
     ctx!.arc(cx, cy, radius * 1.42, 0, TAU)
@@ -265,9 +320,9 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
       cy,
       radius,
     )
-    body.addColorStop(0, 'rgba(34, 52, 78, 0.6)')
-    body.addColorStop(0.65, 'rgba(12, 16, 26, 0.86)')
-    body.addColorStop(1, 'rgba(7, 8, 12, 0.94)')
+    body.addColorStop(0, COLORS.body[0])
+    body.addColorStop(0.65, COLORS.body[1])
+    body.addColorStop(1, COLORS.body[2])
     ctx!.fillStyle = body
     ctx!.beginPath()
     ctx!.arc(cx, cy, radius, 0, TAU)
@@ -297,7 +352,7 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
       const [sx, sy, z] = project(land[i]!, land[i + 1]!, land[i + 2]!)
       if (z <= 0) continue
       const size = (0.9 + 1.1 * z) * dpr
-      ctx!.fillStyle = z > 0.45 ? COLORS.dot : '#8b9cff'
+      ctx!.fillStyle = z > 0.45 ? COLORS.dot : COLORS.dotEdge
       ctx!.globalAlpha = 0.16 + 0.84 * z
       ctx!.fillRect(sx - size / 2, sy - size / 2, size, size)
     }
@@ -328,7 +383,7 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
       const [px, py, pz] = project(arc[p]!, arc[p + 1]!, arc[p + 2]!)
       if (isVisible(px, py, pz)) {
         const glow = ctx!.createRadialGradient(px, py, 0, px, py, 7 * dpr)
-        glow.addColorStop(0, 'rgba(236, 255, 250, 0.95)')
+        glow.addColorStop(0, COLORS.glow)
         glow.addColorStop(0.4, arcColor(progress, 0.55))
         glow.addColorStop(1, arcColor(progress, 0))
         ctx!.fillStyle = glow
@@ -343,7 +398,7 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
       const [sx, sy, depth] = project(x, y, z)
       if (depth <= 0.02) return
       const pulse = (time * 0.55 + index * 0.37) % 1
-      ctx!.strokeStyle = `rgba(107, 222, 238, ${(1 - pulse) * 0.6 * depth})`
+      ctx!.strokeStyle = `rgba(${COLORS.pulse}, ${(1 - pulse) * 0.6 * depth})`
       ctx!.lineWidth = dpr
       ctx!.beginPath()
       ctx!.arc(sx, sy, (2 + pulse * (index === 0 ? 16 : 10)) * dpr, 0, TAU)
@@ -358,9 +413,9 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
 
     // Borde iluminado.
     const rim = ctx!.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius)
-    rim.addColorStop(0, 'rgba(149, 251, 223, 0.42)')
-    rim.addColorStop(0.5, 'rgba(98, 210, 248, 0.08)')
-    rim.addColorStop(1, 'rgba(139, 156, 255, 0.32)')
+    rim.addColorStop(0, COLORS.rim[0])
+    rim.addColorStop(0.5, COLORS.rim[1])
+    rim.addColorStop(1, COLORS.rim[2])
     ctx!.strokeStyle = rim
     ctx!.lineWidth = 1.2 * dpr
     ctx!.beginPath()
@@ -438,6 +493,7 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
 
   return () => {
     stop()
+    themeObserver.disconnect()
     resizeObserver.disconnect()
     visibilityObserver.disconnect()
     canvas.removeEventListener('pointerdown', onPointerDown)

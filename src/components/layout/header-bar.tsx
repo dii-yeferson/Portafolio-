@@ -7,8 +7,11 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState, useSyncExternalStore } from 'react'
 
 import { LogoMark } from '@/components/brand/logo'
+import { useI18n } from '@/i18n/client'
+import { localePath, splitLocale } from '@/i18n/config'
 import { NAV_ITEMS, type NavSection, navSectionForPath, SECTION_TO_NAV } from '@/lib/navigation'
 
+import { PreferencesPill } from './preferences-pill'
 import { SearchDialog } from './search-dialog'
 
 function subscribeToScroll(callback: () => void) {
@@ -18,10 +21,12 @@ function subscribeToScroll(callback: () => void) {
 
 const isScrolled = () => window.scrollY > 24
 
-/** Barra flotante de vidrio (como el dock de Qurri) con la sección activa animada. */
+/** Barra flotante de vidrio líquido con la sección activa, idioma y tema. */
 export function HeaderBar({ name }: { name: string }) {
-  const pathname = usePathname()
-  const isHome = pathname === '/'
+  const { lang, t } = useI18n()
+  const pathname = usePathname() ?? '/'
+  const path = splitLocale(pathname).path
+  const isHome = path === '/'
   const scrolled = useSyncExternalStore(subscribeToScroll, isScrolled, () => false)
   const [observed, setObserved] = useState<NavSection | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -59,34 +64,44 @@ export function HeaderBar({ name }: { name: string }) {
     }
   }, [menuOpen])
 
-  const active = isHome ? observed : navSectionForPath(pathname)
+  const active = isHome ? observed : navSectionForPath(path)
+  const items = NAV_ITEMS.map((item) => ({
+    ...item,
+    label: t.nav.items[item.id],
+    href: localePath(lang, item.href),
+  }))
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:px-4 sm:pt-4">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-4 sm:pt-[calc(1rem+env(safe-area-inset-top))]">
       <div
-        className={`glass pointer-events-auto flex w-full items-center justify-between gap-3 rounded-full py-1.5 pr-1.5 pl-4 transition-[max-width,background-color,box-shadow] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${
-          scrolled ? 'max-w-[820px] bg-[rgb(18_18_22/0.82)]' : 'max-w-[1000px]'
+        className={`glass liquid pointer-events-auto relative flex w-full items-center justify-between gap-2 rounded-full py-1.5 pr-1.5 pl-4 transition-[max-width,background-color] duration-500 ease-[cubic-bezier(.23,1,.32,1)] ${
+          scrolled ? 'max-w-[900px] bg-[var(--glass-bg-strong)]' : 'max-w-[1060px]'
         }`}
       >
-        <Link href="/" aria-label={`${name}, inicio`} className="flex items-center gap-2.5 py-1.5">
+        <Link
+          href={localePath(lang, '/')}
+          aria-label={t.nav.homeAria(name)}
+          className="flex items-center gap-2.5 py-1.5 text-foreground"
+        >
           <LogoMark className="h-[1.15rem] w-auto" />
         </Link>
 
-        <nav aria-label="Principal" className="hidden md:block">
+        <nav aria-label={t.nav.main} className="hidden lg:block">
           <ul className="flex items-center">
-            {NAV_ITEMS.map((item) => {
+            {items.map((item) => {
               const isActive = active === item.id
               return (
                 <li key={item.id} className="relative">
                   {isActive ? (
                     <motion.span
                       layoutId="nav-pill"
-                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                      className="absolute inset-0 rounded-full bg-white/[0.09] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                      transition={{ type: 'spring', duration: 0.45, bounce: 0.18 }}
+                      className="absolute inset-0 rounded-full bg-ink/[0.09] shadow-[inset_0_1px_0_rgb(255_255_255/0.08)]"
                     />
                   ) : null}
                   <Link
                     href={item.href}
+                    data-nav={item.id}
                     aria-current={isActive ? 'page' : undefined}
                     className={`relative block rounded-full px-4 py-2 text-[0.9rem] font-bold transition-colors ${
                       isActive ? 'text-foreground' : 'text-muted hover:text-foreground'
@@ -100,20 +115,26 @@ export function HeaderBar({ name }: { name: string }) {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 sm:gap-1.5">
+          <PreferencesPill />
           <SearchDialog />
-          <a href="/cv" rel="nofollow" className="btn btn-primary h-10 px-4 text-[0.88rem]">
+          {/* /cv es una redirección de descarga (API), no una página. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
+            href="/cv"
+            rel="nofollow"
+            className="btn btn-primary hidden h-10 px-4 text-[0.88rem] sm:inline-flex"
+          >
             <Download className="size-4" aria-hidden="true" />
-            <span className="hidden sm:inline">Descargar CV</span>
-            <span className="sr-only sm:hidden">Descargar CV</span>
+            {t.header.downloadCv}
           </a>
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            aria-label="Abrir menú"
+            aria-label={t.nav.openMenu}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
-            className="grid size-10 place-items-center rounded-full text-foreground transition-[background-color,transform] hover:bg-white/[0.08] active:scale-95 md:hidden"
+            className="grid size-10 place-items-center rounded-full text-foreground transition-[background-color,transform] duration-150 hover:bg-ink/[0.08] active:scale-[0.96] lg:hidden"
           >
             <Menu className="size-5" aria-hidden="true" />
           </button>
@@ -126,54 +147,61 @@ export function HeaderBar({ name }: { name: string }) {
             id="mobile-menu"
             role="dialog"
             aria-modal="true"
-            aria-label="Menú de navegación"
+            aria-label={t.nav.menu}
+            data-lenis-prevent
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            className="pointer-events-auto fixed inset-0 z-[60] flex h-dvh flex-col bg-background/90 backdrop-blur-2xl md:hidden"
+            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+            className="pointer-events-auto fixed inset-0 z-[60] flex h-dvh flex-col bg-background/90 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] backdrop-blur-2xl lg:hidden"
           >
             <div className="flex items-center justify-between px-6 pt-6">
-              <LogoMark className="h-5 w-auto" />
-              <button
-                type="button"
-                onClick={() => setMenuOpen(false)}
-                aria-label="Cerrar menú"
-                className="glass grid size-11 place-items-center rounded-full"
-              >
-                <X className="size-5" aria-hidden="true" />
-              </button>
+              <LogoMark className="h-5 w-auto text-foreground" />
+              <div className="flex items-center gap-2">
+                <PreferencesPill />
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label={t.nav.closeMenu}
+                  className="glass grid size-11 place-items-center rounded-full"
+                >
+                  <X className="size-5" aria-hidden="true" />
+                </button>
+              </div>
             </div>
-            <nav aria-label="Móvil" className="flex flex-1 flex-col justify-center px-6">
+            <nav aria-label={t.nav.mobile} className="flex flex-1 flex-col justify-center px-6">
               <ul className="space-y-1">
-                {[{ id: 'inicio', label: 'Inicio', href: '/#inicio' }, ...NAV_ITEMS].map(
-                  (item, index) => (
-                    <motion.li
-                      key={item.id}
-                      initial={{ opacity: 0, y: 18 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: 0.04 * index,
-                        type: 'spring',
-                        stiffness: 320,
-                        damping: 30,
-                      }}
+                {[
+                  { id: 'inicio', label: t.common.home, href: localePath(lang, '/#inicio') },
+                  ...items,
+                ].map((item, index) => (
+                  <motion.li
+                    key={item.id}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: 0.04 * index,
+                      type: 'spring',
+                      duration: 0.5,
+                      bounce: 0.15,
+                    }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setMenuOpen(false)}
+                      className={`block py-2.5 text-[2.6rem] leading-tight font-black tracking-[-0.04em] ${
+                        active === item.id ? 'text-aurora' : 'text-foreground'
+                      }`}
                     >
-                      <Link
-                        href={item.href}
-                        onClick={() => setMenuOpen(false)}
-                        className={`block py-2.5 text-[2.6rem] leading-tight font-black tracking-[-0.04em] ${
-                          active === item.id ? 'text-aurora' : 'text-foreground'
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    </motion.li>
-                  ),
-                )}
+                      {item.label}
+                    </Link>
+                  </motion.li>
+                ))}
               </ul>
             </nav>
             <div className="px-6 pb-10">
+              {/* /cv es una redirección de descarga (API), no una página. */}
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
                 href="/cv"
                 rel="nofollow"
@@ -181,7 +209,7 @@ export function HeaderBar({ name }: { name: string }) {
                 className="btn btn-primary h-14 w-full text-base"
               >
                 <Download className="size-4" aria-hidden="true" />
-                Descargar CV
+                {t.header.downloadCv}
               </a>
             </div>
           </motion.div>

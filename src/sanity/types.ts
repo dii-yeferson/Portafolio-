@@ -58,6 +58,9 @@ export type SectionCopy = {
   label?: string
   title?: string
   description?: string
+  labelEn?: string
+  titleEn?: string
+  descriptionEn?: string
 }
 
 export type Seo = {
@@ -76,6 +79,59 @@ export type Seo = {
   twitterHandle?: string
 }
 
+export type LikeCounter = {
+  _id: string
+  _type: 'likeCounter'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  slug?: string
+  count?: number
+}
+
+export type Recommendation = {
+  _id: string
+  _type: 'recommendation'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  status: 'pending' | 'approved' | 'hidden'
+  authorName: string
+  authorPhoto?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  relationship: 'teacher' | 'mentor' | 'classmate' | 'colleague' | 'manager' | 'client'
+  role: string
+  organization?: string
+  profileUrl?: string
+  message: string
+  language?: 'es' | 'en'
+  verifiedWith?: string
+  authorKey?: string
+  submittedAt?: string
+  sortOrder: number
+}
+
+export type SanityImageCrop = {
+  _type: 'sanity.imageCrop'
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+export type SanityImageHotspot = {
+  _type: 'sanity.imageHotspot'
+  x: number
+  y: number
+  height: number
+  width: number
+}
+
 export type SocialLink = {
   _id: string
   _type: 'socialLink'
@@ -86,6 +142,7 @@ export type SocialLink = {
   iconKey: 'linkedin' | 'github' | 'instagram' | 'x' | 'tiktok' | 'youtube' | 'email' | 'website'
   url: string
   label?: string
+  labelEn?: string
   visibility: boolean
   sortOrder: number
 }
@@ -131,22 +188,6 @@ export type Certification = {
   sortOrder: number
 }
 
-export type SanityImageCrop = {
-  _type: 'sanity.imageCrop'
-  top: number
-  bottom: number
-  left: number
-  right: number
-}
-
-export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot'
-  x: number
-  y: number
-  height: number
-  width: number
-}
-
 export type Project = {
   _id: string
   _type: 'project'
@@ -166,6 +207,8 @@ export type Project = {
     label: string
     value: string
     context?: string
+    labelEn?: string
+    contextEn?: string
     _type: 'metric'
     _key: string
   }>
@@ -189,6 +232,12 @@ export type Project = {
   }>
   demoUrl?: string
   codeUrl?: string
+  titleEn?: string
+  shortDescriptionEn?: string
+  problemEn?: BlockContent
+  approachEn?: BlockContent
+  solutionEn?: BlockContent
+  resultsEn?: BlockContent
   status: 'draft' | 'published' | 'archived'
   featured?: boolean
   sortOrder: number
@@ -239,6 +288,8 @@ export type SiteSettings = {
     startYear?: number
     endYear?: number
     description?: string
+    programEn?: string
+    descriptionEn?: string
     image?: {
       asset?: SanityImageAssetReference
       media?: unknown
@@ -250,8 +301,22 @@ export type SiteSettings = {
     _type: 'educationItem'
     _key: string
   }>
+  experience?: Array<{
+    kind: 'internship' | 'work' | 'freelance' | 'research' | 'volunteer'
+    role: string
+    organization: string
+    startDate: string
+    endDate?: string
+    description?: string
+    roleEn?: string
+    descriptionEn?: string
+    _type: 'experienceItem'
+    _key: string
+  }>
+  githubUsername?: string
   skillGroups?: Array<{
     title: string
+    titleEn?: string
     skills: Array<string>
     _type: 'skillGroup'
     _key: string
@@ -259,6 +324,8 @@ export type SiteSettings = {
   principles?: Array<{
     title: string
     description?: string
+    titleEn?: string
+    descriptionEn?: string
     _type: 'principle'
     _key: string
   }>
@@ -266,6 +333,11 @@ export type SiteSettings = {
   projectsCopy?: SectionCopy
   certificationsCopy?: SectionCopy
   contactCopy?: SectionCopy
+  taglineEn?: string
+  availabilityEn?: string
+  summaryEn?: string
+  heroPhrasesEn?: Array<string>
+  heroBadgesEn?: Array<string>
   seoMeta?: Seo
 }
 
@@ -371,10 +443,12 @@ export type AllSanitySchemaTypes =
   | BlockContent
   | SectionCopy
   | Seo
-  | SocialLink
-  | Certification
+  | LikeCounter
+  | Recommendation
   | SanityImageCrop
   | SanityImageHotspot
+  | SocialLink
+  | Certification
   | Project
   | Slug
   | SanityFileAssetReference
@@ -390,13 +464,13 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    displayName,    tagline,    availability,    summary,    heroPhrases,    heroBadges,    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },    contactEmail,    education[]{      _key,      institution,      program,      startYear,      endYear,      description,      image{ asset, crop, hotspot, alt }    },    skillGroups[]{ _key, title, skills },    principles[]{ _key, title, description },    aboutCopy{ label, title, description },    projectsCopy{ label, title, description },    certificationsCopy{ label, title, description },    contactCopy{ label, title, description },    seoMeta{      metaTitle,      metaDescription,      keywords,      twitterHandle,      ogImage{ asset, crop, hotspot, alt }    }  }
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0]{    displayName,    "tagline": select($lang == "en" => coalesce(taglineEn, tagline), tagline),    "availability": select($lang == "en" => coalesce(availabilityEn, availability), availability),    "summary": select($lang == "en" => coalesce(summaryEn, summary), summary),    "heroPhrases": select($lang == "en" && count(heroPhrasesEn) > 0 => heroPhrasesEn, heroPhrases),    "heroBadges": select($lang == "en" && count(heroBadgesEn) > 0 => heroBadgesEn, heroBadges),    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },    contactEmail,    githubUsername,    education[]{      _key,      institution,      "program": select($lang == "en" => coalesce(programEn, program), program),      startYear,      endYear,      "description": select($lang == "en" => coalesce(descriptionEn, description), description),      image{ asset, crop, hotspot, alt }    },    experience[]{      _key,      kind,      "role": select($lang == "en" => coalesce(roleEn, role), role),      organization,      startDate,      endDate,      "description": select($lang == "en" => coalesce(descriptionEn, description), description)    },    skillGroups[]{ _key, "title": select($lang == "en" => coalesce(titleEn, title), title), skills },    principles[]{ _key, "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },    aboutCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },    projectsCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },    certificationsCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },    contactCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },    seoMeta{      metaTitle,      metaDescription,      keywords,      twitterHandle,      ogImage{ asset, crop, hotspot, alt }    }  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   displayName: string
   tagline: string
   availability: string | null
   summary: string
-  heroPhrases: Array<string>
+  heroPhrases: Array<string> | null
   heroBadges: Array<string> | null
   heroPortrait: {
     asset: SanityImageAssetReference | null
@@ -412,6 +486,7 @@ export type SITE_SETTINGS_QUERY_RESULT = {
     size: number
   } | null
   contactEmail: string
+  githubUsername: string | null
   education: Array<{
     _key: string
     institution: string
@@ -425,6 +500,15 @@ export type SITE_SETTINGS_QUERY_RESULT = {
       hotspot: SanityImageHotspot | null
       alt: string | null
     } | null
+  }> | null
+  experience: Array<{
+    _key: string
+    kind: 'freelance' | 'internship' | 'research' | 'volunteer' | 'work'
+    role: string
+    organization: string
+    startDate: string
+    endDate: string | null
+    description: string | null
   }> | null
   skillGroups: Array<{
     _key: string
@@ -472,7 +556,7 @@ export type SITE_SETTINGS_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: PROJECTS_QUERY
-// Query: *[_type == "project" && status == "published" && defined(slug.current)]    | order(sortOrder asc, _createdAt desc){      _id,      title,      "slug": slug.current,      category,      shortDescription,      technologies,      featured,      demoUrl,      codeUrl,      coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }    }
+// Query: *[_type == "project" && status == "published" && defined(slug.current)]    | order(sortOrder asc, _createdAt desc){      _id,      "title": select($lang == "en" => coalesce(titleEn, title), title),      "slug": slug.current,      category,      "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),      technologies,      featured,      demoUrl,      codeUrl,      coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }    }
 export type PROJECTS_QUERY_RESULT = Array<{
   _id: string
   title: string
@@ -494,7 +578,7 @@ export type PROJECTS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: PROJECT_BY_SLUG_QUERY
-// Query: *[_type == "project" && status == "published" && slug.current == $slug][0]{    _id,    _updatedAt,    title,    "slug": slug.current,    category,    shortDescription,    problem,    approach,    solution,    results,    metrics[]{ _key, label, value, context },    technologies,    featured,    demoUrl,    codeUrl,    coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    gallery[]{ _key, asset, crop, hotspot, alt, caption, "lqip": asset->metadata.lqip }  }
+// Query: *[_type == "project" && status == "published" && slug.current == $slug][0]{    _id,    _updatedAt,    "title": select($lang == "en" => coalesce(titleEn, title), title),    "slug": slug.current,    category,    "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),    "problem": select($lang == "en" && count(problemEn) > 0 => problemEn, problem),    "approach": select($lang == "en" && count(approachEn) > 0 => approachEn, approach),    "solution": select($lang == "en" && count(solutionEn) > 0 => solutionEn, solution),    "results": select($lang == "en" && count(resultsEn) > 0 => resultsEn, results),    metrics[]{ _key, "label": select($lang == "en" => coalesce(labelEn, label), label), value, "context": select($lang == "en" => coalesce(contextEn, context), context) },    technologies,    featured,    demoUrl,    codeUrl,    coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },    gallery[]{ _key, asset, crop, hotspot, alt, caption, "lqip": asset->metadata.lqip }  }
 export type PROJECT_BY_SLUG_QUERY_RESULT = {
   _id: string
   _updatedAt: string
@@ -502,10 +586,10 @@ export type PROJECT_BY_SLUG_QUERY_RESULT = {
   slug: string
   category: Array<string>
   shortDescription: string
-  problem: BlockContent
-  approach: BlockContent
+  problem: BlockContent | null
+  approach: BlockContent | null
   solution: BlockContent | null
-  results: BlockContent
+  results: BlockContent | null
   metrics: Array<{
     _key: string
     label: string
@@ -583,7 +667,7 @@ export type CERTIFICATIONS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SOCIAL_LINKS_QUERY
-// Query: *[_type == "socialLink" && visibility == true] | order(sortOrder asc){    _id,    platformName,    url,    iconKey,    label  }
+// Query: *[_type == "socialLink" && visibility == true] | order(sortOrder asc){    _id,    platformName,    url,    iconKey,    "label": select($lang == "en" => coalesce(labelEn, label), label)  }
 export type SOCIAL_LINKS_QUERY_RESULT = Array<{
   _id: string
   platformName: string
@@ -594,7 +678,7 @@ export type SOCIAL_LINKS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SEARCH_QUERY
-// Query: *[    (_type == "project" && status == "published" && defined(slug.current)) ||    _type == "certification"  ]  | score(      boost(title match $term, 4),      boost(technologies match $term, 2),      boost(issuer match $term, 2),      shortDescription match $term,      category match $term    )  [_score > 0]  | order(_score desc)[0...$limit]{    _id,    _type,    title,    _score,    _type == "project" => { "slug": slug.current, shortDescription, category },    _type == "certification" => { issuer, category, issueDate, verificationUrl }  }
+// Query: *[    (_type == "project" && status == "published" && defined(slug.current)) ||    _type == "certification"  ]  | score(      boost(title match $term, 4),      boost(technologies match $term, 2),      boost(issuer match $term, 2),      shortDescription match $term,      category match $term    )  [_score > 0]  | order(_score desc)[0...$limit]{    _id,    _type,    title,    _score,    _type == "project" => {      "title": select($lang == "en" => coalesce(titleEn, title), title),      "slug": slug.current,      "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),      category    },    _type == "certification" => { issuer, category, issueDate, verificationUrl }  }
 export type SEARCH_QUERY_RESULT = Array<
   | {
       _id: string
@@ -624,16 +708,36 @@ export type SEARCH_QUERY_RESULT = Array<
     }
 >
 
+// Source: src/sanity/lib/queries.ts
+// Variable: RECOMMENDATIONS_QUERY
+// Query: *[_type == "recommendation" && status == "approved" && defined(authorName) && defined(message)]    | order(sortOrder asc, submittedAt desc){      _id,      authorName,      authorPhoto{ asset, crop, hotspot },      relationship,      role,      organization,      profileUrl,      message,      language    }
+export type RECOMMENDATIONS_QUERY_RESULT = Array<{
+  _id: string
+  authorName: string
+  authorPhoto: {
+    asset: SanityImageAssetReference | null
+    crop: SanityImageCrop | null
+    hotspot: SanityImageHotspot | null
+  } | null
+  relationship: 'classmate' | 'client' | 'colleague' | 'manager' | 'mentor' | 'teacher'
+  role: string
+  organization: string | null
+  profileUrl: string | null
+  message: string
+  language: 'en' | 'es' | null
+}>
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    displayName,\n    tagline,\n    availability,\n    summary,\n    heroPhrases,\n    heroBadges,\n    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },\n    contactEmail,\n    education[]{\n      _key,\n      institution,\n      program,\n      startYear,\n      endYear,\n      description,\n      image{ asset, crop, hotspot, alt }\n    },\n    skillGroups[]{ _key, title, skills },\n    principles[]{ _key, title, description },\n    aboutCopy{ label, title, description },\n    projectsCopy{ label, title, description },\n    certificationsCopy{ label, title, description },\n    contactCopy{ label, title, description },\n    seoMeta{\n      metaTitle,\n      metaDescription,\n      keywords,\n      twitterHandle,\n      ogImage{ asset, crop, hotspot, alt }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT
-    '\n  *[_type == "project" && status == "published" && defined(slug.current)]\n    | order(sortOrder asc, _createdAt desc){\n      _id,\n      title,\n      "slug": slug.current,\n      category,\n      shortDescription,\n      technologies,\n      featured,\n      demoUrl,\n      codeUrl,\n      coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }\n    }\n': PROJECTS_QUERY_RESULT
-    '\n  *[_type == "project" && status == "published" && slug.current == $slug][0]{\n    _id,\n    _updatedAt,\n    title,\n    "slug": slug.current,\n    category,\n    shortDescription,\n    problem,\n    approach,\n    solution,\n    results,\n    metrics[]{ _key, label, value, context },\n    technologies,\n    featured,\n    demoUrl,\n    codeUrl,\n    coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    gallery[]{ _key, asset, crop, hotspot, alt, caption, "lqip": asset->metadata.lqip }\n  }\n': PROJECT_BY_SLUG_QUERY_RESULT
+    '\n  *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    displayName,\n    "tagline": select($lang == "en" => coalesce(taglineEn, tagline), tagline),\n    "availability": select($lang == "en" => coalesce(availabilityEn, availability), availability),\n    "summary": select($lang == "en" => coalesce(summaryEn, summary), summary),\n    "heroPhrases": select($lang == "en" && count(heroPhrasesEn) > 0 => heroPhrasesEn, heroPhrases),\n    "heroBadges": select($lang == "en" && count(heroBadgesEn) > 0 => heroBadgesEn, heroBadges),\n    heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },\n    contactEmail,\n    githubUsername,\n    education[]{\n      _key,\n      institution,\n      "program": select($lang == "en" => coalesce(programEn, program), program),\n      startYear,\n      endYear,\n      "description": select($lang == "en" => coalesce(descriptionEn, description), description),\n      image{ asset, crop, hotspot, alt }\n    },\n    experience[]{\n      _key,\n      kind,\n      "role": select($lang == "en" => coalesce(roleEn, role), role),\n      organization,\n      startDate,\n      endDate,\n      "description": select($lang == "en" => coalesce(descriptionEn, description), description)\n    },\n    skillGroups[]{ _key, "title": select($lang == "en" => coalesce(titleEn, title), title), skills },\n    principles[]{ _key, "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },\n    aboutCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },\n    projectsCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },\n    certificationsCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },\n    contactCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },\n    seoMeta{\n      metaTitle,\n      metaDescription,\n      keywords,\n      twitterHandle,\n      ogImage{ asset, crop, hotspot, alt }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT
+    '\n  *[_type == "project" && status == "published" && defined(slug.current)]\n    | order(sortOrder asc, _createdAt desc){\n      _id,\n      "title": select($lang == "en" => coalesce(titleEn, title), title),\n      "slug": slug.current,\n      category,\n      "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),\n      technologies,\n      featured,\n      demoUrl,\n      codeUrl,\n      coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }\n    }\n': PROJECTS_QUERY_RESULT
+    '\n  *[_type == "project" && status == "published" && slug.current == $slug][0]{\n    _id,\n    _updatedAt,\n    "title": select($lang == "en" => coalesce(titleEn, title), title),\n    "slug": slug.current,\n    category,\n    "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),\n    "problem": select($lang == "en" && count(problemEn) > 0 => problemEn, problem),\n    "approach": select($lang == "en" && count(approachEn) > 0 => approachEn, approach),\n    "solution": select($lang == "en" && count(solutionEn) > 0 => solutionEn, solution),\n    "results": select($lang == "en" && count(resultsEn) > 0 => resultsEn, results),\n    metrics[]{ _key, "label": select($lang == "en" => coalesce(labelEn, label), label), value, "context": select($lang == "en" => coalesce(contextEn, context), context) },\n    technologies,\n    featured,\n    demoUrl,\n    codeUrl,\n    coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },\n    gallery[]{ _key, asset, crop, hotspot, alt, caption, "lqip": asset->metadata.lqip }\n  }\n': PROJECT_BY_SLUG_QUERY_RESULT
     '\n  *[_type == "project" && status == "published" && defined(slug.current)]{\n    "slug": slug.current,\n    _updatedAt\n  }\n': PROJECT_SLUGS_QUERY_RESULT
     '\n  *[_type == "certification"] | order(sortOrder asc, issueDate desc){\n    _id,\n    title,\n    issuer,\n    category,\n    iconKey,\n    issueDate,\n    expiresAt,\n    credentialId,\n    verificationUrl,\n    featured,\n    certificateImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }\n  }\n': CERTIFICATIONS_QUERY_RESULT
-    '\n  *[_type == "socialLink" && visibility == true] | order(sortOrder asc){\n    _id,\n    platformName,\n    url,\n    iconKey,\n    label\n  }\n': SOCIAL_LINKS_QUERY_RESULT
-    '\n  *[\n    (_type == "project" && status == "published" && defined(slug.current)) ||\n    _type == "certification"\n  ]\n  | score(\n      boost(title match $term, 4),\n      boost(technologies match $term, 2),\n      boost(issuer match $term, 2),\n      shortDescription match $term,\n      category match $term\n    )\n  [_score > 0]\n  | order(_score desc)[0...$limit]{\n    _id,\n    _type,\n    title,\n    _score,\n    _type == "project" => { "slug": slug.current, shortDescription, category },\n    _type == "certification" => { issuer, category, issueDate, verificationUrl }\n  }\n': SEARCH_QUERY_RESULT
+    '\n  *[_type == "socialLink" && visibility == true] | order(sortOrder asc){\n    _id,\n    platformName,\n    url,\n    iconKey,\n    "label": select($lang == "en" => coalesce(labelEn, label), label)\n  }\n': SOCIAL_LINKS_QUERY_RESULT
+    '\n  *[\n    (_type == "project" && status == "published" && defined(slug.current)) ||\n    _type == "certification"\n  ]\n  | score(\n      boost(title match $term, 4),\n      boost(technologies match $term, 2),\n      boost(issuer match $term, 2),\n      shortDescription match $term,\n      category match $term\n    )\n  [_score > 0]\n  | order(_score desc)[0...$limit]{\n    _id,\n    _type,\n    title,\n    _score,\n    _type == "project" => {\n      "title": select($lang == "en" => coalesce(titleEn, title), title),\n      "slug": slug.current,\n      "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),\n      category\n    },\n    _type == "certification" => { issuer, category, issueDate, verificationUrl }\n  }\n': SEARCH_QUERY_RESULT
+    '\n  *[_type == "recommendation" && status == "approved" && defined(authorName) && defined(message)]\n    | order(sortOrder asc, submittedAt desc){\n      _id,\n      authorName,\n      authorPhoto{ asset, crop, hotspot },\n      relationship,\n      role,\n      organization,\n      profileUrl,\n      message,\n      language\n    }\n': RECOMMENDATIONS_QUERY_RESULT
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

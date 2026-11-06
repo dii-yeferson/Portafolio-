@@ -1,5 +1,7 @@
 import { CertificationsGrid } from '@/components/certifications/certifications-grid'
 import { SectionHeading } from '@/components/ui/section-heading'
+import { type Locale, localePath } from '@/i18n/config'
+import { getDictionary } from '@/i18n'
 import { toCertificationViews } from '@/lib/certifications'
 import { resolveCopy } from '@/lib/copy'
 import type { CertificationItem, SiteSettings } from '@/sanity/lib/data'
@@ -7,15 +9,18 @@ import type { CertificationItem, SiteSettings } from '@/sanity/lib/data'
 export function CertificationsSection({
   certifications,
   settings,
+  lang,
 }: {
   certifications: CertificationItem[]
   settings: SiteSettings
+  lang: Locale
 }) {
-  const items = toCertificationViews(certifications).slice(0, 6)
+  const t = getDictionary(lang).certifications
+  const items = toCertificationViews(certifications, lang).slice(0, 6)
   const copy = resolveCopy(settings?.certificationsCopy, {
-    label: 'Aprendizaje continuo',
-    title: 'Certificaciones',
-    description: 'Credenciales con fecha real de emisión y enlace a la verificación oficial.',
+    label: t.label,
+    title: t.title,
+    description: t.description,
   })
 
   return (
@@ -30,12 +35,12 @@ export function CertificationsSection({
           label={copy.label}
           title={copy.title}
           description={copy.description}
-          action={{ href: '/certificaciones', label: 'Ver todas' }}
+          action={{ href: localePath(lang, '/certificaciones'), label: t.viewAll }}
         />
         {items.length > 0 ? (
           <CertificationsGrid certifications={items} />
         ) : (
-          <p className="text-muted">Las certificaciones se publicarán muy pronto.</p>
+          <p className="text-muted">{t.empty}</p>
         )}
       </div>
     </section>

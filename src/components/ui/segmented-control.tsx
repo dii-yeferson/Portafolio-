@@ -23,7 +23,7 @@ export function SegmentedControl<V extends string>({
       <div
         role="group"
         aria-label={label}
-        className="inline-flex rounded-full border border-line bg-surface p-1"
+        className="inline-flex rounded-full border border-line bg-surface-2 p-1"
       >
         {options.map((option) => {
           const active = option.value === value
@@ -40,8 +40,8 @@ export function SegmentedControl<V extends string>({
               {active ? (
                 <motion.span
                   layoutId={`${id}-pill`}
-                  transition={{ type: 'spring', stiffness: 400, damping: 34 }}
-                  className="absolute inset-0 rounded-full bg-surface-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_6px_16px_-8px_rgba(0,0,0,0.8)]"
+                  transition={{ type: 'spring', duration: 0.4, bounce: 0.15 }}
+                  className="absolute inset-0 rounded-full bg-[var(--seg-active)] shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_6px_16px_-8px_rgb(var(--shadow-rgb)/0.6)]"
                 />
               ) : null}
               <span className="relative">{option.label}</span>

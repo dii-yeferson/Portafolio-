@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
+import { DEFAULT_LOCALE, isLocale, localePath } from '@/i18n/config'
 import { jsonError } from '@/lib/http'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { buildSearchTerm, searchParamsSchema } from '@/lib/search'
@@ -37,7 +38,9 @@ export async function GET(request: NextRequest) {
     return jsonError(400, 'invalid_query', 'Escribe al menos una palabra de 2 caracteres.')
   }
 
-  const results = await searchContent(term, parsed.data.limit)
+  const langParam = searchParams.get('lang')
+  const lang = isLocale(langParam) ? langParam : DEFAULT_LOCALE
+  const results = await searchContent(term, parsed.data.limit, lang)
 
   return NextResponse.json(
     {
@@ -49,7 +52,7 @@ export async function GET(request: NextRequest) {
               id: item._id,
               title: item.title,
               description: item.shortDescription,
-              href: projectPath(item.slug),
+              href: projectPath(item.slug, lang),
             }
           : {
               type: 'certification' as const,
@@ -58,7 +61,7 @@ export async function GET(request: NextRequest) {
               description: item.issuer,
               href: isSafeExternalUrl(item.verificationUrl)
                 ? item.verificationUrl
-                : '/#certificaciones',
+                : localePath(lang, '/#certificaciones'),
             },
       ),
     },

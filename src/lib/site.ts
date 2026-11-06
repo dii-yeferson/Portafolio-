@@ -1,13 +1,12 @@
+import { DEFAULT_LOCALE, type Locale, localePath } from '@/i18n/config'
+
 /** Textos de marca definidos en el PRD; se usan si el CMS aún no tiene contenido. */
 export const SITE_DEFAULTS = {
   displayName: 'Di Yeferson',
   tagline: 'Big Data · Ciencia de Datos · IA Aplicada',
-  motto: 'Transformando datos en soluciones reales',
-  description:
-    'Portafolio de Di Yeferson: proyectos de Big Data, Ciencia de Datos e IA aplicada a problemas reales.',
-  locale: 'es_PE',
-  language: 'es',
-  themeColor: '#080E0B',
+  motto: 'Detrás de cada dato hay una decisión.',
+  /** Retrato por defecto (fondo transparente) mientras el CMS no tenga uno. */
+  portrait: { src: '/images/portrait.webp', width: 1122, height: 1273 },
 } as const
 
 const LOCAL_URL = 'http://localhost:3000'
@@ -41,6 +40,6 @@ export function absoluteUrl(path = '/'): string {
   return new URL(path, getSiteUrl()).toString()
 }
 
-export function projectPath(slug: string): string {
-  return `/proyectos/${encodeURIComponent(slug)}`
+export function projectPath(slug: string, lang: Locale = DEFAULT_LOCALE): string {
+  return localePath(lang, `/proyectos/${encodeURIComponent(slug)}`)
 }

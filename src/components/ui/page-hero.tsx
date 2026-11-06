@@ -1,22 +1,32 @@
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
+import { SplitLetters } from '@/components/motion/split-letters'
+import { Accent, plainText } from '@/i18n/accent'
+import { type Locale, localePath } from '@/i18n/config'
+import { getDictionary } from '@/i18n'
+
 type Crumb = { href: string; label: string }
 
-/** Cabecera de páginas internas: migas, etiqueta, título y bajada. */
+/** Cabecera de páginas internas: migas, etiqueta, título que se arma en 3D y bajada. */
 export function PageHero({
+  lang,
   label,
   title,
   description,
   crumbs = [],
   children,
 }: {
+  lang: Locale
   label: string
   title: string
   description?: string
   crumbs?: Crumb[]
   children?: React.ReactNode
 }) {
+  const t = getDictionary(lang).common
+  const hasAccent = title.includes('*')
+
   return (
     <section className="relative isolate overflow-hidden">
       <div
@@ -25,11 +35,14 @@ export function PageHero({
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10 opacity-[0.12]" />
       <div className="container-page pt-36 pb-14 lg:pt-44 lg:pb-20">
-        <nav aria-label="Migas de pan" className="animate-rise">
+        <nav aria-label={t.breadcrumbs} className="animate-rise">
           <ol className="flex flex-wrap items-center gap-1.5 text-[0.85rem] font-bold text-subtle">
             <li>
-              <Link href="/" className="transition-colors hover:text-foreground">
-                Inicio
+              <Link
+                href={localePath(lang, '/')}
+                className="transition-colors hover:text-foreground"
+              >
+                {t.home}
               </Link>
             </li>
             {crumbs.map((crumb) => (
@@ -42,13 +55,19 @@ export function PageHero({
             ))}
             <li className="flex items-center gap-1.5 text-muted" aria-current="page">
               <ChevronRight className="size-3.5" aria-hidden="true" />
-              {title}
+              {plainText(title)}
             </li>
           </ol>
         </nav>
         <p className="label mt-10 animate-rise [animation-delay:60ms]">{label}</p>
-        <h1 className="text-satin mt-3 max-w-4xl text-[clamp(2.8rem,6.5vw,5rem)] leading-[0.98] font-black tracking-[-0.05em]">
-          {title}
+        <h1 className="letters letters-intro mt-3 max-w-4xl text-[clamp(2.8rem,6.5vw,5rem)] leading-[0.98] font-black tracking-[-0.05em]">
+          {hasAccent ? (
+            <span className="inline-block animate-rise">
+              <Accent text={title} className="accent-serif text-aurora pr-1" />
+            </span>
+          ) : (
+            <SplitLetters text={title} />
+          )}
         </h1>
         {description ? (
           <p className="mt-6 max-w-2xl animate-rise text-[1.12rem] leading-relaxed text-muted [animation-delay:160ms]">

@@ -4,6 +4,8 @@ import { Award, FolderOpen, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useId, useRef, useState } from 'react'
 
+import { useI18n } from '@/i18n/client'
+
 type SearchResult = {
   type: 'project' | 'certification'
   id: string
@@ -18,13 +20,9 @@ type SearchState = {
   results: SearchResult[]
 }
 
-const TYPE_LABEL: Record<SearchResult['type'], string> = {
-  project: 'Proyecto',
-  certification: 'Certificación',
-}
-
 /** Buscador de proyectos y certificaciones sobre `/api/search` (FR-01). Atajo: Ctrl/⌘ + K. */
 export function SearchDialog() {
+  const { lang, t } = useI18n()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const inputId = useId()
   const [query, setQuery] = useState('')
@@ -37,7 +35,7 @@ export function SearchDialog() {
     const timer = window.setTimeout(async () => {
       setSearch({ term, status: 'loading', results: [] })
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`, {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(term)}&lang=${lang}`, {
           signal: controller.signal,
         })
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
@@ -51,7 +49,7 @@ export function SearchDialog() {
       controller.abort()
       window.clearTimeout(timer)
     }
-  }, [term])
+  }, [term, lang])
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -72,31 +70,32 @@ export function SearchDialog() {
       <button
         type="button"
         onClick={() => dialogRef.current?.showModal()}
-        aria-label="Buscar proyectos y certificaciones"
+        aria-label={t.search.open}
         aria-haspopup="dialog"
-        className="grid size-10 place-items-center rounded-full text-muted transition-[color,background-color,transform] hover:bg-white/[0.08] hover:text-foreground active:scale-95"
+        className="grid size-10 place-items-center rounded-full text-muted transition-[color,background-color,transform] duration-150 hover:bg-ink/[0.08] hover:text-foreground active:scale-[0.96]"
       >
         <Search className="size-[1.05rem]" aria-hidden="true" />
       </button>
       <dialog
         ref={dialogRef}
         aria-labelledby={`${inputId}-title`}
-        className="glass mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-[1.5rem] bg-[rgb(18_18_22/0.94)] p-0 text-foreground backdrop:bg-black/65 backdrop:backdrop-blur-sm"
+        data-lenis-prevent
+        className="glass mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-[1.5rem] bg-sheet p-0 text-foreground backdrop:bg-scrim backdrop:backdrop-blur-sm"
       >
         <h2 id={`${inputId}-title`} className="sr-only">
-          Buscar proyectos y certificaciones
+          {t.search.open}
         </h2>
         <div className="flex items-center gap-3 border-b border-line px-5">
           <Search className="size-5 shrink-0 text-aqua" aria-hidden="true" />
           <label htmlFor={inputId} className="sr-only">
-            Término de búsqueda
+            {t.search.inputLabel}
           </label>
           <input
             id={inputId}
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar: Power BI, minería, Python…"
+            placeholder={t.search.placeholder}
             maxLength={64}
             autoComplete="off"
             className="h-16 w-full bg-transparent text-lg font-bold outline-none placeholder:text-subtle"
@@ -104,25 +103,21 @@ export function SearchDialog() {
           <button
             type="button"
             onClick={close}
-            aria-label="Cerrar búsqueda"
-            className="grid size-8 shrink-0 place-items-center rounded-full text-muted hover:bg-white/10 hover:text-foreground"
+            aria-label={t.search.close}
+            className="grid size-8 shrink-0 place-items-center rounded-full text-muted hover:bg-ink/10 hover:text-foreground"
           >
             <X className="size-4" aria-hidden="true" />
           </button>
         </div>
         <div className="max-h-[55vh] overflow-y-auto p-3">
           <div aria-live="polite" className="px-2 py-1 text-sm font-semibold">
-            {!current ? (
-              <p className="text-subtle">Escribe al menos 2 caracteres. Atajo: Ctrl / ⌘ + K.</p>
-            ) : null}
+            {!current ? <p className="text-subtle">{t.search.hint}</p> : null}
             {current?.status === 'loading' ? (
-              <p className="animate-pulse text-muted">Buscando…</p>
+              <p className="animate-pulse text-muted">{t.search.loading}</p>
             ) : null}
-            {current?.status === 'error' ? (
-              <p className="text-danger">No se pudo completar la búsqueda.</p>
-            ) : null}
+            {current?.status === 'error' ? <p className="text-danger">{t.search.error}</p> : null}
             {current?.status === 'done' && current.results.length === 0 ? (
-              <p className="text-muted">Sin resultados para «{current.term}».</p>
+              <p className="text-muted">{t.search.empty(current.term)}</p>
             ) : null}
           </div>
           {current?.status === 'done' && current.results.length > 0 ? (
@@ -134,14 +129,14 @@ export function SearchDialog() {
                     <Link
                       href={result.href}
                       onClick={close}
-                      className="flex items-center gap-4 rounded-2xl border border-transparent px-3 py-3 transition-colors hover:border-line hover:bg-white/[0.05]"
+                      className="flex items-center gap-4 rounded-2xl border border-transparent px-3 py-3 transition-colors hover:border-line hover:bg-ink/[0.05]"
                     >
                       <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-line bg-surface-2 text-aqua">
                         <Icon className="size-5" aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
                         <span className="label block text-[0.64rem]!">
-                          {TYPE_LABEL[result.type]}
+                          {t.search.types[result.type]}
                         </span>
                         <span className="block truncate font-extrabold">{result.title}</span>
                         <span className="block truncate text-sm text-muted">

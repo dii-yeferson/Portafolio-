@@ -1,8 +1,10 @@
 import type { MetadataRoute } from 'next'
 
-import { absoluteUrl, projectPath } from '@/lib/site'
+import { DEFAULT_LOCALE, LOCALES, localePath } from '@/i18n/config'
+import { absoluteUrl } from '@/lib/site'
 import { getProjectSlugs } from '@/sanity/lib/data'
 
+/** Sitemap bilingüe: cada URL declara su versión en el otro idioma (hreflang). */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getProjectSlugs()
   const latestUpdate = projects
@@ -10,24 +12,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .sort()
     .at(-1)
 
+  const entry = (
+    path: string,
+    priority: number,
+    changeFrequency: 'weekly' | 'monthly',
+    lastModified?: string,
+  ) =>
+    LOCALES.map((lang) => ({
+      url: absoluteUrl(localePath(lang, path)),
+      lastModified,
+      changeFrequency,
+      priority: lang === DEFAULT_LOCALE ? priority : priority - 0.1,
+      alternates: {
+        languages: Object.fromEntries(
+          LOCALES.map((locale) => [locale, absoluteUrl(localePath(locale, path))]),
+        ),
+      },
+    }))
+
   return [
-    {
-      url: absoluteUrl('/'),
-      lastModified: latestUpdate,
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    ...['/proyectos', '/certificaciones', '/sobre-mi'].map((path) => ({
-      url: absoluteUrl(path),
-      lastModified: latestUpdate,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
-    ...projects.map((project) => ({
-      url: absoluteUrl(projectPath(project.slug)),
-      lastModified: project._updatedAt,
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    })),
+    ...entry('/', 1, 'weekly', latestUpdate),
+    ...['/proyectos', '/certificaciones', '/sobre-mi'].flatMap((path) =>
+      entry(path, 0.7, 'monthly', latestUpdate),
+    ),
+    ...projects.flatMap((project) =>
+      entry(`/proyectos/${encodeURIComponent(project.slug)}`, 0.8, 'monthly', project._updatedAt),
+    ),
   ]
 }

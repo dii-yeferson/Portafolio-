@@ -1,11 +1,13 @@
 import { CheckmarkCircleIcon } from '@sanity/icons/CheckmarkCircle'
+import { CommentIcon } from '@sanity/icons/Comment'
 import { CogIcon } from '@sanity/icons/Cog'
+import { HeartIcon } from '@sanity/icons/Heart'
 import { HomeIcon } from '@sanity/icons/Home'
 import { LinkIcon } from '@sanity/icons/Link'
 import { ProjectsIcon } from '@sanity/icons/Projects'
 import type { StructureResolver } from 'sanity/structure'
 
-import { PROJECT_STATUSES } from '../lib/taxonomy'
+import { PROJECT_STATUSES, RECOMMENDATION_STATUSES } from '../lib/taxonomy'
 import { apiVersion } from './env'
 import { StudioHome } from './studio/studio-home'
 
@@ -70,4 +72,29 @@ export const structure: StructureResolver = (S) =>
         ),
       S.documentTypeListItem('certification').title('Certificaciones').icon(CheckmarkCircleIcon),
       S.documentTypeListItem('socialLink').title('Redes sociales').icon(LinkIcon),
+      S.divider(),
+      S.listItem()
+        .title('Recomendaciones')
+        .id('recommendations')
+        .icon(CommentIcon)
+        .child(
+          S.list()
+            .title('Recomendaciones')
+            .items(
+              RECOMMENDATION_STATUSES.map(({ title, value }) =>
+                S.listItem()
+                  .title(title)
+                  .id(`recommendations-${value}`)
+                  .icon(CommentIcon)
+                  .child(
+                    S.documentTypeList('recommendation')
+                      .title(title)
+                      .apiVersion(apiVersion)
+                      .filter('_type == "recommendation" && status == $status')
+                      .params({ status: value }),
+                  ),
+              ),
+            ),
+        ),
+      S.documentTypeListItem('likeCounter').title('Me gusta').icon(HeartIcon),
     ])

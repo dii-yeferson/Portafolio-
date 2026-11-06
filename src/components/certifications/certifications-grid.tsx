@@ -5,7 +5,8 @@ import { useRef, useState } from 'react'
 
 import { Medal, TechIcon } from '@/components/icons/tech-icons'
 import { SanityImage } from '@/components/sanity-image'
-import { getCertificationCategoryLabel } from '@/lib/taxonomy'
+import { useI18n } from '@/i18n/client'
+import { certificationCategoryLabel } from '@/i18n/labels'
 import { EXTERNAL_LINK_PROPS, isSafeExternalUrl } from '@/lib/url'
 import { hasImageAsset } from '@/sanity/lib/image'
 import type { CERTIFICATIONS_QUERY_RESULT } from '@/sanity/types'
@@ -23,6 +24,7 @@ export function CertificationsGrid({
   certifications: CertificationView[]
   className?: string
 }) {
+  const { lang, t } = useI18n()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [selected, setSelected] = useState<CertificationView | null>(null)
 
@@ -40,7 +42,7 @@ export function CertificationsGrid({
           return (
             <li key={item._id} className="reveal">
               <article className="surface-card card-hover spotlight group flex h-full items-center gap-4 rounded-[1.25rem] p-4 pr-5">
-                <span className="grid size-14 shrink-0 place-items-center rounded-2xl border border-line bg-surface-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <span className="grid size-14 shrink-0 place-items-center rounded-2xl border border-line bg-surface-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]">
                   <TechIcon icon={item.iconKey} className="size-7" />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -55,10 +57,12 @@ export function CertificationsGrid({
                     <time dateTime={item.issueDate} title={item.issuedLabel}>
                       {item.issueDate.slice(0, 4)}
                     </time>
-                    {item.expired ? <span className="ml-1.5 text-champagne">· Vencida</span> : null}
+                    {item.expired ? (
+                      <span className="ml-1.5 text-champagne">· {t.certifications.expired}</span>
+                    ) : null}
                   </p>
                   <p className="sr-only">
-                    Categoría: {getCertificationCategoryLabel(item.category)}
+                    {t.certifications.category(certificationCategoryLabel(item.category, lang))}
                   </p>
                 </div>
                 <Medal className="hidden h-9 w-7 shrink-0 opacity-90 sm:block transition-transform duration-500 ease-[cubic-bezier(.22,1.12,.36,1)] group-hover:-rotate-6" />
@@ -66,8 +70,8 @@ export function CertificationsGrid({
                   <a
                     href={verifyUrl}
                     {...EXTERNAL_LINK_PROPS}
-                    aria-label={`Verificar ${item.title}`}
-                    className="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-muted transition-colors hover:bg-white/[0.08] hover:text-foreground"
+                    aria-label={t.certifications.verify(item.title)}
+                    className="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-muted transition-colors hover:bg-ink/[0.08] hover:text-foreground"
                   >
                     <ArrowUpRight className="size-4" aria-hidden="true" />
                   </a>
@@ -75,8 +79,8 @@ export function CertificationsGrid({
                   <button
                     type="button"
                     onClick={() => open(item)}
-                    aria-label={`Ver certificado ${item.title}`}
-                    className="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-muted transition-colors hover:bg-white/[0.08] hover:text-foreground"
+                    aria-label={t.certifications.viewCertificate(item.title)}
+                    className="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-muted transition-colors hover:bg-ink/[0.08] hover:text-foreground"
                   >
                     <Eye className="size-4" aria-hidden="true" />
                   </button>
@@ -90,8 +94,8 @@ export function CertificationsGrid({
       <dialog
         ref={dialogRef}
         onClose={() => setSelected(null)}
-        aria-label={selected ? `Certificado: ${selected.title}` : 'Certificado'}
-        className="glass m-auto w-[min(60rem,calc(100vw-2rem))] rounded-[1.75rem] p-4 text-foreground backdrop:bg-black/70 backdrop:backdrop-blur-sm"
+        aria-label={selected ? t.certifications.certificate(selected.title) : undefined}
+        className="glass m-auto w-[min(60rem,calc(100vw-2rem))] rounded-[1.75rem] p-4 text-foreground backdrop:bg-scrim backdrop:backdrop-blur-sm"
       >
         {selected ? (
           <figure>
@@ -110,7 +114,7 @@ export function CertificationsGrid({
                 type="button"
                 onClick={() => dialogRef.current?.close()}
                 className="glass grid size-9 place-items-center rounded-full text-foreground"
-                aria-label="Cerrar"
+                aria-label={t.common.close}
               >
                 <X className="size-4" aria-hidden="true" />
               </button>

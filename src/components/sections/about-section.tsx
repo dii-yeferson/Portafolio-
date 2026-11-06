@@ -1,119 +1,86 @@
-import { ArrowRight, GraduationCap, Layers, Target } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
+import { LiveCaption } from '@/components/about/live-caption'
+import { Timeline } from '@/components/about/timeline'
+import { Accent } from '@/i18n/accent'
+import { type Locale, localePath } from '@/i18n/config'
+import { getDictionary } from '@/i18n'
 import { resolveCopy } from '@/lib/copy'
 import type { SiteSettings } from '@/sanity/lib/data'
 
-function CardIcon({ icon: Icon }: { icon: typeof Target }) {
-  return (
-    <span className="grid size-11 place-items-center rounded-2xl border border-line bg-surface-2 text-aqua shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-      <Icon className="size-5" strokeWidth={2} aria-hidden="true" />
-    </span>
-  )
-}
-
-/** Sobre mí (FR-03): declaración principal y tres tarjetas — formación, stack y enfoque. */
-export function AboutSection({ settings }: { settings: SiteSettings }) {
-  const education = settings?.education?.[0]
-  const skills = [...new Set(settings?.skillGroups?.flatMap((group) => group.skills) ?? [])].slice(
-    0,
-    12,
-  )
-  const principles = (settings?.principles ?? []).slice(0, 5)
-  const copy = resolveCopy(settings?.aboutCopy, {
-    label: 'Perfil',
-    title: 'Sobre mí',
-    description: '',
-  })
+/**
+ * Sobre mí (FR-03): una idea grande, un subtítulo vivo con mi forma de
+ * trabajar, la trayectoria (experiencia + formación) y con qué trabajo.
+ */
+export function AboutSection({ settings, lang }: { settings: SiteSettings; lang: Locale }) {
+  const t = getDictionary(lang).about
+  const copy = resolveCopy(settings?.aboutCopy, { label: t.label, title: t.title, description: '' })
+  const principles = (settings?.principles ?? []).map((principle) => principle.title)
+  const hasExperience = (settings?.experience?.length ?? 0) > 0
+  const skillGroups = settings?.skillGroups ?? []
 
   return (
     <section
       id="sobre-mi"
       aria-labelledby="sobre-mi-title"
-      className="pt-14 pb-20 lg:pt-16 lg:pb-28"
+      className="pt-14 pb-20 lg:pt-20 lg:pb-28"
     >
       <div className="container-page">
         <p className="label reveal">{copy.label}</p>
         <h2
           id="sobre-mi-title"
-          className="reveal mt-3 text-[clamp(2.2rem,4.2vw,3.25rem)] leading-[1.02] font-black tracking-[-0.04em]"
+          className="reveal mt-3 max-w-4xl text-[clamp(2.4rem,5vw,4rem)] leading-[1] font-black tracking-[-0.045em]"
         >
-          {copy.title}
+          <Accent text={copy.title} className="accent-serif text-aurora pr-1" />
         </h2>
-        <p className="reveal mt-8 max-w-4xl text-[clamp(1.35rem,2.5vw,2.05rem)] leading-[1.38] font-bold tracking-[-0.02em] text-foreground/90">
-          {settings?.summary || 'El perfil profesional se publicará muy pronto.'}
-        </p>
+        {settings?.summary ? (
+          <p className="reveal mt-7 max-w-3xl text-[clamp(1.15rem,2vw,1.5rem)] leading-[1.45] font-bold tracking-[-0.015em] text-muted">
+            {settings.summary}
+          </p>
+        ) : null}
 
-        <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <article className="surface-card card-hover spotlight reveal flex flex-col p-7">
-            <CardIcon icon={GraduationCap} />
-            <p className="label mt-6">Formación</p>
-            {education ? (
-              <>
-                <h3 className="mt-2 text-[1.35rem] leading-snug font-extrabold tracking-[-0.02em]">
-                  {education.program}
-                </h3>
-                <p className="mt-1 font-bold text-muted">{education.institution}</p>
-                <span className="mt-6 inline-flex items-center gap-2 self-start rounded-full border border-line bg-surface-2 px-3 py-1 text-[0.78rem] font-bold text-foreground/85">
-                  <span className="status-dot size-1.5!" aria-hidden="true" />
-                  {education.endYear
-                    ? `${education.startYear ? `${education.startYear} – ` : ''}${education.endYear}`
-                    : 'En formación'}
-                </span>
-              </>
-            ) : (
-              <p className="mt-2 text-muted">Formación académica próximamente.</p>
-            )}
-          </article>
+        {principles.length > 0 ? (
+          <div className="reveal mt-12 border-y border-line py-8">
+            <LiveCaption phrases={principles} label={t.howIWork} />
+          </div>
+        ) : null}
 
-          <article className="surface-card card-hover spotlight reveal p-7">
-            <CardIcon icon={Layers} />
-            <p className="label mt-6">Stack técnico</p>
-            {skills.length > 0 ? (
-              <ul className="mt-4 flex flex-wrap gap-2" aria-label="Habilidades">
-                {skills.map((skill) => (
-                  <li
-                    key={skill}
-                    className="chip transition-colors hover:border-line-strong hover:text-foreground"
-                  >
-                    {skill}
-                  </li>
+        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+          <div className="reveal">
+            <p className="label mb-6">{hasExperience ? t.journey : t.education}</p>
+            <Timeline settings={settings} lang={lang} />
+          </div>
+          {skillGroups.length > 0 ? (
+            <div className="reveal">
+              <p className="label mb-6">{t.stack}</p>
+              <div className="space-y-6">
+                {skillGroups.map((group) => (
+                  <div key={group._key}>
+                    <p className="text-[0.95rem] font-extrabold">{group.title}</p>
+                    <ul className="mt-3 flex flex-wrap gap-2" aria-label={group.title}>
+                      {group.skills.map((skill) => (
+                        <li
+                          key={skill}
+                          className="chip transition-colors hover:border-line-strong hover:text-foreground"
+                        >
+                          {skill}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
-              </ul>
-            ) : (
-              <p className="mt-2 text-muted">Habilidades próximamente.</p>
-            )}
-          </article>
-
-          <article className="surface-card card-hover spotlight reveal p-7 md:col-span-2 lg:col-span-1">
-            <CardIcon icon={Target} />
-            <p className="label mt-6">Cómo trabajo</p>
-            {principles.length > 0 ? (
-              <ol className="mt-4 space-y-3">
-                {principles.map((principle, index) => (
-                  <li
-                    key={principle._key}
-                    className="flex items-baseline gap-3.5 text-[0.98rem] font-bold text-foreground/90"
-                  >
-                    <span className="text-aurora w-6 shrink-0 text-[0.8rem] font-black tabular-nums">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    {principle.title}
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <p className="mt-2 text-muted">Principios de trabajo próximamente.</p>
-            )}
-          </article>
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <Link
-          href="/sobre-mi"
-          className="group reveal mt-10 inline-flex items-center gap-2 text-[0.95rem] font-extrabold"
+          href={localePath(lang, '/sobre-mi')}
+          className="group reveal mt-12 inline-flex items-center gap-2 text-[0.95rem] font-extrabold"
         >
-          Ver perfil completo
-          <span className="grid size-8 place-items-center rounded-full border border-line-strong transition-[transform,background-color] duration-300 group-hover:translate-x-0.5 group-hover:bg-white/[0.07]">
+          {t.fullProfile}
+          <span className="grid size-8 place-items-center rounded-full border border-line-strong transition-[transform,background-color] duration-300 group-hover:translate-x-0.5 group-hover:bg-ink/[0.07]">
             <ArrowRight className="size-4" aria-hidden="true" />
           </span>
         </Link>

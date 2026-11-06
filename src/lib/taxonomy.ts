@@ -54,6 +54,36 @@ export const CERTIFICATION_ICONS = [
 
 export type CertificationIcon = (typeof CERTIFICATION_ICONS)[number]['value']
 
+/** Tipos de experiencia para la línea de tiempo. */
+export const EXPERIENCE_KINDS = [
+  { title: 'Prácticas', value: 'internship' },
+  { title: 'Empleo', value: 'work' },
+  { title: 'Independiente', value: 'freelance' },
+  { title: 'Investigación', value: 'research' },
+  { title: 'Voluntariado', value: 'volunteer' },
+] as const satisfies readonly Option[]
+
+export type ExperienceKind = (typeof EXPERIENCE_KINDS)[number]['value']
+
+/** Relación de quien recomienda (sección de recomendaciones). */
+export const RECOMMENDATION_RELATIONSHIPS = [
+  { title: 'Docente', value: 'teacher' },
+  { title: 'Mentor', value: 'mentor' },
+  { title: 'Compañero de estudios', value: 'classmate' },
+  { title: 'Compañero de trabajo', value: 'colleague' },
+  { title: 'Jefe directo', value: 'manager' },
+  { title: 'Cliente', value: 'client' },
+] as const satisfies readonly Option[]
+
+export type RecommendationRelationship = (typeof RECOMMENDATION_RELATIONSHIPS)[number]['value']
+
+/** Estados de una recomendación: solo `approved` es pública. */
+export const RECOMMENDATION_STATUSES = [
+  { title: 'Pendiente', value: 'pending' },
+  { title: 'Aprobada', value: 'approved' },
+  { title: 'Oculta', value: 'hidden' },
+] as const satisfies readonly Option[]
+
 /** Plataformas del ecosistema social (FR-04 / CMS-04). */
 export const SOCIAL_PLATFORMS = [
   { title: 'LinkedIn', value: 'linkedin' },

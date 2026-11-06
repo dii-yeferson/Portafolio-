@@ -11,29 +11,39 @@ import { defineQuery } from 'groq'
 export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings" && _id == "siteSettings"][0]{
     displayName,
-    tagline,
-    availability,
-    summary,
-    heroPhrases,
-    heroBadges,
+    "tagline": select($lang == "en" => coalesce(taglineEn, tagline), tagline),
+    "availability": select($lang == "en" => coalesce(availabilityEn, availability), availability),
+    "summary": select($lang == "en" => coalesce(summaryEn, summary), summary),
+    "heroPhrases": select($lang == "en" && count(heroPhrasesEn) > 0 => heroPhrasesEn, heroPhrases),
+    "heroBadges": select($lang == "en" && count(heroBadgesEn) > 0 => heroBadgesEn, heroBadges),
     heroPortrait{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },
     "resume": resumeFile.asset->{ url, originalFilename, mimeType, size },
     contactEmail,
+    githubUsername,
     education[]{
       _key,
       institution,
-      program,
+      "program": select($lang == "en" => coalesce(programEn, program), program),
       startYear,
       endYear,
-      description,
+      "description": select($lang == "en" => coalesce(descriptionEn, description), description),
       image{ asset, crop, hotspot, alt }
     },
-    skillGroups[]{ _key, title, skills },
-    principles[]{ _key, title, description },
-    aboutCopy{ label, title, description },
-    projectsCopy{ label, title, description },
-    certificationsCopy{ label, title, description },
-    contactCopy{ label, title, description },
+    experience[]{
+      _key,
+      kind,
+      "role": select($lang == "en" => coalesce(roleEn, role), role),
+      organization,
+      startDate,
+      endDate,
+      "description": select($lang == "en" => coalesce(descriptionEn, description), description)
+    },
+    skillGroups[]{ _key, "title": select($lang == "en" => coalesce(titleEn, title), title), skills },
+    principles[]{ _key, "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },
+    aboutCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },
+    projectsCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },
+    certificationsCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },
+    contactCopy{ "label": select($lang == "en" => coalesce(labelEn, label), label), "title": select($lang == "en" => coalesce(titleEn, title), title), "description": select($lang == "en" => coalesce(descriptionEn, description), description) },
     seoMeta{
       metaTitle,
       metaDescription,
@@ -48,10 +58,10 @@ export const PROJECTS_QUERY = defineQuery(`
   *[_type == "project" && status == "published" && defined(slug.current)]
     | order(sortOrder asc, _createdAt desc){
       _id,
-      title,
+      "title": select($lang == "en" => coalesce(titleEn, title), title),
       "slug": slug.current,
       category,
-      shortDescription,
+      "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),
       technologies,
       featured,
       demoUrl,
@@ -64,15 +74,15 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(`
   *[_type == "project" && status == "published" && slug.current == $slug][0]{
     _id,
     _updatedAt,
-    title,
+    "title": select($lang == "en" => coalesce(titleEn, title), title),
     "slug": slug.current,
     category,
-    shortDescription,
-    problem,
-    approach,
-    solution,
-    results,
-    metrics[]{ _key, label, value, context },
+    "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),
+    "problem": select($lang == "en" && count(problemEn) > 0 => problemEn, problem),
+    "approach": select($lang == "en" && count(approachEn) > 0 => approachEn, approach),
+    "solution": select($lang == "en" && count(solutionEn) > 0 => solutionEn, solution),
+    "results": select($lang == "en" && count(resultsEn) > 0 => resultsEn, results),
+    metrics[]{ _key, "label": select($lang == "en" => coalesce(labelEn, label), label), value, "context": select($lang == "en" => coalesce(contextEn, context), context) },
     technologies,
     featured,
     demoUrl,
@@ -111,7 +121,7 @@ export const SOCIAL_LINKS_QUERY = defineQuery(`
     platformName,
     url,
     iconKey,
-    label
+    "label": select($lang == "en" => coalesce(labelEn, label), label)
   }
 `)
 
@@ -137,7 +147,28 @@ export const SEARCH_QUERY = defineQuery(`
     _type,
     title,
     _score,
-    _type == "project" => { "slug": slug.current, shortDescription, category },
+    _type == "project" => {
+      "title": select($lang == "en" => coalesce(titleEn, title), title),
+      "slug": slug.current,
+      "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),
+      category
+    },
     _type == "certification" => { issuer, category, issueDate, verificationUrl }
   }
+`)
+
+/** Recomendaciones aprobadas (verificadas con LinkedIn). */
+export const RECOMMENDATIONS_QUERY = defineQuery(`
+  *[_type == "recommendation" && status == "approved" && defined(authorName) && defined(message)]
+    | order(sortOrder asc, submittedAt desc){
+      _id,
+      authorName,
+      authorPhoto{ asset, crop, hotspot },
+      relationship,
+      role,
+      organization,
+      profileUrl,
+      message,
+      language
+    }
 `)

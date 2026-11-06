@@ -45,8 +45,24 @@ function pickVariant(title: string, categories: string[]): Variant {
 const W = 480
 const H = 300
 
-export function ProjectCover({ seed, categories, title, className }: CoverProps) {
+export function ProjectCover(props: CoverProps) {
   const uid = useId().replace(/:/g, '')
+  return <ProjectCoverArt {...props} uid={uid} />
+}
+
+/**
+ * El dibujo sin hooks (recibe el prefijo de IDs). Lo usan `ProjectCover` y
+ * las imágenes Open Graph, que se renderizan fuera de React.
+ */
+export function ProjectCoverArt({
+  seed,
+  categories,
+  title,
+  className,
+  uid,
+  width,
+  height,
+}: CoverProps & { uid: string; width?: number; height?: number }) {
   const seedNumber = hashString(seed)
   const variant = pickVariant(title, categories)
 
@@ -54,6 +70,8 @@ export function ProjectCover({ seed, categories, title, className }: CoverProps)
     <svg
       viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="xMidYMid slice"
+      width={width}
+      height={height}
       role="img"
       aria-label={`Ilustración del proyecto ${title}`}
       className={className}
