@@ -56,6 +56,7 @@ export function LikeButton({
       type="button"
       onClick={onClick}
       aria-pressed={state.liked}
+      data-like-slug={slug}
       aria-label={state.liked ? t.likes.unlike(title) : t.likes.like(title)}
       className={`group/like z-10 inline-flex ${className.includes('absolute') ? '' : 'relative'} items-center gap-1.5 rounded-full transition-[transform,background-color,border-color] duration-150 ease-[cubic-bezier(.23,1,.32,1)] active:scale-[0.94] ${
         large

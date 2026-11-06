@@ -275,6 +275,7 @@ export const DEMO_PROJECT_SOURCES: DemoProjectSource[] = [
     ...base,
     _id: 'demo-mikuy',
     slug: 'mikuy',
+    codeUrl: 'https://github.com/dii-yeferson/Mikuy-Ai',
     category: ['web-apps'],
     technologies: ['Python', 'FastAPI', 'PostgreSQL', 'PWA'],
     featured: false,
