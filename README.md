@@ -72,35 +72,17 @@ sale exclusivamente de Sanity.
   comillas angulares y sin listas numeradas: la forma de trabajar es un **subtítulo vivo** en
   serif itálica que cambia solo.
 
-| Sección / página    | Contenido                                                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Hero                | Tu foto delante del globo de datos (anillos, conexiones y gráficos vivos) bajo la copa del arce; nombre en 3D.     |
-| Sobre mí            | Una idea grande, subtítulo vivo, **trayectoria** (experiencia + formación) y con qué trabajas.                     |
-| Proyectos           | Filtro segmentado, proyecto insignia, tarjetas con **me gusta** y tus **repositorios de GitHub** al final.         |
-| Certificaciones     | Lista con ícono tecnológico, emisor, año y verificación oficial.                                                   |
-| Recomendaciones     | Solo aparece cuando apruebas alguna: foto, nombre, cargo y sello **Verificado con LinkedIn**.                      |
-| Cierre              | Pieza de movimiento sin nada que tocar: letras que se arman con el scroll y un anillo que gira, hacia el contacto. |
-| Contacto            | Formulario (ventana en computadora, hoja que se arrastra en el celular), CV y redes.                               |
-| `/proyectos/[slug]` | Estudio de caso + **me gusta** + **Publicar en LinkedIn** / copiar enlace / compartir.                             |
-| `/recomendar`       | Enlace para que un docente deje su recomendación verificada con LinkedIn.                                          |
-
-### Fondo azul y el arce
-
-- **Fondo:** base `#000C11` con degradados azules profundos en una capa fija
-  (`body::before`), para dar profundidad sin repintar al hacer scroll.
-- **El arce** (`src/components/maple/`) acompaña toda la página por el lateral derecho:
-  la **copa** arriba, con ramas que llegan cerca del nombre; el **tronco** baja junto a las
-  secciones; y al final aparecen las **raíces y el suelo** con hojas caídas, detrás del pie.
-- **Viento:** la copa se dibuja con WebGL (`canopy-renderer.ts`). La base queda fija, las
-  ramas oscilan más hacia las puntas y cada hoja tiene un aleteo con fase propia.
-- **Hojas que caen** (`leaves-renderer.ts`): en un ciclo continuo, mecidas por la brisa.
-  La mayoría pasa detrás del contenido y unas pocas pequeñas por delante.
-- Las piezas (`public/images/maple/`) se recortaron del fondo negro a partir de tu imagen. La
-  copa y el tronco salen de `Arce_portafolio_alto.png`. Ese archivo llegó cortado (le faltan
-  las filas de abajo), así que las raíces y el suelo se completaron con la versión enviada
-  por chat, que es la misma escena.
-- Todo se mueve en el mismo bucle de animación que Lenis y se detiene fuera de pantalla.
-  Sin WebGL o con «reducir movimiento», el árbol queda quieto.
+| Sección / página    | Contenido                                                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Hero                | Tu foto delante del globo de datos, que gira con un halo suave y un punto de luz en órbita; nombre que se arma en 3D. |
+| Sobre mí            | Una idea grande, subtítulo vivo, **trayectoria** (experiencia + formación) y con qué trabajas.                        |
+| Proyectos           | Filtro segmentado, proyecto insignia, tarjetas con **me gusta** y tus **repositorios de GitHub** al final.            |
+| Certificaciones     | Lista con ícono tecnológico, emisor, año y verificación oficial.                                                      |
+| Recomendaciones     | Solo aparece cuando apruebas alguna: foto, nombre, cargo y sello **Verificado con LinkedIn**.                         |
+| Cierre              | Pieza de movimiento sin nada que tocar: letras que se arman con el scroll y un anillo que gira, hacia el contacto.    |
+| Contacto            | Formulario (ventana en computadora, hoja que se arrastra en el celular), CV y redes.                                  |
+| `/proyectos/[slug]` | Estudio de caso + **me gusta** + **Publicar en LinkedIn** / copiar enlace / compartir.                                |
+| `/recomendar`       | Enlace para que un docente deje su recomendación verificada con LinkedIn.                                             |
 
 ### Música ambiental
 

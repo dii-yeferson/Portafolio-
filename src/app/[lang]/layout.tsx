@@ -4,8 +4,6 @@ import { notFound } from 'next/navigation'
 
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
-import { FallingLeaves } from '@/components/maple/falling-leaves'
-import { MapleTree } from '@/components/maple/maple-tree'
 import { MotionProvider } from '@/components/motion-provider'
 import { SmoothScroll } from '@/components/motion/smooth-scroll'
 import { AmbientSoundProvider } from '@/components/sound/ambient-sound'
@@ -85,14 +83,9 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
               >
                 {t.common.skipToContent}
               </a>
-              <SiteHeader settings={settings} />
-              <div className="relative">
-                <MapleTree />
-                <FallingLeaves layer="back" />
-                <main id="contenido">{children}</main>
-                <SiteFooter settings={settings} lang={locale} />
-              </div>
-              <FallingLeaves layer="front" />
+              <SiteHeader />
+              <main id="contenido">{children}</main>
+              <SiteFooter settings={settings} lang={locale} />
               <PointerSpotlight />
               <SmoothScroll />
             </MotionProvider>

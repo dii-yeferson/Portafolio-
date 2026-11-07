@@ -54,23 +54,23 @@ type Palette = {
 /** Paletas aurora: oscura (grafito) y clara (porcelana). Se eligen según `data-theme`. */
 const PALETTES: Record<'dark' | 'light', Palette> = {
   dark: {
-    dot: '#5fd3ff',
-    dotEdge: '#2f7dff',
-    dotBack: '#1f4f7a',
-    graticule: 'rgba(80, 170, 255, 0.08)',
-    arcFrom: [102, 224, 255],
-    arcTo: [52, 120, 255],
-    node: '#dff6ff',
-    pulse: '95, 211, 255',
-    glow: 'rgba(225, 248, 255, 0.95)',
-    ring: '70, 150, 255',
-    atmosphere: ['rgba(40, 160, 240, 0.24)', 'rgba(30, 90, 200, 0.08)', 'rgba(30, 90, 200, 0)'],
-    body: ['rgba(10, 52, 82, 0.62)', 'rgba(2, 20, 32, 0.88)', 'rgba(0, 10, 16, 0.95)'],
-    rim: ['rgba(110, 225, 255, 0.45)', 'rgba(50, 150, 240, 0.08)', 'rgba(60, 120, 255, 0.36)'],
+    dot: '#7fe6f0',
+    dotEdge: '#8b9cff',
+    dotBack: '#3d5a86',
+    graticule: 'rgba(139, 156, 255, 0.085)',
+    arcFrom: [149, 251, 223],
+    arcTo: [139, 156, 255],
+    node: '#e9fffa',
+    pulse: '107, 222, 238',
+    glow: 'rgba(236, 255, 250, 0.95)',
+    ring: '139, 156, 255',
+    atmosphere: ['rgba(98, 210, 248, 0.22)', 'rgba(139, 156, 255, 0.08)', 'rgba(139, 156, 255, 0)'],
+    body: ['rgba(34, 52, 78, 0.6)', 'rgba(12, 16, 26, 0.86)', 'rgba(7, 8, 12, 0.94)'],
+    rim: ['rgba(149, 251, 223, 0.42)', 'rgba(98, 210, 248, 0.08)', 'rgba(139, 156, 255, 0.32)'],
   },
   light: {
-    dot: '#0b86c4',
-    dotEdge: '#2f5fe0',
+    dot: '#0b8ea3',
+    dotEdge: '#5a6cf0',
     dotBack: '#9fb0c8',
     graticule: 'rgba(70, 90, 200, 0.1)',
     arcFrom: [16, 170, 140],
@@ -84,11 +84,6 @@ const PALETTES: Record<'dark' | 'light', Palette> = {
     rim: ['rgba(16, 170, 140, 0.5)', 'rgba(27, 143, 214, 0.12)', 'rgba(90, 108, 240, 0.4)'],
   },
 }
-
-/** Acentos sutiles: algunos nodos y pulsos en ámbar o rojo arce, el resto azul. */
-const ACCENTS = { amber: '255, 196, 77', red: '255, 92, 72' } as const
-const accentFor = (index: number) =>
-  index % 5 === 2 ? ACCENTS.amber : index % 5 === 4 ? ACCENTS.red : null
 
 function currentPalette(): Palette {
   return document.documentElement.dataset.theme === 'light' ? PALETTES.light : PALETTES.dark
@@ -388,9 +383,8 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
       const [px, py, pz] = project(arc[p]!, arc[p + 1]!, arc[p + 2]!)
       if (isVisible(px, py, pz)) {
         const glow = ctx!.createRadialGradient(px, py, 0, px, py, 7 * dpr)
-        const accent = accentFor(index + 1)
-        glow.addColorStop(0, accent ? `rgba(${accent}, 0.95)` : COLORS.glow)
-        glow.addColorStop(0.4, accent ? `rgba(${accent}, 0.4)` : arcColor(progress, 0.55))
+        glow.addColorStop(0, COLORS.glow)
+        glow.addColorStop(0.4, arcColor(progress, 0.55))
         glow.addColorStop(1, arcColor(progress, 0))
         ctx!.fillStyle = glow
         ctx!.beginPath()
@@ -404,13 +398,12 @@ export function mountGlobe(canvas: HTMLCanvasElement): () => void {
       const [sx, sy, depth] = project(x, y, z)
       if (depth <= 0.02) return
       const pulse = (time * 0.55 + index * 0.37) % 1
-      const accent = accentFor(index)
-      ctx!.strokeStyle = `rgba(${accent ?? COLORS.pulse}, ${(1 - pulse) * 0.6 * depth})`
+      ctx!.strokeStyle = `rgba(${COLORS.pulse}, ${(1 - pulse) * 0.6 * depth})`
       ctx!.lineWidth = dpr
       ctx!.beginPath()
       ctx!.arc(sx, sy, (2 + pulse * (index === 0 ? 16 : 10)) * dpr, 0, TAU)
       ctx!.stroke()
-      ctx!.fillStyle = accent ? `rgb(${accent})` : COLORS.node
+      ctx!.fillStyle = COLORS.node
       ctx!.globalAlpha = 0.4 + 0.6 * depth
       ctx!.beginPath()
       ctx!.arc(sx, sy, (index === 0 ? 2.8 : 2) * dpr, 0, TAU)

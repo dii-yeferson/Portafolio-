@@ -55,7 +55,7 @@ export const DEMO_PROFILE = {
     es: 'Big Data · Ciencia de Datos · IA Aplicada',
     en: 'Big Data · Data Science · Applied AI',
   },
-  availability: { es: 'Abierto a prácticas y proyectos', en: 'Open to internships and projects' },
+  availability: { es: 'Abierto a desarrollo de proyectos', en: 'Open to project development' },
   summary: {
     es: 'Estudio Big Data y Ciencia de Datos en Tecsup. Construyo modelos, tableros y apps que alguien usa de verdad.',
     en: 'I study Big Data and Data Science at Tecsup. I build models, dashboards and apps that people actually use.',

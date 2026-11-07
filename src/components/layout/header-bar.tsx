@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState, useSyncExternalStore } from 'react'
 
-import { LogoMark } from '@/components/brand/logo'
 import { useI18n } from '@/i18n/client'
 import { localePath, splitLocale } from '@/i18n/config'
 import { NAV_ITEMS, type NavSection, navSectionForPath, SECTION_TO_NAV } from '@/lib/navigation'
@@ -21,8 +20,8 @@ function subscribeToScroll(callback: () => void) {
 
 const isScrolled = () => window.scrollY > 24
 
-/** Barra flotante de vidrio líquido con la sección activa, idioma y tema. */
-export function HeaderBar({ name }: { name: string }) {
+/** Barra flotante de vidrio líquido, sin logo: navegación, idioma, tema y música. */
+export function HeaderBar() {
   const { lang, t } = useI18n()
   const pathname = usePathname() ?? '/'
   const path = splitLocale(pathname).path
@@ -72,20 +71,12 @@ export function HeaderBar({ name }: { name: string }) {
   }))
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-4 sm:pt-[calc(1rem+env(safe-area-inset-top))]">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-end px-3 lg:justify-center pt-[calc(0.75rem+env(safe-area-inset-top))] sm:px-4 sm:pt-[calc(1rem+env(safe-area-inset-top))]">
       <div
-        className={`glass liquid pointer-events-auto relative flex w-full items-center justify-between gap-2 rounded-full py-1.5 pr-1.5 pl-4 transition-[max-width,background-color] duration-500 ease-[cubic-bezier(.23,1,.32,1)] ${
+        className={`glass liquid pointer-events-auto relative flex w-auto items-center justify-between lg:w-full gap-2 rounded-full py-1.5 pr-1.5 pl-1.5 transition-[max-width,background-color] duration-500 ease-[cubic-bezier(.23,1,.32,1)] ${
           scrolled ? 'max-w-[900px] bg-[var(--glass-bg-strong)]' : 'max-w-[1060px]'
         }`}
       >
-        <Link
-          href={localePath(lang, '/')}
-          aria-label={t.nav.homeAria(name)}
-          className="flex items-center gap-2.5 py-1.5 text-foreground"
-        >
-          <LogoMark className="h-[1.15rem] w-auto" />
-        </Link>
-
         <nav aria-label={t.nav.main} className="hidden lg:block">
           <ul className="flex items-center">
             {items.map((item) => {
@@ -115,7 +106,7 @@ export function HeaderBar({ name }: { name: string }) {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-1 sm:gap-1.5">
+        <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
           <PreferencesPill />
           <SearchDialog />
           <button
@@ -145,8 +136,7 @@ export function HeaderBar({ name }: { name: string }) {
             transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
             className="pointer-events-auto fixed inset-0 z-[60] flex h-dvh flex-col bg-background/90 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] backdrop-blur-2xl lg:hidden"
           >
-            <div className="flex items-center justify-between px-6 pt-6">
-              <LogoMark className="h-5 w-auto text-foreground" />
+            <div className="flex items-center justify-end px-6 pt-6">
               <div className="flex items-center gap-2">
                 <PreferencesPill />
                 <button

@@ -2,7 +2,6 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 
 import { DataGlobe } from '@/components/hero/data-globe'
-import { GlobeHud } from '@/components/hero/globe-hud'
 import { SplitLetters } from '@/components/motion/split-letters'
 import { SanityImage } from '@/components/sanity-image'
 import { CountUp } from '@/components/ui/count-up'
@@ -19,8 +18,8 @@ const PORTRAIT_MASK =
 
 /**
  * Portada (FR-02): el nombre se arma letra por letra y el retrato queda
- * delante del globo de datos, que gira detrás rodeado de anillos, conexiones
- * y pequeños gráficos vivos.
+ * delante del globo de datos, que gira detrás con un halo suave y un solo
+ * punto de luz en órbita.
  */
 export function HeroSection({
   settings,
@@ -47,10 +46,11 @@ export function HeroSection({
   return (
     <section id="inicio" aria-labelledby="hero-title" className="relative isolate overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(55%_65%_at_78%_45%,rgba(40,150,230,0.16),transparent_65%),radial-gradient(40%_45%_at_88%_20%,rgba(30,90,200,0.14),transparent_70%)]" />
-        <div className="aurora-blob absolute top-[8%] right-[2%] size-[38rem] max-w-[90vw] rounded-full bg-[conic-gradient(from_120deg,rgba(60,180,255,0.16),rgba(20,80,160,0.06),rgba(60,120,255,0.16),rgba(60,180,255,0.16))] opacity-80 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(55%_65%_at_78%_42%,rgba(98,210,248,0.14),transparent_65%),radial-gradient(40%_45%_at_88%_20%,rgba(139,156,255,0.12),transparent_70%),radial-gradient(45%_50%_at_8%_100%,rgba(149,251,223,0.07),transparent_70%)]" />
+        <div className="aurora-blob absolute top-[8%] right-[2%] size-[38rem] max-w-[90vw] rounded-full bg-[conic-gradient(from_120deg,rgba(149,251,223,0.16),rgba(98,210,248,0.06),rgba(139,156,255,0.18),rgba(149,251,223,0.16))] opacity-80 blur-3xl" />
         <div className="absolute inset-0 bg-[linear-gradient(rgb(var(--ink-rgb)/0.03)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--ink-rgb)/0.03)_1px,transparent_1px)] [mask-image:radial-gradient(65%_60%_at_70%_45%,black,transparent)] bg-[size:72px_72px]" />
         <div className="grain absolute inset-0 opacity-[0.12]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-b from-transparent to-background" />
       </div>
 
       <div className="container-page grid min-h-[min(100svh,60rem)] grid-cols-1 items-center gap-6 pt-32 pb-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-4 lg:pt-28 lg:pb-16">
@@ -108,7 +108,24 @@ export function HeroSection({
         <div className="relative mx-auto aspect-square w-full max-w-[36rem] animate-fade [animation-delay:150ms] lg:max-w-none">
           <div className="absolute -top-[2%] -right-[8%] size-[92%]">
             <DataGlobe className="absolute inset-0 size-full" />
-            <GlobeHud />
+            {/* Halo suave y un anillo fino con un punto de luz en órbita: limpio, sin texto. */}
+            <div
+              aria-hidden="true"
+              className="globe-halo absolute inset-[6%] -z-10 rounded-full bg-[radial-gradient(closest-side,rgba(98,210,248,0.18),rgba(139,156,255,0.08)_55%,transparent)] blur-2xl"
+            />
+            <svg aria-hidden="true" viewBox="0 0 100 100" className="orbit size-full">
+              <circle
+                cx="50"
+                cy="50"
+                r="46.5"
+                fill="none"
+                stroke="rgb(255 255 255 / 0.07)"
+                strokeWidth="0.15"
+              />
+            </svg>
+            <div aria-hidden="true" className="orbit orbit-dot">
+              <span className="absolute top-[3.5%] left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-aqua shadow-[0_0_12px_rgba(107,222,238,0.9)]" />
+            </div>
           </div>
           {portrait ? (
             <SanityImage
