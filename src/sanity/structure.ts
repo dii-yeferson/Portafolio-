@@ -4,6 +4,7 @@ import { CogIcon } from '@sanity/icons/Cog'
 import { HeartIcon } from '@sanity/icons/Heart'
 import { HomeIcon } from '@sanity/icons/Home'
 import { LinkIcon } from '@sanity/icons/Link'
+import { PlayIcon } from '@sanity/icons/Play'
 import { ProjectsIcon } from '@sanity/icons/Projects'
 import type { StructureResolver } from 'sanity/structure'
 
@@ -33,6 +34,16 @@ export const structure: StructureResolver = (S) =>
             .schemaType('siteSettings')
             .documentId('siteSettings')
             .title('Mi perfil y textos'),
+        ),
+      S.listItem()
+        .title('Música ambiental')
+        .id('ambientMusic')
+        .icon(PlayIcon)
+        .child(
+          S.document()
+            .schemaType('ambientMusic')
+            .documentId('ambientMusic')
+            .title('Música ambiental'),
         ),
       S.divider(),
       S.listItem()

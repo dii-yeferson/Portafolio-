@@ -31,12 +31,11 @@ export function PageHero({
     <section className="relative isolate overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_85%_0%,rgba(98,210,248,0.13),transparent_65%),radial-gradient(40%_60%_at_0%_0%,rgba(149,251,223,0.07),transparent_70%)]"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_85%_0%,rgba(40,150,230,0.14),transparent_65%),radial-gradient(40%_60%_at_0%_0%,rgba(30,110,180,0.1),transparent_70%)]"
       />
-      <div aria-hidden="true" className="grain absolute inset-0 -z-10 opacity-[0.12]" />
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-linear-to-b from-transparent to-background"
+        className="grain absolute inset-0 -z-10 opacity-[0.12] [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
       />
       <div className="container-page pt-36 pb-14 lg:pt-44 lg:pb-20">
         <nav aria-label={t.breadcrumbs} className="animate-rise">

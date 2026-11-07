@@ -4,15 +4,18 @@ import { notFound } from 'next/navigation'
 
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
+import { FallingLeaves } from '@/components/maple/falling-leaves'
+import { MapleTree } from '@/components/maple/maple-tree'
 import { MotionProvider } from '@/components/motion-provider'
 import { SmoothScroll } from '@/components/motion/smooth-scroll'
+import { AmbientSoundProvider } from '@/components/sound/ambient-sound'
 import { THEME_SCRIPT } from '@/components/theme/theme-script'
 import { PointerSpotlight } from '@/components/ui/pointer-spotlight'
 import { I18nProvider } from '@/i18n/client'
 import { isLocale, LOCALES, type Locale } from '@/i18n/config'
 import { getDictionary } from '@/i18n'
 import { buildRootMetadata } from '@/lib/seo'
-import { getSiteSettings, isDemoContent } from '@/sanity/lib/data'
+import { getAmbientMusic, getSiteSettings, isDemoContent } from '@/sanity/lib/data'
 
 import '../globals.css'
 
@@ -60,7 +63,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
   if (!isLocale(lang)) notFound()
   const locale: Locale = lang
   const t = getDictionary(locale)
-  const settings = await getSiteSettings(locale)
+  const [settings, music] = await Promise.all([getSiteSettings(locale), getAmbientMusic()])
 
   return (
     <html
@@ -74,19 +77,26 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
       </head>
       <body>
         <I18nProvider lang={locale}>
-          <MotionProvider>
-            <a
-              href="#contenido"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:rounded-full focus:bg-foreground focus:px-4 focus:py-2 focus:font-bold focus:text-background"
-            >
-              {t.common.skipToContent}
-            </a>
-            <SiteHeader settings={settings} />
-            <main id="contenido">{children}</main>
-            <SiteFooter settings={settings} lang={locale} />
-            <PointerSpotlight />
-            <SmoothScroll />
-          </MotionProvider>
+          <AmbientSoundProvider config={music}>
+            <MotionProvider>
+              <a
+                href="#contenido"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:rounded-full focus:bg-foreground focus:px-4 focus:py-2 focus:font-bold focus:text-background"
+              >
+                {t.common.skipToContent}
+              </a>
+              <SiteHeader settings={settings} />
+              <div className="relative">
+                <MapleTree />
+                <FallingLeaves layer="back" />
+                <main id="contenido">{children}</main>
+                <SiteFooter settings={settings} lang={locale} />
+              </div>
+              <FallingLeaves layer="front" />
+              <PointerSpotlight />
+              <SmoothScroll />
+            </MotionProvider>
+          </AmbientSoundProvider>
         </I18nProvider>
       </body>
     </html>

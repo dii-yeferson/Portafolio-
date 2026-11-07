@@ -1,6 +1,6 @@
 'use client'
 
-import { Download, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -118,16 +118,6 @@ export function HeaderBar({ name }: { name: string }) {
         <div className="flex items-center gap-1 sm:gap-1.5">
           <PreferencesPill />
           <SearchDialog />
-          {/* /cv es una redirección de descarga (API), no una página. */}
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a
-            href="/cv"
-            rel="nofollow"
-            className="btn btn-primary hidden h-10 px-4 text-[0.88rem] sm:inline-flex"
-          >
-            <Download className="size-4" aria-hidden="true" />
-            {t.header.downloadCv}
-          </a>
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
@@ -199,19 +189,6 @@ export function HeaderBar({ name }: { name: string }) {
                 ))}
               </ul>
             </nav>
-            <div className="px-6 pb-10">
-              {/* /cv es una redirección de descarga (API), no una página. */}
-              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-              <a
-                href="/cv"
-                rel="nofollow"
-                onClick={() => setMenuOpen(false)}
-                className="btn btn-primary h-14 w-full text-base"
-              >
-                <Download className="size-4" aria-hidden="true" />
-                {t.header.downloadCv}
-              </a>
-            </div>
           </motion.div>
         ) : null}
       </AnimatePresence>

@@ -1,5 +1,6 @@
 import type { SchemaTypeDefinition } from 'sanity'
 
+import { ambientMusic } from './documents/ambientMusic'
 import { certification } from './documents/certification'
 import { likeCounter } from './documents/likeCounter'
 import { project } from './documents/project'
@@ -15,6 +16,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   project,
   certification,
   socialLink,
+  ambientMusic,
   recommendation,
   likeCounter,
   seo,
@@ -23,7 +25,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
 ]
 
 /** Documentos únicos: no se pueden crear, duplicar ni eliminar desde el Studio. */
-export const SINGLETON_TYPES: ReadonlySet<string> = new Set([siteSettings.name])
+export const SINGLETON_TYPES: ReadonlySet<string> = new Set([siteSettings.name, ambientMusic.name])
 
 /** Tipos que el panel no permite crear a mano (llegan desde la API del sitio). */
 export const API_ONLY_TYPES: ReadonlySet<string> = new Set([recommendation.name, likeCounter.name])

@@ -1,6 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import { randomTestIp } from './constants'
+import { FAKE_YOUTUBE_API } from './fake-youtube'
 
 test.beforeEach(async ({ page }) => {
   await page.setExtraHTTPHeaders({ 'x-forwarded-for': randomTestIp() })
@@ -14,7 +15,7 @@ test('la portada muestra hero, globo, secciones y pie con el año actual', async
 
   await expect(page.getByRole('heading', { level: 1 })).not.toBeEmpty()
   // Los estilos cargaron: fondo del sistema de diseño y tipografía Nunito.
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(9, 9, 11)')
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(0, 12, 17)')
   await expect(page.locator('body')).toHaveCSS('font-family', /Nunito/)
   await expect(page.locator('#inicio canvas')).toBeVisible()
   await expect(page.getByRole('heading', { level: 1, name: 'Di Yeferson' })).toBeVisible()
@@ -210,4 +211,42 @@ test('recomendaciones: sin LinkedIn configurado se explica que se activan pronto
   expect(response?.status()).toBe(200)
   await expect(page.getByText('Las recomendaciones se activan muy pronto.')).toBeVisible()
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
+})
+
+test.describe('música ambiental', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('https://www.youtube.com/iframe_api', (route) =>
+      route.fulfill({ contentType: 'text/javascript', body: FAKE_YOUTUBE_API }),
+    )
+  })
+
+  test('si el navegador bloquea el sonido, ofrece «Activar sonido» y luego se puede pausar', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    const prompt = page.getByRole('button', { name: 'Activar sonido' }).last()
+    await expect(prompt).toBeVisible({ timeout: 8000 })
+    await prompt.click()
+    const toggle = page.getByRole('button', { name: 'Pausar música' }).first()
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+    await toggle.click()
+    await expect(page.getByRole('button', { name: 'Reproducir música' }).first()).toBeVisible()
+    // La pausa se recuerda: en la próxima visita no vuelve a sonar sola.
+    await page.reload()
+    await expect(page.getByRole('button', { name: 'Reproducir música' }).first()).toBeVisible()
+    await expect(page.getByText('Activar sonido')).toHaveCount(0)
+  })
+
+  test('si el navegador lo permite, suena sola y el botón muestra el ecualizador', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      ;(window as unknown as { __ytAutoplay: boolean }).__ytAutoplay = true
+    })
+    await page.goto('/')
+    await expect(page.getByRole('button', { name: 'Pausar música' }).first()).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+  })
 })

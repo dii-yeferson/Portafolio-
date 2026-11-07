@@ -72,7 +72,7 @@ export function SearchDialog() {
         onClick={() => dialogRef.current?.showModal()}
         aria-label={t.search.open}
         aria-haspopup="dialog"
-        className="grid size-10 place-items-center rounded-full text-muted transition-[color,background-color,transform] duration-150 hover:bg-ink/[0.08] hover:text-foreground active:scale-[0.96]"
+        className="glass liquid relative grid size-10 place-items-center rounded-full text-muted transition-[color,background-color,transform] duration-150 hover:text-foreground active:scale-[0.96]"
       >
         <Search className="size-[1.05rem]" aria-hidden="true" />
       </button>
@@ -80,7 +80,7 @@ export function SearchDialog() {
         ref={dialogRef}
         aria-labelledby={`${inputId}-title`}
         data-lenis-prevent
-        className="glass mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-[1.5rem] bg-sheet p-0 text-foreground backdrop:bg-scrim backdrop:backdrop-blur-sm"
+        className="search-glass liquid relative mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-[1.5rem] p-0 text-foreground backdrop:bg-[rgb(0_6_10/0.35)] backdrop:backdrop-blur-[3px]"
       >
         <h2 id={`${inputId}-title`} className="sr-only">
           {t.search.open}

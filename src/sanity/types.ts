@@ -132,6 +132,29 @@ export type SanityImageHotspot = {
   width: number
 }
 
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+}
+
+export type AmbientMusic = {
+  _id: string
+  _type: 'ambientMusic'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  enabled?: boolean
+  youtubeUrl?: string
+  audioFile?: {
+    asset?: SanityFileAssetReference
+    media?: unknown
+    _type: 'file'
+  }
+  volume?: number
+}
+
 export type SocialLink = {
   _id: string
   _type: 'socialLink'
@@ -247,13 +270,6 @@ export type Slug = {
   _type: 'slug'
   current: string
   source?: string
-}
-
-export type SanityFileAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
 }
 
 export type SiteSettings = {
@@ -447,11 +463,12 @@ export type AllSanitySchemaTypes =
   | Recommendation
   | SanityImageCrop
   | SanityImageHotspot
+  | SanityFileAssetReference
+  | AmbientMusic
   | SocialLink
   | Certification
   | Project
   | Slug
-  | SanityFileAssetReference
   | SiteSettings
   | SanityImagePaletteSwatch
   | SanityImagePalette
@@ -727,6 +744,16 @@ export type RECOMMENDATIONS_QUERY_RESULT = Array<{
   language: 'en' | 'es' | null
 }>
 
+// Source: src/sanity/lib/queries.ts
+// Variable: AMBIENT_MUSIC_QUERY
+// Query: *[_type == "ambientMusic" && _id == "ambientMusic"][0]{    enabled,    youtubeUrl,    "audioUrl": audioFile.asset->url,    volume  }
+export type AMBIENT_MUSIC_QUERY_RESULT = {
+  enabled: boolean | null
+  youtubeUrl: string | null
+  audioUrl: string | null
+  volume: number | null
+} | null
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
@@ -738,6 +765,7 @@ declare global {
     '\n  *[_type == "socialLink" && visibility == true] | order(sortOrder asc){\n    _id,\n    platformName,\n    url,\n    iconKey,\n    "label": select($lang == "en" => coalesce(labelEn, label), label)\n  }\n': SOCIAL_LINKS_QUERY_RESULT
     '\n  *[\n    (_type == "project" && status == "published" && defined(slug.current)) ||\n    _type == "certification"\n  ]\n  | score(\n      boost(title match $term, 4),\n      boost(technologies match $term, 2),\n      boost(issuer match $term, 2),\n      shortDescription match $term,\n      category match $term\n    )\n  [_score > 0]\n  | order(_score desc)[0...$limit]{\n    _id,\n    _type,\n    title,\n    _score,\n    _type == "project" => {\n      "title": select($lang == "en" => coalesce(titleEn, title), title),\n      "slug": slug.current,\n      "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),\n      category\n    },\n    _type == "certification" => { issuer, category, issueDate, verificationUrl }\n  }\n': SEARCH_QUERY_RESULT
     '\n  *[_type == "recommendation" && status == "approved" && defined(authorName) && defined(message)]\n    | order(sortOrder asc, submittedAt desc){\n      _id,\n      authorName,\n      authorPhoto{ asset, crop, hotspot },\n      relationship,\n      role,\n      organization,\n      profileUrl,\n      message,\n      language\n    }\n': RECOMMENDATIONS_QUERY_RESULT
+    '\n  *[_type == "ambientMusic" && _id == "ambientMusic"][0]{\n    enabled,\n    youtubeUrl,\n    "audioUrl": audioFile.asset->url,\n    volume\n  }\n': AMBIENT_MUSIC_QUERY_RESULT
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

@@ -192,6 +192,13 @@ export const es = {
       authError: 'LinkedIn no confirmó tu identidad. Inténtalo otra vez.',
     },
   },
+  sound: {
+    label: 'Música ambiental',
+    enable: 'Activar sonido',
+    pause: 'Pausar música',
+    play: 'Reproducir música',
+    dismiss: 'Ocultar aviso',
+  },
   likes: {
     like: (title: string) => `Me gusta ${title}`,
     unlike: (title: string) => `Quitar me gusta de ${title}`,

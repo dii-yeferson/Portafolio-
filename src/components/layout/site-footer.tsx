@@ -5,14 +5,15 @@ import { getDictionary } from '@/i18n'
 import { SITE_DEFAULTS } from '@/lib/site'
 import type { SiteSettings } from '@/sanity/lib/data'
 
-/** Pie mínimo: sin repetir logo, lema ni redes (ya están en el hero y en contacto). */
+/** Pie mínimo sobre el suelo del arce: sin repetir logo, lema ni redes. */
 export function SiteFooter({ settings, lang }: { settings: SiteSettings; lang: Locale }) {
   const name = settings?.displayName || SITE_DEFAULTS.displayName
   const t = getDictionary(lang).common
 
   return (
-    <footer className="border-t border-line">
-      <div className="container-page flex flex-col items-center justify-between gap-4 py-8 text-sm font-semibold text-subtle sm:flex-row">
+    // El pie se apoya en el suelo del arce: raíces y hojas caídas detrás.
+    <footer className="pt-[calc(var(--tree-w)*0.16)]">
+      <div className="container-page flex flex-col items-center justify-between gap-4 py-8 text-sm font-semibold text-foreground/80 [text-shadow:0_1px_8px_rgb(0_0_0/0.8)] sm:flex-row">
         <p>
           © {new Date().getFullYear()} {name}. {t.rights}
         </p>

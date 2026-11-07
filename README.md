@@ -72,17 +72,48 @@ sale exclusivamente de Sanity.
   comillas angulares y sin listas numeradas: la forma de trabajar es un **subtítulo vivo** en
   serif itálica que cambia solo.
 
-| Sección / página    | Contenido                                                                                                            |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Hero                | Tu foto (fondo transparente) delante del globo, **nombre que se arma letra por letra en 3D** y dos anillos de texto. |
-| Sobre mí            | Una idea grande, subtítulo vivo, **trayectoria** (experiencia + formación) y con qué trabajas.                       |
-| Proyectos           | Filtro segmentado, proyecto insignia, tarjetas con **me gusta** y tus **repositorios de GitHub** al final.           |
-| Certificaciones     | Lista con ícono tecnológico, emisor, año y verificación oficial.                                                     |
-| Recomendaciones     | Solo aparece cuando apruebas alguna: foto, nombre, cargo y sello **Verificado con LinkedIn**.                        |
-| Cierre              | Pieza de movimiento sin nada que tocar: letras que se arman con el scroll y un anillo que gira, hacia el contacto.   |
-| Contacto            | Formulario (ventana en computadora, hoja que se arrastra en el celular), CV y redes.                                 |
-| `/proyectos/[slug]` | Estudio de caso + **me gusta** + **Publicar en LinkedIn** / copiar enlace / compartir.                               |
-| `/recomendar`       | Enlace para que un docente deje su recomendación verificada con LinkedIn.                                            |
+| Sección / página    | Contenido                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Hero                | Tu foto delante del globo de datos (anillos, conexiones y gráficos vivos) bajo la copa del arce; nombre en 3D.     |
+| Sobre mí            | Una idea grande, subtítulo vivo, **trayectoria** (experiencia + formación) y con qué trabajas.                     |
+| Proyectos           | Filtro segmentado, proyecto insignia, tarjetas con **me gusta** y tus **repositorios de GitHub** al final.         |
+| Certificaciones     | Lista con ícono tecnológico, emisor, año y verificación oficial.                                                   |
+| Recomendaciones     | Solo aparece cuando apruebas alguna: foto, nombre, cargo y sello **Verificado con LinkedIn**.                      |
+| Cierre              | Pieza de movimiento sin nada que tocar: letras que se arman con el scroll y un anillo que gira, hacia el contacto. |
+| Contacto            | Formulario (ventana en computadora, hoja que se arrastra en el celular), CV y redes.                               |
+| `/proyectos/[slug]` | Estudio de caso + **me gusta** + **Publicar en LinkedIn** / copiar enlace / compartir.                             |
+| `/recomendar`       | Enlace para que un docente deje su recomendación verificada con LinkedIn.                                          |
+
+### Fondo azul y el arce
+
+- **Fondo:** base `#000C11` con degradados azules profundos en una capa fija
+  (`body::before`), para dar profundidad sin repintar al hacer scroll.
+- **El arce** (`src/components/maple/`) acompaña toda la página por el lateral derecho:
+  la **copa** arriba, con ramas que llegan cerca del nombre; el **tronco** baja junto a las
+  secciones; y al final aparecen las **raíces y el suelo** con hojas caídas, detrás del pie.
+- **Viento:** la copa se dibuja con WebGL (`canopy-renderer.ts`). La base queda fija, las
+  ramas oscilan más hacia las puntas y cada hoja tiene un aleteo con fase propia.
+- **Hojas que caen** (`leaves-renderer.ts`): en un ciclo continuo, mecidas por la brisa.
+  La mayoría pasa detrás del contenido y unas pocas pequeñas por delante.
+- Las piezas (`public/images/maple/`) se recortaron del fondo negro a partir de tu imagen. La
+  copa y el tronco salen de `Arce_portafolio_alto.png`. Ese archivo llegó cortado (le faltan
+  las filas de abajo), así que las raíces y el suelo se completaron con la versión enviada
+  por chat, que es la misma escena.
+- Todo se mueve en el mismo bucle de animación que Lenis y se detiene fuera de pantalla.
+  Sin WebGL o con «reducir movimiento», el árbol queda quieto.
+
+### Música ambiental
+
+- En el panel: **Música ambiental**, solo para ti. Pega un enlace de YouTube o sube un audio
+  (MP3/OGG, tiene prioridad), ajusta el volumen inicial y actívala o apágala.
+- En el sitio intenta sonar sola con el volumen subiendo despacio. Si el navegador lo
+  bloquea, aparece un aviso de vidrio discreto, **Activar sonido**, y la música arranca con el
+  primer toque o clic.
+- El botón de la píldora superior pausa o reanuda la música y muestra un ecualizador mientras
+  suena. Si un visitante la pausa, se recuerda.
+- Con YouTube se usa el reproductor oficial oculto (`youtube-nocookie.com`). Las normas de
+  YouTube piden que el reproductor sea visible, así que para un uso 100 % seguro y más rápido
+  conviene **subir el audio** (con derechos de uso) en lugar del enlace.
 
 ### Movimiento (criterios de Emil Kowalski y del recetario de scroll)
 

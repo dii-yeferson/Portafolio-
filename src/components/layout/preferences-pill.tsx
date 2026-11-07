@@ -3,11 +3,12 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+import { SoundToggle } from '@/components/sound/ambient-sound'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { useI18n } from '@/i18n/client'
 import { LOCALE_META, LOCALES, switchLocalePath } from '@/i18n/config'
 
-/** Píldora de vidrio con el idioma (ES / EN) y el tema (claro / oscuro). */
+/** Píldora de vidrio con el idioma (ES / EN), el tema (claro / oscuro) y la música. */
 export function PreferencesPill({ className = '' }: { className?: string }) {
   const { lang, t } = useI18n()
   const pathname = usePathname() ?? '/'
@@ -43,6 +44,7 @@ export function PreferencesPill({ className = '' }: { className?: string }) {
       </nav>
       <span aria-hidden="true" className="mx-0.5 h-4 w-px bg-line-strong" />
       <ThemeToggle />
+      <SoundToggle />
     </div>
   )
 }

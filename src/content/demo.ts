@@ -26,6 +26,14 @@ const pick = (value: Bilingual, lang: Locale) => value[lang]
 const NO_IMAGE = { asset: null, crop: null, hotspot: null, alt: null, lqip: null }
 
 export const DEMO_CONTACT_EMAIL = 'di.yefersonx@gmail.com'
+
+/** Música ambiental de ejemplo (la que elegiste). En el panel se cambia o se apaga. */
+export const DEMO_AMBIENT_MUSIC = {
+  enabled: true,
+  youtubeUrl: 'https://youtu.be/aIMhtT52fi8',
+  audioUrl: null as string | null,
+  volume: 20,
+}
 export const DEMO_GITHUB_USERNAME = 'dii-yeferson'
 
 export function paragraphs(...texts: string[]): BlockContent {

@@ -185,6 +185,13 @@ export const en: Dictionary = {
       authError: 'LinkedIn did not confirm your identity. Please try again.',
     },
   },
+  sound: {
+    label: 'Ambient music',
+    enable: 'Turn on sound',
+    pause: 'Pause music',
+    play: 'Play music',
+    dismiss: 'Hide notice',
+  },
   likes: {
     like: (title: string) => `Like ${title}`,
     unlike: (title: string) => `Remove like from ${title}`,

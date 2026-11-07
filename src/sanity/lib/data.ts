@@ -3,6 +3,7 @@ import 'server-only'
 import { cache } from 'react'
 
 import {
+  DEMO_AMBIENT_MUSIC,
   DEMO_CERTIFICATIONS,
   getDemoProjects,
   getDemoSiteSettings,
@@ -12,9 +13,12 @@ import {
 import { DEFAULT_LOCALE, type Locale } from '@/i18n/config'
 
 import { isSanityConfigured } from '../env'
+import { parseYouTubeId } from '@/lib/youtube'
+
 import type { RECOMMENDATIONS_QUERY_RESULT, SEARCH_QUERY_RESULT } from '../types'
 import { sanityFetch } from './fetch'
 import {
+  AMBIENT_MUSIC_QUERY,
   CERTIFICATIONS_QUERY,
   PROJECT_BY_SLUG_QUERY,
   PROJECT_SLUGS_QUERY,
@@ -91,6 +95,21 @@ export const getSocialLinks = cache(async (lang: Locale = DEFAULT_LOCALE) => {
 export const getRecommendations = cache(async (): Promise<RECOMMENDATIONS_QUERY_RESULT> => {
   if (shouldUseDemo()) return []
   return sanityFetch({ query: RECOMMENDATIONS_QUERY, tags: ['recommendation'] })
+})
+
+export type AmbientMusic = { youtubeId: string | null; audioUrl: string | null; volume: number }
+
+/** Música ambiental lista para el reproductor, o `null` si está apagada o sin fuente válida. */
+export const getAmbientMusic = cache(async (): Promise<AmbientMusic | null> => {
+  const raw = shouldUseDemo()
+    ? DEMO_AMBIENT_MUSIC
+    : await sanityFetch({ query: AMBIENT_MUSIC_QUERY, tags: ['ambientMusic'] })
+  if (!raw?.enabled) return null
+  const youtubeId = parseYouTubeId(raw.youtubeUrl)
+  const audioUrl = raw.audioUrl?.startsWith('https://') ? raw.audioUrl : null
+  if (!youtubeId && !audioUrl) return null
+  const volume = Math.min(100, Math.max(0, Math.round(raw.volume ?? 20)))
+  return { youtubeId, audioUrl, volume }
 })
 
 /** Búsqueda de proyectos y certificaciones. `term` debe venir de `buildSearchTerm`. */

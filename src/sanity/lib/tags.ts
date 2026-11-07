@@ -8,6 +8,7 @@ export const CACHE_TAGS = [
   'certification',
   'socialLink',
   'recommendation',
+  'ambientMusic',
 ] as const
 
 export type CacheTag = (typeof CACHE_TAGS)[number]

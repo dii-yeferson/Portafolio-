@@ -172,3 +172,13 @@ export const RECOMMENDATIONS_QUERY = defineQuery(`
       language
     }
 `)
+
+/** Música ambiental (documento único). */
+export const AMBIENT_MUSIC_QUERY = defineQuery(`
+  *[_type == "ambientMusic" && _id == "ambientMusic"][0]{
+    enabled,
+    youtubeUrl,
+    "audioUrl": audioFile.asset->url,
+    volume
+  }
+`)

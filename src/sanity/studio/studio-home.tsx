@@ -16,6 +16,13 @@ const ACTIONS: Action[] = [
     params: { id: 'siteSettings', type: 'siteSettings' },
   },
   {
+    title: 'Música ambiental',
+    description:
+      'Pega un enlace de YouTube o sube un audio, ajusta el volumen y actívala o apágala.',
+    intent: 'edit',
+    params: { id: 'ambientMusic', type: 'ambientMusic' },
+  },
+  {
     title: 'Nuevo proyecto',
     description: 'Portada, galería, estudio de caso, métricas, demo y repositorio.',
     intent: 'create',
@@ -39,8 +46,11 @@ const card: React.CSSProperties = {
   display: 'block',
   padding: '18px 20px',
   borderRadius: 18,
-  border: '1px solid var(--card-border-color, rgba(255,255,255,0.1))',
-  background: 'var(--card-bg2-color, rgba(255,255,255,0.03))',
+  border: '1px solid rgba(160, 215, 255, 0.16)',
+  background: 'linear-gradient(160deg, rgba(40, 120, 170, 0.14), rgba(255, 255, 255, 0.03))',
+  backdropFilter: 'blur(16px) saturate(160%)',
+  WebkitBackdropFilter: 'blur(16px) saturate(160%)',
+  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)',
   color: 'inherit',
   textDecoration: 'none',
 }
