@@ -14,11 +14,11 @@ test('la portada muestra hero, globo, secciones y pie con el año actual', async
   expect(response?.status()).toBe(200)
 
   await expect(page.getByRole('heading', { level: 1 })).not.toBeEmpty()
-  // Los estilos cargaron: fondo del sistema de diseño y tipografía Nunito.
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(9, 9, 11)')
-  await expect(page.locator('body')).toHaveCSS('font-family', /Nunito/)
+  // Los estilos cargaron: grafito cálido y Geist.
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(16, 17, 15)')
+  await expect(page.locator('body')).toHaveCSS('font-family', /geist/i)
   await expect(page.locator('#inicio canvas')).toBeVisible()
-  await expect(page.getByRole('heading', { level: 1, name: 'Di Yeferson' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Yeferson', exact: true })).toBeVisible()
   for (const name of [
     'Me gusta que los números cuenten algo.',
     'Proyectos que resuelven algo.',

@@ -59,11 +59,11 @@ export function Timeline({ settings, lang }: { settings: SiteSettings; lang: Loc
             aria-hidden="true"
             className={`absolute top-[0.45rem] left-0 size-[0.65rem] rounded-full border-2 border-background ${
               entry.current
-                ? 'bg-aqua shadow-[0_0_0_4px_rgba(107,222,238,0.18),0_0_14px_rgba(107,222,238,0.8)]'
+                ? 'bg-aqua shadow-[0_0_0_4px_rgb(var(--accent-rgb)/0.18),0_0_14px_rgb(var(--accent-rgb)/0.8)]'
                 : 'bg-subtle'
             }`}
           />
-          <p className="mono-caps text-[0.66rem] text-subtle">
+          <p className="mono-caps text-sm text-subtle">
             {entry.kind} · {entry.period}
           </p>
           <h3 className="mt-1.5 text-[1.2rem] leading-snug font-extrabold tracking-[-0.02em]">

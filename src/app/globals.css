@@ -1,34 +1,33 @@
 @import 'tailwindcss';
 
+@theme inline {
+  --default-font-family: var(--font-sans, system-ui);
+}
+
 /*
- * Aurora Graphite: sistema de diseño del portafolio.
- *
- * Vidrio líquido + minimalismo. Grafito neutro en oscuro, porcelana en
- * claro, una sola firma luminosa (aurora) usada con moderación, Nunito con
- * pesos firmes y una serif itálica de acento. El movimiento solo anima
- * `transform` y `opacity` y respeta «reducir movimiento».
+ * Grafito y cobre en oscuro, porcelana en claro. Geist para los textos y
+ * una serif itálica de acento. El movimiento respeta «reducir movimiento».
  */
 @theme {
-  /* Grafito (modo oscuro por defecto; el claro redefine estos tokens). */
-  --color-background: #09090b;
-  --color-surface: #121215;
-  --color-surface-2: #18181c;
-  --color-surface-3: #212126;
-  --color-line: rgb(255 255 255 / 0.075);
-  --color-line-strong: rgb(255 255 255 / 0.14);
-  --color-foreground: #f4f4f2;
-  --color-muted: #a1a1aa;
-  --color-subtle: #6b6b75;
-  --color-ink: #ffffff;
-  --color-sheet: rgb(18 18 22 / 0.94);
+  --color-background: #10110f;
+  --color-surface: #181916;
+  --color-surface-2: #20201c;
+  --color-surface-3: #2a2924;
+  --color-line: rgb(245 238 227 / 0.09);
+  --color-line-strong: rgb(245 238 227 / 0.17);
+  --color-foreground: #f5eee3;
+  --color-muted: #b9afa3;
+  --color-subtle: #a3988c;
+  --color-ink: #fff5e9;
+  --color-sheet: rgb(24 23 20 / 0.95);
   --color-scrim: rgb(0 0 0 / 0.7);
 
-  /* Aurora (firma de marca) */
-  --color-mint: #95fbdf;
-  --color-aqua: #6bdeee;
-  --color-sky: #62d2f8;
-  --color-iris: #8b9cff;
-  --color-on-aurora: #04252c;
+  /* Tonos de cobre para las superficies y reflejos. */
+  --color-mint: #ffd0b1;
+  --color-aqua: #f0b08a;
+  --color-sky: #e1a27d;
+  --color-iris: #c98e6e;
+  --color-on-aurora: #261a12;
 
   /* Champán (distinciones) */
   --color-champagne: #ead3a2;
@@ -38,8 +37,8 @@
   --color-danger: #ff6b6b;
   --color-heart: #ff5d7a;
 
-  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
@@ -77,19 +76,16 @@
 @layer base {
   :root {
     color-scheme: dark;
-    --ink-rgb: 255 255 255;
+    --ink-rgb: 245 238 227;
+    --accent-rgb: 240 176 138;
     --shadow-rgb: 0 0 0;
-    --glass-bg: rgb(22 22 26 / 0.58);
-    --glass-bg-strong: rgb(18 18 22 / 0.82);
-    --seg-active: #26262c;
-    --aurora: linear-gradient(
-      110deg,
-      #95fbdf 0%,
-      #76eee1 26%,
-      #6bdeee 48%,
-      #62d2f8 70%,
-      #8b9cff 100%
-    );
+    --glass-bg: rgb(32 29 24 / 0.59);
+    --glass-bg-strong: rgb(27 25 21 / 0.83);
+    --seg-active: #322b25;
+    --aurora: linear-gradient(110deg, var(--color-mint), var(--color-aqua) 57%, var(--color-iris));
+    --primary-fill:
+      radial-gradient(ellipse at 16% -55%, rgb(255 243 229 / 0.76), transparent 64%),
+      linear-gradient(150deg, rgb(249 200 169 / 0.94), rgb(225 162 125 / 0.9));
   }
 
   /* Porcelana: mismo sistema, otra luz. */
@@ -118,11 +114,13 @@
     --color-danger: #d63b3b;
     --color-heart: #e8365a;
     --ink-rgb: 12 12 16;
+    --accent-rgb: 107 222 238;
     --shadow-rgb: 40 40 60;
     --glass-bg: rgb(255 255 255 / 0.6);
     --glass-bg-strong: rgb(255 255 255 / 0.82);
     --seg-active: #ffffff;
     --aurora: linear-gradient(110deg, #0fa888 0%, #0a9db0 32%, #1683c9 66%, #5262e6 100%);
+    --primary-fill: var(--aurora);
   }
 
   html {
@@ -175,7 +173,7 @@
   }
 
   ::selection {
-    background: rgb(107 222 238 / 0.32);
+    background: rgb(var(--accent-rgb) / 0.32);
     color: var(--color-foreground);
   }
 
@@ -416,7 +414,7 @@
     border-radius: inherit;
     background: radial-gradient(
       420px circle at var(--mx, 50%) var(--my, 50%),
-      rgb(107 222 238 / 0.1),
+      rgb(var(--accent-rgb) / 0.1),
       transparent 45%
     );
     opacity: 0;
@@ -479,9 +477,9 @@
     linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
     linear-gradient(
         120deg,
-        rgb(149 251 223 / 0.65),
-        rgb(98 210 248 / 0.25) 45%,
-        rgb(139 156 255 / 0.6)
+        rgb(var(--accent-rgb) / 0.48),
+        rgb(var(--accent-rgb) / 0.12) 45%,
+        rgb(var(--accent-rgb) / 0.35)
       )
       border-box;
 }
@@ -494,9 +492,9 @@
 }
 
 @utility label {
-  font-size: 0.72rem;
+  font-size: 0.825rem;
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
   color: var(--color-subtle);
 }
@@ -525,31 +523,36 @@
 /* Botón principal con la firma aurora y resplandor. */
 @utility btn-primary {
   color: var(--color-on-aurora);
-  background: var(--aurora);
+  background: var(--primary-fill);
+  border: 1px solid rgb(var(--ink-rgb) / 0.22);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  backdrop-filter: blur(14px) saturate(125%);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.45),
-    0 14px 34px -14px rgb(98 210 248 / 0.65);
+    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    0 14px 34px -14px rgb(var(--accent-rgb) / 0.38);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       filter: brightness(1.06) saturate(1.05);
       box-shadow:
         inset 0 1px 0 rgb(255 255 255 / 0.5),
-        0 18px 44px -14px rgb(98 210 248 / 0.85);
+        0 18px 44px -14px rgb(var(--accent-rgb) / 0.55);
     }
   }
 }
 
 @utility btn-glass {
   color: var(--color-foreground);
-  background: rgb(var(--ink-rgb) / 0.04);
+  background: var(--glass-bg);
   border: 1px solid var(--color-line-strong);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  -webkit-backdrop-filter: blur(15px) saturate(125%);
+  backdrop-filter: blur(15px) saturate(125%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.13);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: rgb(var(--ink-rgb) / 0.08);
-      border-color: rgb(var(--ink-rgb) / 0.22);
+      background: var(--glass-bg-strong);
+      border-color: rgb(var(--accent-rgb) / 0.34);
     }
   }
 }
@@ -562,7 +565,7 @@
   border: 1px solid var(--color-line);
   background: var(--color-surface-2);
   padding: 0.34rem 0.8rem;
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--color-muted);
 }

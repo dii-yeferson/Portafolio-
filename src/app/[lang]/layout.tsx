@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Instrument_Serif, JetBrains_Mono, Nunito } from 'next/font/google'
+import localFont from 'next/font/local'
 import { notFound } from 'next/navigation'
 
 import { SiteFooter } from '@/components/layout/site-footer'
@@ -17,23 +17,30 @@ import { getAmbientMusic, getSiteSettings, isDemoContent } from '@/sanity/lib/da
 
 import '../globals.css'
 
-/** Nunito variable (200–1000): la misma familia de Qurri y Mikuy. */
-const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito', display: 'swap' })
+const geist = localFont({
+  src: '../../fonts/geist.woff2',
+  weight: '100 900',
+  variable: '--font-geist',
+  display: 'swap',
+  adjustFontFallback: false,
+})
 
 /** Serif itálica de acento para la mezcla tipográfica de la marca. */
-const instrumentSerif = Instrument_Serif({
-  subsets: ['latin'],
+const instrumentSerif = localFont({
+  src: '../../fonts/instrument-serif-italic.woff2',
   weight: '400',
   style: 'italic',
   variable: '--font-instrument-serif',
   display: 'swap',
+  adjustFontFallback: false,
 })
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
+const jetbrainsMono = localFont({
+  src: '../../fonts/jetbrains-mono.woff2',
+  weight: '100 800',
   variable: '--font-jetbrains-mono',
   display: 'swap',
+  adjustFontFallback: false,
 })
 
 export const dynamicParams = false
@@ -50,7 +57,7 @@ export async function generateMetadata({ params }: LayoutProps<'/[lang]'>): Prom
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#09090b' },
+    { media: '(prefers-color-scheme: dark)', color: '#10110f' },
     { media: '(prefers-color-scheme: light)', color: '#f5f5f1' },
   ],
   viewportFit: 'cover',
@@ -68,7 +75,7 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[la
       lang={locale}
       data-theme="dark"
       suppressHydrationWarning
-      className={`${nunito.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
+      className={`${geist.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />

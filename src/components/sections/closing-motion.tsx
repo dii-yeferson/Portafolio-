@@ -37,7 +37,7 @@ export function ClosingMotion({ lang }: { lang: Locale }) {
             textClassName="mono-caps fill-subtle"
           />
         </div>
-        <div className="aurora-blob absolute size-[28rem] max-w-[80vw] rounded-full bg-[conic-gradient(from_90deg,rgba(149,251,223,0.14),rgba(98,210,248,0.05),rgba(139,156,255,0.16),rgba(149,251,223,0.14))] blur-3xl" />
+        <div className="aurora-blob absolute size-[28rem] max-w-[80vw] rounded-full bg-[conic-gradient(from_90deg,rgb(var(--accent-rgb)/0.12),rgb(var(--accent-rgb)/0.04),rgb(var(--accent-rgb)/0.14),rgb(var(--accent-rgb)/0.12))] blur-3xl" />
 
         <p className="letters relative z-10 px-5 text-center">
           {lines.map((line) => (

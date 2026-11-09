@@ -135,9 +135,7 @@ export function SearchDialog() {
                         <Icon className="size-5" aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
-                        <span className="label block text-[0.64rem]!">
-                          {t.search.types[result.type]}
-                        </span>
+                        <span className="label block">{t.search.types[result.type]}</span>
                         <span className="block truncate font-extrabold">{result.title}</span>
                         <span className="block truncate text-sm text-muted">
                           {result.description}

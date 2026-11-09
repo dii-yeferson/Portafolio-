@@ -31,7 +31,7 @@ export function PageHero({
     <section className="relative isolate overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_85%_0%,rgba(98,210,248,0.13),transparent_65%),radial-gradient(40%_60%_at_0%_0%,rgba(149,251,223,0.07),transparent_70%)]"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_85%_0%,rgb(var(--accent-rgb)/0.11),transparent_65%),radial-gradient(40%_60%_at_0%_0%,rgb(var(--accent-rgb)/0.06),transparent_70%)]"
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10 opacity-[0.12]" />
       <div

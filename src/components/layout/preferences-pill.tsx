@@ -31,7 +31,7 @@ export function PreferencesPill({ className = '' }: { className?: string }) {
               aria-current={active ? 'true' : undefined}
               aria-label={LOCALE_META[locale].label}
               scroll={false}
-              className={`mono-caps grid h-8 min-w-9 place-items-center rounded-full px-2 text-[0.68rem] transition-[color,background-color] duration-200 ${
+              className={`mono-caps grid h-8 min-w-9 place-items-center rounded-full px-2 text-[0.825rem] transition-[color,background-color] duration-200 ${
                 active
                   ? 'bg-ink/[0.1] text-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.08)]'
                   : 'text-subtle hover:text-foreground'

@@ -37,7 +37,7 @@ export function ContactSection({
         <div className="border-aurora reveal relative isolate overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 sm:py-16 lg:px-16">
           <div
             aria-hidden="true"
-            className="absolute inset-0 -z-10 bg-[radial-gradient(45%_70%_at_0%_0%,rgba(149,251,223,0.12),transparent_70%),radial-gradient(45%_70%_at_100%_100%,rgba(139,156,255,0.14),transparent_70%)]"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(45%_70%_at_0%_0%,rgb(var(--accent-rgb)/0.1),transparent_70%),radial-gradient(45%_70%_at_100%_100%,rgb(var(--accent-rgb)/0.12),transparent_70%)]"
           />
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center">
             <div>

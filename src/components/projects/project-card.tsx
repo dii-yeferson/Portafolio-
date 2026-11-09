@@ -54,11 +54,11 @@ export function ProjectCard({ project, lang }: { project: ProjectCardData; lang:
   const external = externalUrl(project)
 
   return (
-    <article className="surface-card card-hover spotlight group flex h-full flex-col overflow-hidden">
+    <article className="surface-card liquid card-hover spotlight group flex h-full flex-col overflow-hidden">
       <div className="relative aspect-[16/10] overflow-hidden border-b border-line">
         <Cover project={project} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
         {project.featured ? (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-champagne/40 bg-black/55 px-2.5 py-1 text-[0.68rem] font-extrabold text-[#ead3a2] backdrop-blur-md">
+          <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-champagne/40 bg-black/55 px-2.5 py-1 text-sm font-extrabold text-[#ead3a2] backdrop-blur-md">
             <Star className="size-3 fill-current" aria-hidden="true" />
             {t.projects.featured}
           </span>
@@ -66,7 +66,7 @@ export function ProjectCard({ project, lang }: { project: ProjectCardData; lang:
         <LikeButton slug={project.slug} title={project.title} className="absolute top-3 right-3" />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <p className="label text-[0.66rem]!">
+        <p className="label">
           {project.category.map((value) => projectCategoryLabel(value, lang)).join(' · ')}
         </p>
         <h3 className="mt-2.5 text-[1.2rem] leading-snug font-extrabold tracking-[-0.02em]">
@@ -108,14 +108,14 @@ export function FeaturedProject({ project, lang }: { project: ProjectCardData; l
   const external = externalUrl(project)
 
   return (
-    <article className="border-aurora spotlight group relative isolate grid overflow-hidden rounded-[1.75rem] shadow-[0_40px_80px_-50px_rgba(98,210,248,0.45)] lg:grid-cols-[1.2fr_1fr]">
+    <article className="border-aurora liquid spotlight group relative grid overflow-hidden rounded-[1.75rem] shadow-[0_40px_80px_-50px_rgb(var(--accent-rgb)/0.32)] lg:grid-cols-[1.2fr_1fr]">
       <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto lg:min-h-[26rem]">
         <Cover project={project} sizes="(min-width: 1024px) 55vw, 100vw" large />
         <span className="pointer-events-none absolute inset-0 bg-linear-to-r from-transparent via-transparent to-surface/90 max-lg:hidden" />
         <LikeButton slug={project.slug} title={project.title} className="absolute top-4 left-4" />
       </div>
       <div className="flex flex-col justify-center p-7 sm:p-10">
-        <span className="inline-flex items-center gap-1.5 self-start rounded-full border border-champagne/35 bg-champagne/10 px-3 py-1 text-[0.72rem] font-extrabold text-champagne">
+        <span className="inline-flex items-center gap-1.5 self-start rounded-full border border-champagne/35 bg-champagne/10 px-3 py-1 text-sm font-extrabold text-champagne">
           <Star className="size-3.5 fill-current" aria-hidden="true" />
           {t.projects.flagship}
         </span>
