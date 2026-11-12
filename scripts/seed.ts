@@ -12,12 +12,14 @@
  *   completo desde el primer momento y luego se edita todo en /studio.
  * - Las certificaciones se crean como BORRADORES: son de ejemplo y el Studio
  *   exige el enlace de verificación o la imagen real antes de publicarlas.
+ * - La música ambiental se crea activa con el enlace de YouTube del diseño.
  * - Las redes se crean visibles salvo LinkedIn: pega la URL de tu perfil y actívala.
  */
 import { createClient, type IdentifiedSanityDocumentStub, type SanityClient } from '@sanity/client'
 import { getCliClient } from 'sanity/cli'
 
 import {
+  DEMO_AMBIENT_MUSIC,
   DEMO_CERTIFICATIONS,
   DEMO_CONTACT_EMAIL,
   DEMO_GITHUB_USERNAME,
@@ -120,7 +122,16 @@ function buildDocuments(): IdentifiedSanityDocumentStub[] {
     sortOrder: (index + 1) * 10,
   }))
 
-  return [siteSettings, ...socialLinks, ...projects, ...certifications]
+  // Música ambiental: el mismo enlace del diseño, editable o apagable en /studio.
+  const ambientMusic: IdentifiedSanityDocumentStub = {
+    _id: 'ambientMusic',
+    _type: 'ambientMusic',
+    enabled: DEMO_AMBIENT_MUSIC.enabled,
+    youtubeUrl: DEMO_AMBIENT_MUSIC.youtubeUrl,
+    volume: DEMO_AMBIENT_MUSIC.volume,
+  }
+
+  return [siteSettings, ambientMusic, ...socialLinks, ...projects, ...certifications]
 }
 
 /** Con `SANITY_API_WRITE_TOKEN` usa ese token; si no, la sesión de `npx sanity login`. */
