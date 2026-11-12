@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: '404 · Di Yeferson',
+  title: '404 · Diego Yeferson',
   robots: { index: false, follow: false },
 }
 

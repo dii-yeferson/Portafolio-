@@ -2,7 +2,7 @@ import { DEFAULT_LOCALE, type Locale, localePath } from '@/i18n/config'
 
 /** Textos de marca definidos en el PRD; se usan si el CMS aún no tiene contenido. */
 export const SITE_DEFAULTS = {
-  displayName: 'Di Yeferson',
+  displayName: 'Diego Yeferson',
   tagline: 'Big Data · Ciencia de Datos · IA Aplicada',
   motto: 'Detrás de cada dato hay una decisión.',
   /** Retrato por defecto (fondo transparente) mientras el CMS no tenga uno. */

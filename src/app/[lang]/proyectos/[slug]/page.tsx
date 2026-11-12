@@ -105,7 +105,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <div className="flex flex-col gap-6">
           <TechTags items={project.technologies} />
           <div className="flex flex-wrap gap-3">
-            <LikeButton slug={project.slug} title={project.title} size="lg" />
+            <LikeButton
+              slug={project.slug}
+              title={project.title}
+              base={project.likesBase}
+              size="lg"
+            />
             {isSafeExternalUrl(project.demoUrl) ? (
               <a
                 href={project.demoUrl}

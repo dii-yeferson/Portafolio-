@@ -61,8 +61,18 @@ export const DEMO_PROFILE = {
     en: 'I study Big Data and Data Science at Tecsup. I build models, dashboards and apps that people actually use.',
   },
   heroPhrases: {
-    es: ['Detrás de cada dato hay una decisión.', 'Me gusta encontrarla.'],
-    en: ['Behind every dataset there is a decision.', 'I like finding it.'],
+    es: [
+      'Detrás de cada dato hay una decisión. *Me gusta encontrarla.*',
+      'Los números cuentan historias. *Yo las traduzco.*',
+      'Primero la pregunta. *Después el modelo.*',
+      'Datos limpios, ideas claras. *Decisiones con calma.*',
+    ],
+    en: [
+      'Behind every dataset there is a decision. *I like finding it.*',
+      'Numbers tell stories. *I translate them.*',
+      'The question first. *The model second.*',
+      'Clean data, clear ideas. *Calm decisions.*',
+    ],
   },
   heroBadges: {
     es: ['Análisis', 'Modelado', 'IA aplicada'],
@@ -129,7 +139,7 @@ export const DEMO_PROFILE = {
 export function getDemoSiteSettings(lang: Locale): NonNullable<SITE_SETTINGS_QUERY_RESULT> {
   const profile = DEMO_PROFILE
   return {
-    displayName: 'Di Yeferson',
+    displayName: 'Diego Yeferson',
     tagline: pick(profile.tagline, lang),
     availability: pick(profile.availability, lang),
     summary: pick(profile.summary, lang),
@@ -225,6 +235,7 @@ export const DEMO_PROJECT_SOURCES: DemoProjectSource[] = [
     ...base,
     _id: 'demo-centinela-minero',
     slug: 'centinela-minero',
+    likesBase: 125,
     category: ['machine-learning', 'big-data', 'thesis'],
     technologies: ['Python', 'Machine Learning', 'Pandas'],
     featured: true,
@@ -254,6 +265,7 @@ export const DEMO_PROJECT_SOURCES: DemoProjectSource[] = [
     ...base,
     _id: 'demo-qurri',
     slug: 'qurri',
+    likesBase: 98,
     category: ['web-apps'],
     technologies: ['JavaScript', 'PWA', 'Supabase'],
     featured: false,
@@ -283,6 +295,7 @@ export const DEMO_PROJECT_SOURCES: DemoProjectSource[] = [
     ...base,
     _id: 'demo-mikuy',
     slug: 'mikuy',
+    likesBase: 87,
     codeUrl: 'https://github.com/dii-yeferson/Mikuy-Ai',
     category: ['web-apps'],
     technologies: ['Python', 'FastAPI', 'PostgreSQL', 'PWA'],
@@ -313,6 +326,7 @@ export const DEMO_PROJECT_SOURCES: DemoProjectSource[] = [
     ...base,
     _id: 'demo-analisis-mineros',
     slug: 'analisis-datos-mineros',
+    likesBase: 64,
     category: ['power-bi', 'big-data'],
     technologies: ['Power BI', 'SQL', 'Excel'],
     featured: false,

@@ -41,7 +41,7 @@ export function RecommendationForm({ name, picture }: { name: string; picture: s
   }
 
   const input =
-    'w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 font-semibold outline-none transition-[border-color,background-color,box-shadow] placeholder:text-subtle focus:border-aqua/60 focus:bg-surface-3 focus:shadow-[0_0_0_4px_rgb(107_222_238/0.14)]'
+    'w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 font-semibold outline-none transition-[border-color,background-color,box-shadow] placeholder:text-subtle focus:border-aqua/60 focus:bg-surface-3 focus:shadow-[0_0_0_4px_rgb(var(--accent-rgb)/0.16)]'
 
   if (status === 'success') {
     return (

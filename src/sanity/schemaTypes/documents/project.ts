@@ -236,6 +236,16 @@ export const project = defineType({
       group: 'publishing',
     },
     { ...sortOrderField(), group: 'publishing' },
+    defineField({
+      name: 'likesBase',
+      title: 'Me gusta iniciales',
+      description:
+        'Número con el que arranca el contador de este proyecto. Los «me gusta» reales de los visitantes se suman encima.',
+      type: 'number',
+      group: 'publishing',
+      initialValue: 0,
+      validation: (rule) => rule.min(0).max(100000).integer(),
+    }),
   ],
   orderings: [
     {

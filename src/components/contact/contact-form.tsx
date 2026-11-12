@@ -66,7 +66,7 @@ export function ContactForm({ contactEmail }: { contactEmail: string | null }) {
     'aria-invalid': fieldErrors?.[name] ? true : undefined,
     'aria-describedby': fieldErrors?.[name] ? `${id}-${name}-error` : undefined,
     className:
-      'w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 font-semibold outline-none transition-[border-color,background-color,box-shadow] placeholder:text-subtle focus:border-aqua/60 focus:bg-surface-3 focus:shadow-[0_0_0_4px_rgb(107_222_238/0.14)] aria-invalid:border-danger',
+      'w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 font-semibold outline-none transition-[border-color,background-color,box-shadow] placeholder:text-subtle focus:border-aqua/60 focus:bg-surface-3 focus:shadow-[0_0_0_4px_rgb(var(--accent-rgb)/0.16)] aria-invalid:border-danger',
   })
 
   const error = (name: FieldName) =>

@@ -1,4 +1,4 @@
-# Portafolio profesional y CMS · Di Yeferson
+# Portafolio profesional y CMS · Diego Yeferson
 
 **Big Data · Ciencia de Datos · IA Aplicada** — _Transformando datos en soluciones reales_
 
@@ -240,7 +240,8 @@ por esta vía, así que la persona puede pegarla (se valida que sea `linkedin.co
 - **GitHub:** escribe tu usuario en _Contacto y CV → Usuario de GitHub_ (o deja el enlace de
   GitHub en redes). Tus repositorios públicos aparecen solos, sin forks ni archivados, y se
   actualizan cada hora.
-- **Me gusta:** con `SANITY_API_WRITE_TOKEN` el conteo se guarda en Sanity (documentos
+- **Me gusta:** cada proyecto tiene en el panel un número inicial (_Me gusta iniciales_) al que
+  se suman los «me gusta» reales de los visitantes. Con `SANITY_API_WRITE_TOKEN` el conteo se guarda en Sanity (documentos
   `likes-<slug>`, de solo lectura en el panel). Sin el token, el corazón funciona solo en el
   navegador de cada visitante.
 

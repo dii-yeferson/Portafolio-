@@ -97,12 +97,12 @@ describe('buildRootMetadata', () => {
 
   it('genera Open Graph 1200×630 y Twitter Card grande desde el CMS', () => {
     const settings = {
-      displayName: 'Di Yeferson',
+      displayName: 'Diego Yeferson',
       tagline: 'Big Data · Ciencia de Datos · IA Aplicada',
       summary: 'Resumen profesional '.repeat(20),
       heroPortrait: image('portrait'),
       seoMeta: {
-        metaTitle: 'Di Yeferson — Data & IA',
+        metaTitle: 'Diego Yeferson — Data & IA',
         metaDescription: 'Descripción SEO',
         keywords: ['Big Data'],
         twitterHandle: 'diyeferson',
@@ -162,7 +162,7 @@ describe('buildProjectMetadata', () => {
 describe('buildPersonJsonLd', () => {
   it('describe a la persona con formación, habilidades y perfiles', () => {
     const settings = {
-      displayName: 'Di Yeferson',
+      displayName: 'Diego Yeferson',
       tagline: 'Big Data · Ciencia de Datos · IA Aplicada',
       education: [
         { _key: 'a', institution: 'Tecsup', program: 'Big Data' },
@@ -190,7 +190,7 @@ describe('buildPersonJsonLd', () => {
 
     expect(jsonLd).toMatchObject({
       '@type': 'Person',
-      name: 'Di Yeferson',
+      name: 'Diego Yeferson',
       alumniOf: [{ '@type': 'EducationalOrganization', name: 'Tecsup' }],
       knowsAbout: ['Spark', 'Kafka'],
       sameAs: ['https://github.com/dii-yeferson'],

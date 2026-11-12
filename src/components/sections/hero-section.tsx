@@ -2,11 +2,13 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 
 import { DataGlobe } from '@/components/hero/data-globe'
+import { RotatingMotto } from '@/components/hero/rotating-motto'
 import { SplitLetters } from '@/components/motion/split-letters'
 import { SanityImage } from '@/components/sanity-image'
 import { CountUp } from '@/components/ui/count-up'
 import { type Locale, localePath } from '@/i18n/config'
 import { getDictionary } from '@/i18n'
+import { normalizeMottos } from '@/lib/mottos'
 import { SITE_DEFAULTS } from '@/lib/site'
 import { hasImageAsset } from '@/sanity/lib/image'
 import type { SiteSettings } from '@/sanity/lib/data'
@@ -32,11 +34,12 @@ export function HeroSection({
 }) {
   const t = getDictionary(lang)
   const name = settings?.displayName || SITE_DEFAULTS.displayName
-  const heroName = name.trim().replace(/^(?:D\.?|Di|Diego)\s+(?=Yeferson$)/i, '')
+  // El apellido o última palabra va en cursiva cobre: «Diego *Yeferson*».
+  const nameWords = name.trim().split(/\s+/)
+  const lastName = nameWords.length > 1 ? (nameWords.pop() ?? '') : ''
+  const firstName = nameWords.join(' ')
   const tagline = settings?.tagline || SITE_DEFAULTS.tagline
-  const [motto, mottoAccent] = settings?.heroPhrases?.length
-    ? settings.heroPhrases
-    : [SITE_DEFAULTS.motto]
+  const mottos = normalizeMottos(settings?.heroPhrases, SITE_DEFAULTS.motto)
   const portrait = hasImageAsset(settings?.heroPortrait) ? settings?.heroPortrait : null
   const figures = [
     { label: t.hero.stats.projects, value: stats.projects },
@@ -65,18 +68,23 @@ export function HeroSection({
 
           <h1
             id="hero-title"
-            className="letters letters-intro mt-7 text-[clamp(3rem,11vw,6.5rem)] leading-[0.92] font-[750] tracking-[-0.055em] lg:text-[clamp(4.2rem,8.2vw,7.5rem)]"
+            className="letters letters-intro mt-7 font-serif text-[clamp(3.6rem,13vw,7.25rem)] leading-[0.95] font-normal tracking-[-0.025em] lg:text-[clamp(4.6rem,8.6vw,8.25rem)]"
           >
-            <SplitLetters text={heroName} />
+            <SplitLetters text={firstName} />
+            {lastName ? (
+              <>
+                {' '}
+                <span className="text-aqua italic">
+                  <SplitLetters text={lastName} offset={firstName.length + 1} />
+                </span>
+              </>
+            ) : null}
           </h1>
           <p className="mt-6 animate-rise text-[clamp(0.875rem,1.2vw,1rem)] font-semibold tracking-[0.085em] text-muted uppercase [animation-delay:520ms]">
             <span className="text-aurora">{tagline}</span>
           </p>
           <p className="mt-4 max-w-xl animate-rise text-[clamp(1.35rem,2.4vw,1.85rem)] leading-[1.2] font-extrabold tracking-[-0.025em] [animation-delay:600ms]">
-            {motto}{' '}
-            {mottoAccent ? (
-              <em className="accent-serif text-aurora pr-1 text-[1.12em]">{mottoAccent}</em>
-            ) : null}
+            <RotatingMotto phrases={mottos} />
           </p>
 
           <div className="mt-9 flex animate-rise flex-wrap gap-3 [animation-delay:680ms]">

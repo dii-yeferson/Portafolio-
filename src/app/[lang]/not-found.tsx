@@ -15,7 +15,7 @@ export default async function NotFound() {
     <section className="relative isolate grid min-h-dvh place-items-center overflow-hidden px-6 text-center">
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(45%_55%_at_50%_40%,rgba(98,210,248,0.14),transparent_70%)]"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(45%_55%_at_50%_40%,rgb(var(--accent-rgb)/0.12),transparent_70%)]"
       />
       <div className="flex max-w-xl flex-col items-center gap-5">
         <LogoMark className="h-7 w-auto text-foreground" />

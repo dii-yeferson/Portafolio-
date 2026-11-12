@@ -63,7 +63,12 @@ export function ProjectCard({ project, lang }: { project: ProjectCardData; lang:
             {t.projects.featured}
           </span>
         ) : null}
-        <LikeButton slug={project.slug} title={project.title} className="absolute top-3 right-3" />
+        <LikeButton
+          slug={project.slug}
+          title={project.title}
+          base={project.likesBase}
+          className="absolute top-3 right-3"
+        />
       </div>
       <div className="flex flex-1 flex-col p-6">
         <p className="label">
@@ -112,7 +117,12 @@ export function FeaturedProject({ project, lang }: { project: ProjectCardData; l
       <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto lg:min-h-[26rem]">
         <Cover project={project} sizes="(min-width: 1024px) 55vw, 100vw" large />
         <span className="pointer-events-none absolute inset-0 bg-linear-to-r from-transparent via-transparent to-surface/90 max-lg:hidden" />
-        <LikeButton slug={project.slug} title={project.title} className="absolute top-4 left-4" />
+        <LikeButton
+          slug={project.slug}
+          title={project.title}
+          base={project.likesBase}
+          className="absolute top-4 left-4"
+        />
       </div>
       <div className="flex flex-col justify-center p-7 sm:p-10">
         <span className="inline-flex items-center gap-1.5 self-start rounded-full border border-champagne/35 bg-champagne/10 px-3 py-1 text-sm font-extrabold text-champagne">

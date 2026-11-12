@@ -104,7 +104,7 @@ describe('validateAltText', () => {
   it('solo exige texto alternativo si la imagen tiene archivo', () => {
     expect(validateAltText(undefined, undefined)).toBe(true)
     expect(validateAltText(undefined, { asset: undefined })).toBe(true)
-    expect(validateAltText('Retrato de Di Yeferson', { asset: { _ref: 'image-1' } })).toBe(true)
+    expect(validateAltText('Retrato de Diego Yeferson', { asset: { _ref: 'image-1' } })).toBe(true)
     expect(validateAltText('   ', { asset: { _ref: 'image-1' } })).toMatch(/obligatorio/)
   })
 })

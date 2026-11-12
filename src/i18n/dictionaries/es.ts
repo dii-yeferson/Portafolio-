@@ -6,7 +6,7 @@
 export const es = {
   meta: {
     description:
-      'Portafolio de Di Yeferson: Big Data, Ciencia de Datos e IA aplicada a problemas reales.',
+      'Portafolio de Diego Yeferson: Big Data, Ciencia de Datos e IA aplicada a problemas reales.',
     projectsTitle: 'Proyectos',
     projectsDescription:
       'Proyectos de machine learning, Big Data, Power BI y aplicaciones web con datos reales.',

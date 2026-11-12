@@ -51,7 +51,7 @@ export default async function RecommendPage({
               <li key={step} className="flex items-start gap-4">
                 <span
                   aria-hidden="true"
-                  className="mt-2 size-2 shrink-0 rounded-full bg-aqua shadow-[0_0_10px_rgba(107,222,238,0.8)]"
+                  className="mt-2 size-2 shrink-0 rounded-full bg-aqua shadow-[0_0_10px_rgb(var(--accent-rgb)/0.8)]"
                 />
                 <p className="text-[1.15rem] font-bold">{step}</p>
               </li>

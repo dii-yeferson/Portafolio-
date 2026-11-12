@@ -6,12 +6,12 @@ import { createElement, Fragment, isValidElement } from 'react'
 export const OG_SIZE = { width: 1200, height: 630 } as const
 
 export const OG_COLORS = {
-  background: '#09090b',
-  foreground: '#f4f4f2',
-  muted: '#a1a1aa',
-  subtle: '#6b6b75',
+  background: '#10110f',
+  foreground: '#f5eee3',
+  muted: '#b9afa3',
+  subtle: '#a3988c',
   line: 'rgba(255,255,255,0.12)',
-  aurora: 'linear-gradient(110deg, #95fbdf 0%, #6bdeee 45%, #62d2f8 70%, #8b9cff 100%)',
+  aurora: 'linear-gradient(110deg, #ffd0b1 0%, #f0b08a 45%, #e1a27d 70%, #c98e6e 100%)',
 } as const
 
 export function OgBackground() {
@@ -26,7 +26,7 @@ export function OgBackground() {
         display: 'flex',
         backgroundColor: OG_COLORS.background,
         backgroundImage:
-          'radial-gradient(circle at 85% 18%, rgba(98,210,248,0.24), rgba(9,9,11,0) 55%), radial-gradient(circle at 0% 100%, rgba(149,251,223,0.14), rgba(9,9,11,0) 50%)',
+          'radial-gradient(circle at 85% 18%, rgba(225,162,125,0.24), rgba(16,17,15,0) 55%), radial-gradient(circle at 0% 100%, rgba(255,208,177,0.14), rgba(16,17,15,0) 50%)',
       }}
     />
   )
@@ -40,8 +40,8 @@ export function OgSignature({ name, host }: { name: string; host: string }) {
           width: 14,
           height: 14,
           borderRadius: 999,
-          background: '#6bdeee',
-          boxShadow: '0 0 18px rgba(107,222,238,0.9)',
+          background: '#f0b08a',
+          boxShadow: '0 0 18px rgba(240,176,138,0.9)',
         }}
       />
       <div style={{ display: 'flex', fontSize: 26, fontWeight: 700, color: OG_COLORS.foreground }}>

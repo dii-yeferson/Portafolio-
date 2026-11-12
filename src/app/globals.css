@@ -89,38 +89,41 @@
   }
 
   /* Porcelana: mismo sistema, otra luz. */
+  /* Porcelana cálida con cobre: el mismo sistema que el modo oscuro, con luz de día. */
   :root[data-theme='light'] {
     color-scheme: light;
-    --color-background: #f5f5f1;
-    --color-surface: #ffffff;
-    --color-surface-2: #f0f0ec;
-    --color-surface-3: #e7e7e2;
-    --color-line: rgb(12 12 16 / 0.08);
-    --color-line-strong: rgb(12 12 16 / 0.15);
-    --color-foreground: #0c0c10;
-    --color-muted: #50505a;
-    --color-subtle: #7a7a84;
-    --color-ink: #0c0c10;
-    --color-sheet: rgb(255 255 255 / 0.94);
-    --color-scrim: rgb(24 24 32 / 0.32);
-    --color-mint: #0fa888;
-    --color-aqua: #0a8fa5;
-    --color-sky: #1683c9;
-    --color-iris: #5262e6;
-    --color-on-aurora: #ffffff;
-    --color-champagne: #8f6a2a;
-    --color-champagne-deep: #74551f;
-    --color-success: #16954a;
-    --color-danger: #d63b3b;
-    --color-heart: #e8365a;
-    --ink-rgb: 12 12 16;
-    --accent-rgb: 107 222 238;
-    --shadow-rgb: 40 40 60;
-    --glass-bg: rgb(255 255 255 / 0.6);
-    --glass-bg-strong: rgb(255 255 255 / 0.82);
-    --seg-active: #ffffff;
-    --aurora: linear-gradient(110deg, #0fa888 0%, #0a9db0 32%, #1683c9 66%, #5262e6 100%);
-    --primary-fill: var(--aurora);
+    --color-background: #f6f2ec;
+    --color-surface: #fffdf9;
+    --color-surface-2: #f1ebe3;
+    --color-surface-3: #e8dfd3;
+    --color-line: rgb(52 36 22 / 0.09);
+    --color-line-strong: rgb(52 36 22 / 0.17);
+    --color-foreground: #1e1914;
+    --color-muted: #5c5248;
+    --color-subtle: #7d7064;
+    --color-ink: #1e1914;
+    --color-sheet: rgb(255 253 249 / 0.95);
+    --color-scrim: rgb(40 28 18 / 0.3);
+    --color-mint: #cf8a5c;
+    --color-aqua: #a65a32;
+    --color-sky: #b86c40;
+    --color-iris: #8c4a2a;
+    --color-on-aurora: #fffaf4;
+    --color-champagne: #8a6326;
+    --color-champagne-deep: #6f4f1d;
+    --color-success: #2f8a4f;
+    --color-danger: #c23b2e;
+    --color-heart: #d6455d;
+    --ink-rgb: 30 25 20;
+    --accent-rgb: 176 98 56;
+    --shadow-rgb: 70 45 25;
+    --glass-bg: rgb(255 251 246 / 0.62);
+    --glass-bg-strong: rgb(255 251 246 / 0.85);
+    --seg-active: #fffdf9;
+    --aurora: linear-gradient(110deg, #c47e50, #a65a32 57%, #8c4a2a);
+    --primary-fill:
+      radial-gradient(ellipse at 16% -55%, rgb(255 233 210 / 0.6), transparent 64%),
+      linear-gradient(150deg, #c27a4b, #9e522c);
   }
 
   html {
@@ -849,8 +852,8 @@
   }
 
   :root[data-theme='light'] .search-glass {
-    background: linear-gradient(160deg, rgb(255 255 255 / 0.7), rgb(245 245 241 / 0.55));
-    border-color: rgb(12 12 16 / 0.1);
+    background: linear-gradient(160deg, rgb(255 253 249 / 0.72), rgb(246 242 236 / 0.55));
+    border-color: rgb(52 36 22 / 0.12);
   }
 }
 

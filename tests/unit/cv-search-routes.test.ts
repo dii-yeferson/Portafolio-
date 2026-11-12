@@ -13,26 +13,26 @@ const cvRequest = (accept = 'application/json') =>
 describe('GET /api/cv', () => {
   it('redirige al PDF de Sanity forzando la descarga', async () => {
     data.getSiteSettings.mockResolvedValue({
-      displayName: 'Di Yeferson',
+      displayName: 'Diego Yeferson',
       resume: { url: 'https://cdn.sanity.io/files/p1/production/abc.pdf' },
     })
     const response = await getCv(cvRequest())
     expect(response.status).toBe(307)
     const location = new URL(response.headers.get('location') ?? '')
     expect(location.hostname).toBe('cdn.sanity.io')
-    expect(location.searchParams.get('dl')).toBe('CV-Di-Yeferson.pdf')
+    expect(location.searchParams.get('dl')).toBe('CV-Diego-Yeferson.pdf')
     expect(response.headers.get('cache-control')).toBe('no-store')
   })
 
   it('responde 404 en JSON a clientes de API si no hay CV', async () => {
-    data.getSiteSettings.mockResolvedValue({ displayName: 'Di Yeferson', resume: null })
+    data.getSiteSettings.mockResolvedValue({ displayName: 'Diego Yeferson', resume: null })
     const response = await getCv(cvRequest())
     expect(response.status).toBe(404)
     await expect(response.json()).resolves.toMatchObject({ error: 'resume_not_found' })
   })
 
   it('devuelve a los navegadores a la sección de contacto si no hay CV', async () => {
-    data.getSiteSettings.mockResolvedValue({ displayName: 'Di Yeferson', resume: null })
+    data.getSiteSettings.mockResolvedValue({ displayName: 'Diego Yeferson', resume: null })
     const response = await getCv(cvRequest('text/html,application/xhtml+xml'))
     expect(response.status).toBe(307)
     expect(response.headers.get('location')).toBe('http://localhost/#contacto')

@@ -77,7 +77,7 @@ export async function GET(
               fontSize: 20,
               letterSpacing: 4,
               textTransform: 'uppercase',
-              color: '#6bdeee',
+              color: '#f0b08a',
             }}
           >
             {project.category.map((value) => projectCategoryLabel(value, lang)).join('  ·  ')}
@@ -145,7 +145,7 @@ export async function GET(
             height: '100%',
             display: 'flex',
             borderRadius: 32,
-            background: 'rgba(139,156,255,0.16)',
+            background: 'rgba(201,142,110,0.16)',
             border: `1px solid ${OG_COLORS.line}`,
             transform: 'rotate(-14deg) translate(-36px, 26px)',
           }}
@@ -159,7 +159,7 @@ export async function GET(
             height: '100%',
             display: 'flex',
             borderRadius: 32,
-            background: 'rgba(98,210,248,0.18)',
+            background: 'rgba(225,162,125,0.18)',
             border: `1px solid ${OG_COLORS.line}`,
             transform: 'rotate(-9deg) translate(-16px, 12px)',
           }}

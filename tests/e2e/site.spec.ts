@@ -18,7 +18,9 @@ test('la portada muestra hero, globo, secciones y pie con el año actual', async
   await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(16, 17, 15)')
   await expect(page.locator('body')).toHaveCSS('font-family', /geist/i)
   await expect(page.locator('#inicio canvas')).toBeVisible()
-  await expect(page.getByRole('heading', { level: 1, name: 'Yeferson', exact: true })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Diego Yeferson', exact: true }),
+  ).toBeVisible()
   for (const name of [
     'Me gusta que los números cuenten algo.',
     'Proyectos que resuelven algo.',
@@ -28,7 +30,7 @@ test('la portada muestra hero, globo, secciones y pie con el año actual', async
     await expect(page.getByRole('heading', { level: 2, name, exact: true })).toBeVisible()
   }
   // El retrato real va delante del globo y nunca hay recomendaciones inventadas.
-  await expect(page.getByRole('img', { name: 'Retrato de Di Yeferson' })).toBeVisible()
+  await expect(page.getByRole('img', { name: 'Retrato de Diego Yeferson' })).toBeVisible()
   await expect(page.locator('#recomendaciones')).toHaveCount(0)
   await expect(page.getByRole('link', { name: /Descargar CV/ }).first()).toBeVisible()
   await expect(page.locator('footer')).toContainText(`© ${new Date().getFullYear()}`)
@@ -175,7 +177,7 @@ test('modo claro y oscuro: se aplica al instante y se recuerda', async ({ page }
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await page.getByRole('button', { name: 'Cambiar a modo claro' }).first().click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(245, 245, 241)')
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(246, 242, 236)')
   await page.reload()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
   await page.getByRole('button', { name: 'Cambiar a modo oscuro' }).first().click()
@@ -185,9 +187,12 @@ test('modo claro y oscuro: se aplica al instante y se recuerda', async ({ page }
 test('me gusta: el corazón se marca y se recuerda en este navegador', async ({ page }) => {
   await page.goto('/proyectos/centinela-minero')
   const heart = page.getByRole('button', { name: 'Me gusta Centinela Minero' })
+  // Arranca en el número inicial del panel y suma el voto.
+  await expect(heart).toContainText('125')
   await heart.click()
   const liked = page.getByRole('button', { name: 'Quitar me gusta de Centinela Minero' })
   await expect(liked).toHaveAttribute('aria-pressed', 'true')
+  await expect(liked).toContainText('126')
   await page.reload()
   await expect(liked).toHaveAttribute('aria-pressed', 'true')
   await liked.click()

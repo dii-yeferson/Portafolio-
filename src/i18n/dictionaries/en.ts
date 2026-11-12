@@ -3,7 +3,8 @@ import type { Dictionary } from './es'
 /** English interface copy. Same keys as `es.ts`; `*text*` renders as the serif italic accent. */
 export const en: Dictionary = {
   meta: {
-    description: 'Di Yeferson portfolio: Big Data, Data Science and applied AI for real problems.',
+    description:
+      'Diego Yeferson portfolio: Big Data, Data Science and applied AI for real problems.',
     projectsTitle: 'Projects',
     projectsDescription:
       'Machine learning, Big Data, Power BI and web app projects built with real data.',

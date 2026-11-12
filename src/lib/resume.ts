@@ -2,7 +2,7 @@ import { toFileSlug } from './url'
 
 const SANITY_CDN_HOST = 'cdn.sanity.io'
 
-/** Nombre de descarga del CV, p. ej. `CV-Di-Yeferson.pdf`. */
+/** Nombre de descarga del CV, p. ej. `CV-Diego-Yeferson.pdf`. */
 export function buildResumeFilename(displayName: string | null | undefined): string {
   const slug = toFileSlug(displayName ?? '')
   return slug ? `CV-${slug}.pdf` : 'CV.pdf'

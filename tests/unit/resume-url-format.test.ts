@@ -8,9 +8,9 @@ const ASSET = 'https://cdn.sanity.io/files/abc123/production/0123456789abcdef.pd
 
 describe('buildResumeDownloadUrl', () => {
   it('añade ?dl= con un nombre de archivo limpio', () => {
-    const url = new URL(buildResumeDownloadUrl(ASSET, 'Di Yeferson') ?? '')
+    const url = new URL(buildResumeDownloadUrl(ASSET, 'Diego Yeferson') ?? '')
     expect(url.origin).toBe('https://cdn.sanity.io')
-    expect(url.searchParams.get('dl')).toBe('CV-Di-Yeferson.pdf')
+    expect(url.searchParams.get('dl')).toBe('CV-Diego-Yeferson.pdf')
   })
 
   it('rechaza hosts ajenos al CDN de Sanity (evita redirecciones abiertas)', () => {

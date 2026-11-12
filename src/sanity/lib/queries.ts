@@ -64,6 +64,7 @@ export const PROJECTS_QUERY = defineQuery(`
       "shortDescription": select($lang == "en" => coalesce(shortDescriptionEn, shortDescription), shortDescription),
       technologies,
       featured,
+      "likesBase": coalesce(likesBase, 0),
       demoUrl,
       codeUrl,
       coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip }
@@ -85,6 +86,7 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(`
     metrics[]{ _key, "label": select($lang == "en" => coalesce(labelEn, label), label), value, "context": select($lang == "en" => coalesce(contextEn, context), context) },
     technologies,
     featured,
+    "likesBase": coalesce(likesBase, 0),
     demoUrl,
     codeUrl,
     coverImage{ asset, crop, hotspot, alt, "lqip": asset->metadata.lqip },

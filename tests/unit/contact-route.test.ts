@@ -34,7 +34,7 @@ function contactRequest(
 describe('POST /api/contact', () => {
   beforeEach(() => {
     getSiteSettings.mockResolvedValue({
-      displayName: 'Di Yeferson',
+      displayName: 'Diego Yeferson',
       contactEmail: 'owner@example.com',
     })
     vi.stubEnv('RESEND_API_KEY', 're_test_key')
@@ -59,7 +59,7 @@ describe('POST /api/contact', () => {
       from: 'Portafolio <hola@example.com>',
       to: ['owner@example.com'],
       reply_to: 'ana@example.com',
-      subject: '[Di Yeferson] Dashboard — Ana Torres',
+      subject: '[Diego Yeferson] Dashboard — Ana Torres',
     })
   })
 

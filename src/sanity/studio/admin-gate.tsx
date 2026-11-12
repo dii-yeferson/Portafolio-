@@ -45,7 +45,7 @@ export function AdminGate(props: LayoutProps) {
         </p>
         <Link
           href="/"
-          style={{ display: 'inline-block', marginTop: 20, color: '#6bdeee', fontWeight: 800 }}
+          style={{ display: 'inline-block', marginTop: 20, color: '#f0b08a', fontWeight: 800 }}
         >
           Volver al sitio
         </Link>

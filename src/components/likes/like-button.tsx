@@ -11,7 +11,7 @@ import { getSnapshot, requestCount, SERVER_SNAPSHOT, subscribe, toggleLike } fro
 const PARTICLES = Array.from({ length: 9 }, (_, index) => ({
   angle: index * 40,
   distance: 18 + (index % 3) * 5,
-  color: ['#95fbdf', '#6bdeee', '#8b9cff', '#ff5d7a'][index % 4]!,
+  color: ['#ffd0b1', '#f0b08a', '#c98e6e', '#ff5d7a'][index % 4]!,
 }))
 
 /**
@@ -22,11 +22,14 @@ const PARTICLES = Array.from({ length: 9 }, (_, index) => ({
 export function LikeButton({
   slug,
   title,
+  base = 0,
   size = 'md',
   className = '',
 }: {
   slug: string
   title: string
+  /** «Me gusta» iniciales definidos en el panel; los reales se suman encima. */
+  base?: number
   size?: 'md' | 'lg'
   className?: string
 }) {
@@ -50,6 +53,8 @@ export function LikeButton({
   }
 
   const large = size === 'lg'
+  // Con contador en el servidor ya incluye este voto; sin él se suma el voto local.
+  const total = base + (typeof state.count === 'number' ? state.count : state.liked ? 1 : 0)
 
   return (
     <button
@@ -57,6 +62,7 @@ export function LikeButton({
       onClick={onClick}
       aria-pressed={state.liked}
       data-like-slug={slug}
+      data-like-base={base}
       aria-label={state.liked ? t.likes.unlike(title) : t.likes.like(title)}
       className={`group/like z-10 inline-flex ${className.includes('absolute') ? '' : 'relative'} items-center gap-1.5 rounded-full transition-[transform,background-color,border-color] duration-150 ease-[cubic-bezier(.23,1,.32,1)] active:scale-[0.94] ${
         large
@@ -92,9 +98,9 @@ export function LikeButton({
           </span>
         ) : null}
       </span>
-      {typeof state.count === 'number' ? (
-        <span className="tabular-nums" aria-label={t.likes.count(state.count)}>
-          {state.count}
+      {total > 0 ? (
+        <span className="tabular-nums" aria-label={t.likes.count(total)}>
+          {total}
         </span>
       ) : null}
     </button>

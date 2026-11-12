@@ -4,7 +4,9 @@ import path from 'node:path'
 import { ImageResponse } from 'next/og'
 import type { NextRequest } from 'next/server'
 
+import { splitAccent } from '@/i18n/accent'
 import { DEFAULT_LOCALE, isLocale } from '@/i18n/config'
+import { normalizeMottos } from '@/lib/mottos'
 import { OG_COLORS, OG_SIZE, OgBackground, OgSignature } from '@/lib/og'
 import { getSiteUrl, SITE_DEFAULTS } from '@/lib/site'
 import { getSiteSettings } from '@/sanity/lib/data'
@@ -18,9 +20,14 @@ export async function GET(request: NextRequest) {
   const settings = await getSiteSettings(lang)
   const name = settings?.displayName || SITE_DEFAULTS.displayName
   const tagline = settings?.tagline || SITE_DEFAULTS.tagline
-  const [motto, accent] = settings?.heroPhrases?.length
-    ? settings.heroPhrases
-    : [SITE_DEFAULTS.motto]
+  const [first] = normalizeMottos(settings?.heroPhrases, SITE_DEFAULTS.motto)
+  const parts = splitAccent(first ?? SITE_DEFAULTS.motto)
+  const motto = parts
+    .filter((part) => !part.accent)
+    .map((part) => part.text)
+    .join('')
+    .trim()
+  const accent = parts.find((part) => part.accent)?.text
   const portrait = await readFile(path.join(process.cwd(), 'public/images/portrait-og.png'))
   const portraitSrc = `data:image/png;base64,${portrait.toString('base64')}`
 
@@ -45,9 +52,9 @@ export async function GET(request: NextRequest) {
           width: 470,
           height: 470,
           borderRadius: 999,
-          border: '1px solid rgba(139,156,255,0.35)',
+          border: '1px solid rgba(201,142,110,0.35)',
           background:
-            'radial-gradient(circle at 35% 30%, rgba(34,52,78,0.9), rgba(9,9,11,0.95) 70%)',
+            'radial-gradient(circle at 35% 30%, rgba(70,48,36,0.9), rgba(16,17,15,0.95) 70%)',
         }}
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -75,7 +82,7 @@ export async function GET(request: NextRequest) {
               fontSize: 22,
               letterSpacing: 4,
               textTransform: 'uppercase',
-              color: '#6bdeee',
+              color: '#f0b08a',
             }}
           >
             {tagline}
@@ -104,7 +111,7 @@ export async function GET(request: NextRequest) {
           >
             <span>{motto}</span>
             {accent ? (
-              <span style={{ color: '#95fbdf', fontStyle: 'italic' }}>{accent}</span>
+              <span style={{ color: '#ffd0b1', fontStyle: 'italic' }}>{accent}</span>
             ) : null}
           </div>
         </div>

@@ -43,14 +43,14 @@ describe('buildContactEmail', () => {
   it('neutraliza saltos de línea en cabeceras (inyección de cabeceras)', () => {
     const email = buildContactEmail(
       { ...valid, subject: 'Hola\r\nBcc: victima@example.com', name: 'Ana\nTorres' },
-      'Di Yeferson',
+      'Diego Yeferson',
     )
     expect(email.subject).not.toMatch(/[\r\n]/)
-    expect(email.subject).toBe('[Di Yeferson] Hola Bcc: victima@example.com — Ana Torres')
+    expect(email.subject).toBe('[Diego Yeferson] Hola Bcc: victima@example.com — Ana Torres')
   })
 
   it('usa un asunto por defecto e incluye los datos del remitente', () => {
-    const email = buildContactEmail({ ...valid, subject: undefined }, 'Di Yeferson')
+    const email = buildContactEmail({ ...valid, subject: undefined }, 'Diego Yeferson')
     expect(email.subject).toContain('Nuevo mensaje de contacto')
     expect(email.text).toContain('Correo: ana@example.com')
     expect(email.text).toContain(valid.message)

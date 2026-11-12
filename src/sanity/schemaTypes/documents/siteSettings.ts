@@ -26,7 +26,7 @@ export const siteSettings = defineType({
       title: 'Nombre visible',
       type: 'string',
       group: 'identity',
-      initialValue: 'Di Yeferson',
+      initialValue: 'Diego Yeferson',
       validation: (rule) => rule.required().max(60),
     }),
     defineField({
@@ -68,11 +68,11 @@ export const siteSettings = defineType({
       name: 'heroPhrases',
       title: 'Frases del hero',
       description:
-        'La primera es el lema. La segunda, si existe, aparece al lado en serif itálica (p. ej. «Detrás de cada dato hay una decisión.» + «Me gusta encontrarla.»).',
+        'Frases que se turnan solas en la portada (una cada 5 segundos). Lo que pongas entre asteriscos sale en serif itálica: Detrás de cada dato hay una decisión. *Me gusta encontrarla.*',
       type: 'array',
       group: 'hero',
-      of: [defineArrayMember({ type: 'string', validation: (rule) => rule.required().max(90) })],
-      initialValue: ['Transformando datos en soluciones reales'],
+      of: [defineArrayMember({ type: 'string', validation: (rule) => rule.required().max(120) })],
+      initialValue: ['Detrás de cada dato hay una decisión. *Me gusta encontrarla.*'],
       validation: (rule) => rule.required().min(1).max(6).unique(),
     }),
     defineField({
@@ -410,7 +410,7 @@ export const siteSettings = defineType({
       title: 'Hero phrases',
       type: 'array',
       group: 'english',
-      of: [defineArrayMember({ type: 'string', validation: (rule) => rule.max(90) })],
+      of: [defineArrayMember({ type: 'string', validation: (rule) => rule.max(120) })],
       validation: (rule) => rule.max(6),
     }),
     defineField({

@@ -1642,6 +1642,13 @@
           "type": "number"
         },
         "optional": false
+      },
+      "likesBase": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
       }
     }
   },

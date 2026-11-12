@@ -25,11 +25,12 @@ const geist = localFont({
   adjustFontFallback: false,
 })
 
-/** Serif itálica de acento para la mezcla tipográfica de la marca. */
+/** Serif editorial: normal para el nombre y cursiva para los acentos. */
 const instrumentSerif = localFont({
-  src: '../../fonts/instrument-serif-italic.woff2',
-  weight: '400',
-  style: 'italic',
+  src: [
+    { path: '../../fonts/instrument-serif-regular.woff2', weight: '400', style: 'normal' },
+    { path: '../../fonts/instrument-serif-italic.woff2', weight: '400', style: 'italic' },
+  ],
   variable: '--font-instrument-serif',
   display: 'swap',
   adjustFontFallback: false,
@@ -58,7 +59,7 @@ export async function generateMetadata({ params }: LayoutProps<'/[lang]'>): Prom
 export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: dark)', color: '#10110f' },
-    { media: '(prefers-color-scheme: light)', color: '#f5f5f1' },
+    { media: '(prefers-color-scheme: light)', color: '#f6f2ec' },
   ],
   viewportFit: 'cover',
 }

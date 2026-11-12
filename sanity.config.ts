@@ -33,7 +33,7 @@ function siteUrlFor(document: { _type: string; slug?: { current?: string } }) {
 
 export default defineConfig({
   name: 'default',
-  title: 'Di Yeferson · Panel',
+  title: 'Diego Yeferson · Panel',
   icon: StudioIcon,
   theme: studioTheme,
   basePath: studioBasePath,

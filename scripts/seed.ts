@@ -33,7 +33,7 @@ function buildDocuments(): IdentifiedSanityDocumentStub[] {
   const siteSettings: IdentifiedSanityDocumentStub = {
     _id: 'drafts.siteSettings',
     _type: 'siteSettings',
-    displayName: 'Di Yeferson',
+    displayName: 'Diego Yeferson',
     tagline: profile.tagline.es,
     taglineEn: profile.tagline.en,
     availability: profile.availability.es,
@@ -101,6 +101,7 @@ function buildDocuments(): IdentifiedSanityDocumentStub[] {
     results: paragraphs(project.results.es),
     resultsEn: paragraphs(project.results.en),
     featured: project.featured ?? false,
+    likesBase: project.likesBase,
     status: 'published',
     sortOrder: (index + 1) * 10,
   }))
