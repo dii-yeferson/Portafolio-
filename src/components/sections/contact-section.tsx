@@ -53,12 +53,14 @@ export function ContactSection({
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <ContactDialog contactEmail={settings?.contactEmail || null} />
-                {/* /cv es una redirección de descarga (API), no una página. */}
-                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-                <a href="/cv" rel="nofollow" className="btn btn-glass h-14 px-7 text-[1rem]">
-                  <Download className="size-[1.1rem]" aria-hidden="true" />
-                  {t.header.downloadCv}
-                </a>
+                {/* Solo con CV cargado en el panel. /cv es una descarga (API), no una página. */}
+                {settings?.resume?.url ? (
+                  // eslint-disable-next-line @next/next/no-html-link-for-pages
+                  <a href="/cv" rel="nofollow" className="btn btn-glass h-14 px-7 text-[1rem]">
+                    <Download className="size-[1.1rem]" aria-hidden="true" />
+                    {t.header.downloadCv}
+                  </a>
+                ) : null}
               </div>
             </div>
 

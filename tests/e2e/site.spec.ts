@@ -32,7 +32,8 @@ test('la portada muestra hero, globo, secciones y pie con el año actual', async
   // El retrato real va delante del globo y nunca hay recomendaciones inventadas.
   await expect(page.getByRole('img', { name: 'Retrato de Diego Yeferson' })).toBeVisible()
   await expect(page.locator('#recomendaciones')).toHaveCount(0)
-  await expect(page.getByRole('link', { name: /Descargar CV/ }).first()).toBeVisible()
+  // Sin CV cargado en el panel no se ofrece un botón que no descarga nada.
+  await expect(page.getByRole('link', { name: /Descargar CV/ })).toHaveCount(0)
   await expect(page.locator('footer')).toContainText(`© ${new Date().getFullYear()}`)
 })
 
