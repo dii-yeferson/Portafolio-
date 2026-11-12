@@ -148,9 +148,12 @@ export const project = defineType({
       title: 'Imagen de portada',
       type: 'image',
       group: 'media',
+      description:
+        'Captura o imagen del proyecto. Sin portada, el sitio dibuja una ilustración automática.',
       options: { hotspot: true },
       fields: [altTextField()],
-      validation: (rule) => rule.required(),
+      validation: (rule) =>
+        rule.required().warning('Sin portada se muestra la ilustración automática.'),
     }),
     defineField({
       name: 'gallery',

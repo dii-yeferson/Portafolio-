@@ -2,7 +2,7 @@
   "name": "portafolio-di-yeferson",
   "version": "1.0.0",
   "private": true,
-  "description": "Portafolio profesional y CMS headless de Di Yeferson — Big Data · Ciencia de Datos · IA Aplicada.",
+  "description": "Portafolio profesional y CMS headless de Diego Yeferson — Big Data · Ciencia de Datos · IA Aplicada.",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=22.12.0"
@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "typegen": "sanity schema extract --force && sanity typegen generate",
     "seed": "sanity exec scripts/seed.ts --with-user-token",
+    "seed:token": "sanity exec scripts/seed.ts",
     "check": "npm run lint && npm run typecheck && npm run format:check && npm run test",
     "globe:generate": "node scripts/generate-globe-mask.mjs"
   },

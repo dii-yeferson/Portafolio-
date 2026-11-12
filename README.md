@@ -162,8 +162,8 @@ npm ci
 
 3. **Autoriza el Studio embebido:** en _sanity.io/manage → API → CORS origins_ agrega
    `http://localhost:3000` y tu dominio de producción con **Allow credentials** activado.
-4. **(Opcional) Siembra el contenido del diseño** — textos, proyectos y certificaciones
-   como borradores, y las redes (ocultas salvo GitHub) para completar y publicar en `/studio`:
+4. **(Opcional) Siembra el contenido del diseño** — perfil y proyectos ya publicados,
+   certificaciones como borradores y las redes (ocultas salvo GitHub) para completar en `/studio`:
 
    ```bash
    npx sanity login
@@ -269,16 +269,16 @@ npm run typegen
 
 En _sanity.io/manage → API → Webhooks → Create webhook_:
 
-| Campo       | Valor                                                                                   |
-| ----------- | --------------------------------------------------------------------------------------- |
-| URL         | `https://TU-DOMINIO/api/revalidate`                                                     |
-| Dataset     | `production`                                                                            |
-| Trigger on  | Create, Update, Delete                                                                  |
-| Filter      | `_type in ["siteSettings", "project", "certification", "socialLink", "recommendation"]` |
-| Projection  | `{_type, _id}`                                                                          |
-| HTTP method | `POST`                                                                                  |
-| Drafts      | Desactivado                                                                             |
-| Secret      | El mismo valor de `SANITY_REVALIDATE_SECRET`                                            |
+| Campo       | Valor                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------- |
+| URL         | `https://TU-DOMINIO/api/revalidate`                                                                     |
+| Dataset     | `production`                                                                                            |
+| Trigger on  | Create, Update, Delete                                                                                  |
+| Filter      | `_type in ["siteSettings", "project", "certification", "socialLink", "recommendation", "ambientMusic"]` |
+| Projection  | `{_type, _id}`                                                                                          |
+| HTTP method | `POST`                                                                                                  |
+| Drafts      | Desactivado                                                                                             |
+| Secret      | El mismo valor de `SANITY_REVALIDATE_SECRET`                                                            |
 
 Respuestas: `200` revalidado (o tipo ignorado, sin reintentos), `400` cuerpo inválido,
 `401` firma inválida o ausente, `500` secreto no configurado.
@@ -332,6 +332,7 @@ Los errores siguen el formato `{ "error": "codigo", "message": "…", ...detalle
 | `npm run test:e2e`       | Pruebas E2E (Playwright) sobre el build de producción        |
 | `npm run typegen`        | Extrae el esquema y regenera `src/sanity/types.ts`           |
 | `npm run seed`           | Contenido inicial idempotente en Sanity                      |
+| `npm run seed:token`     | Igual, con `SANITY_API_WRITE_TOKEN` en vez de la sesión CLI  |
 | `npm run globe:generate` | Regenera la máscara de continentes del globo                 |
 
 Las pruebas E2E levantan `next start` automáticamente; ejecuta antes el build:

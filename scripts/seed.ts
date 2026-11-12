@@ -4,15 +4,17 @@
  *   npx sanity login   # una sola vez
  *   npm run seed
  *
- * Usa el token del usuario autenticado en la CLI (`--with-user-token`) y
+ * Usa el token del usuario autenticado en la CLI (`--with-user-token`) o, si
+ * existe, `SANITY_API_WRITE_TOKEN` (`npm run seed:token`). Solo usa
  * `createIfNotExists`, por lo que nunca sobrescribe contenido existente.
  *
- * - Configuración del sitio, proyectos y certificaciones se crean como
- *   BORRADORES: agrega fotos, portadas y enlaces de verificación en /studio
- *   y publícalos (el Studio no deja publicar si falta algo obligatorio).
+ * - Configuración del sitio y proyectos se crean PUBLICADOS: el sitio queda
+ *   completo desde el primer momento y luego se edita todo en /studio.
+ * - Las certificaciones se crean como BORRADORES: son de ejemplo y el Studio
+ *   exige el enlace de verificación o la imagen real antes de publicarlas.
  * - Las redes se crean visibles salvo LinkedIn: pega la URL de tu perfil y actívala.
  */
-import type { IdentifiedSanityDocumentStub } from '@sanity/client'
+import { createClient, type IdentifiedSanityDocumentStub, type SanityClient } from '@sanity/client'
 import { getCliClient } from 'sanity/cli'
 
 import {
@@ -24,14 +26,14 @@ import {
   getDemoSocialLinks,
   paragraphs,
 } from '../src/content/demo'
-import { apiVersion } from '../src/sanity/env'
+import { apiVersion, dataset, projectId } from '../src/sanity/env'
 
 const VERIFIED_SOCIAL_URLS = new Set(['https://github.com/dii-yeferson'])
 
 function buildDocuments(): IdentifiedSanityDocumentStub[] {
   const profile = DEMO_PROFILE
   const siteSettings: IdentifiedSanityDocumentStub = {
-    _id: 'drafts.siteSettings',
+    _id: 'siteSettings',
     _type: 'siteSettings',
     displayName: 'Diego Yeferson',
     tagline: profile.tagline.es,
@@ -83,7 +85,7 @@ function buildDocuments(): IdentifiedSanityDocumentStub[] {
   }))
 
   const projects = DEMO_PROJECT_SOURCES.map((project, index) => ({
-    _id: `drafts.project-${project.slug}`,
+    _id: `project-${project.slug}`,
     _type: 'project',
     title: project.title.es,
     titleEn: project.title.en,
@@ -121,23 +123,33 @@ function buildDocuments(): IdentifiedSanityDocumentStub[] {
   return [siteSettings, ...socialLinks, ...projects, ...certifications]
 }
 
+/** Con `SANITY_API_WRITE_TOKEN` usa ese token; si no, la sesión de `npx sanity login`. */
+function getSeedClient(): SanityClient {
+  const token = process.env.SANITY_API_WRITE_TOKEN?.trim()
+  if (!token) return getCliClient({ apiVersion })
+  if (!projectId) throw new Error('Falta NEXT_PUBLIC_SANITY_PROJECT_ID.')
+  return createClient({ projectId, dataset, apiVersion, token, useCdn: false })
+}
+
 async function seed() {
-  const client = getCliClient({ apiVersion })
-  const { projectId, dataset } = client.config()
+  const client = getSeedClient()
+  const target = client.config()
   const documents = buildDocuments()
-  console.log(`Sembrando ${documents.length} documentos en ${projectId}/${dataset}…`)
+  console.log(`Sembrando ${documents.length} documentos en ${target.projectId}/${target.dataset}…`)
 
   const transaction = client.transaction()
   for (const document of documents) transaction.createIfNotExists(document)
   await transaction.commit({ visibility: 'sync' })
 
-  console.log('Listo. Revisa los borradores en /studio, completa imágenes y enlaces, y publícalos.')
+  console.log(
+    'Listo. El perfil y los proyectos ya están publicados. Las certificaciones quedaron como borrador en /studio.',
+  )
 }
 
 seed().catch((error: unknown) => {
   console.error(
     'No se pudo sembrar el contenido. Verifica NEXT_PUBLIC_SANITY_PROJECT_ID/DATASET en .env.local',
-    'y que hayas iniciado sesión con `npx sanity login`.\n',
+    'y que hayas iniciado sesión con `npx sanity login` (o define SANITY_API_WRITE_TOKEN).\n',
     error instanceof Error ? error.message : error,
   )
   process.exitCode = 1
